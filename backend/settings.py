@@ -1,15 +1,13 @@
 
 import os
+import json
+import environ
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+
+environ.Env.read_env()
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '(n(cl+*k(btveo%ttq(%my0ix3jrsq^ri2y!g#-d!+8u2q5&m1'
+SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -18,7 +16,6 @@ ALLOWED_HOSTS = ["*"]
 CORS_ORIGIN_ALLOW_ALL = True
 
 
-# Application definition
 
 INSTALLED_APPS = [
     'corsheaders',            
@@ -74,10 +71,6 @@ DATABASES = {
     }
 }
 
-
-# Password validation
-# https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -94,39 +87,12 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization
-# https://docs.djangoproject.com/en/3.0/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.0/howto/static-files/
 STATIC_ROOT=os.path.join(BASE_DIR, 'static')  
 STATIC_URL = '/static/'
-#CORS_ORIGIN_WHITELIST = [ 
-        #'https://ribosome.xyz',
-        #'http://ribosome.xyz',
-#
-        #'https://rtviii.xyz',
-        #'http://rtviii.xyz',
-    #
-        #'https://www.rtviii.xyz',
-        #'http://www.rtviii.xyz',
-#
-        #'https://173.230.152.141:443',
-        #'http://173.230.152.141:80',
-        #'http://173.230.152.141:8000',
-        #'http://173.230.152.141:3000',
-#
-        #'http://localhost:3000',
-        #'https://localhost:3000'
-  #]
