@@ -5,7 +5,6 @@ from pymol import cmd
 
 
 command = "mono ./mole/mole2.exe ./mole/input.xml"
-# os.system(command1)
 
 
 
