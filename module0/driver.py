@@ -31,7 +31,7 @@ def main():
     uL22  : Chain     = struct[0].child_dict['LP']
     tunnelcoords = [ np.asfarray(atom) for atom in tunnel_atoms]
     adjresidues  = get_adjacent_residues(uL22, tunnelcoords,10)
-    [print(Residue.get_full_id(res)) for res in adjresidues]
+    [print(res) for res in adjresidues]
     
     
 def get_adjacent_residues(chain:Chain,hull, radius:int):

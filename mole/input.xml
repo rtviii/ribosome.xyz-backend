@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Tunnels>
-  <Input>./mole/radiusobject.pdb</Input>
-  <WorkingDirectory>./mole/radius/</WorkingDirectory>
+  <Input>./radiusobject.pdb</Input>
+  <WorkingDirectory>./radius/</WorkingDirectory>
   <Params>
     <Cavity ProbeRadius="3" InteriorThreshold="1.25" />
     <Tunnel SurfaceCoverRadius="10" OriginRadius="5" AutoOriginCoverRadius="10" />

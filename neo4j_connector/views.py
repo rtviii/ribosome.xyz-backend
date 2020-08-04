@@ -47,3 +47,18 @@ def get_all_outgoing_struct(request):
         result = session.read_transaction(query)
     driver.close()
     return Response(result)
+
+
+
+@api_view(['GET','POST'])
+def custom_cypher(request):
+    params = dict(request.GET)
+    CYPHER_STRING  = params['cypher']
+
+    def query(tx):
+        results=[]
+        return list(tx.run(CYPHER_STRING))
+    with driver.session(database='ribosome') as session:
+        result = session.read_transaction(query)
+    driver.close()
+    return Response(result)
