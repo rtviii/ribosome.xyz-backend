@@ -3,4 +3,4 @@ Hey there GHP
 
 # one two 
 
-LInkto [ api ](APISHAPE.md.md)
+LInkto [ api ](APISHAPE.md)
