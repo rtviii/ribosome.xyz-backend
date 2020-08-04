@@ -1,3 +1,1 @@
 theme: jekyll-theme-minimal
-paginate: 5
-paginate_path: "/docs/page:num/"
