@@ -4,5 +4,4 @@ relative_links:
   enabled: true
   collections: true
 include:
-    -DOCS.md
     -APISHAPE.md
