@@ -1,5 +1,6 @@
 # Internal
 
+
 The main repository for the backend is [available on github ](https://github.com/rtviii/ribosome.xyz-backend).
 To add a Python module to the database, you can fork the repository and create a self-contained Django application:
 
@@ -8,8 +9,12 @@ To add a Python module to the database, you can fork the repository and create a
 This document summarizes the functionality that is already implemnted and how to interact with it.
 Refer to the [ API Documetation ](APISHAPE.md) for means of getting the data.
 
-## Template Package: ExitTunnelResnConservation
+These docs are in the works and are updated on a per-module basis.
 
+
+
+
+## Template Package: ExitTunnelResnConservation
 
 __driver__(*args, **kwargs)
 
@@ -71,6 +76,7 @@ A suite of python Pymol.cmd scripts that might have utility in dealing with ribo
 __align_export__(*args, **kwargs)
 
 Module can be used as a standalone CLI interface.
+
 |FLAG| EFFECT|
 |:---|:---|
 |__@flag__ --model-chain-tuples|One or more comma-separated pairs of the form <pdbid> <protein> to extract and algin on |
@@ -83,6 +89,7 @@ Module can be used as a standalone CLI interface.
 __chain_align_save__(*args, **kwargs) 
 
 Creates separate chain objects for each of the tuple, aligns them in space and exports alignment
+
 |||
 |:---|:---|
 |*@param*[]  pdbid chainid,| A comma-separated list of chains belonging to export|
@@ -93,6 +100,7 @@ Creates separate chain objects for each of the tuple, aligns them in space and e
 
 
 __get_nbrs__(chainid, radius):
+
 |||
 |:---|:---|
 |*@arg* chainid| An pdb chain identifier accroding to PDB. |

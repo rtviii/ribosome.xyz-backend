@@ -48,8 +48,6 @@ def get_all_outgoing_struct(request):
     driver.close()
     return Response(result)
 
-
-
 @api_view(['GET','POST'])
 def custom_cypher(request):
     params = dict(request.GET)

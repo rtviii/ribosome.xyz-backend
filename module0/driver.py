@@ -26,12 +26,13 @@ def euc_dist(n1, n2):
     return math.sqrt((n1[0]-n2[0] )**2 +(n1[1]-n2[1] )**2 + (n1[2]-n2[2])**2 )
 
 def main(): 
-    #   uL4   : Chain = struct[0].child_dict['LC']
+#   uL4   : Chain = struct[0].child_dict['LC']
     struct: Structure = FastMMCIFParser(QUIET=True).get_structure(structure_id='4UG0',filename='4ug0.cif')
     uL22  : Chain     = struct[0].child_dict['LP']
     tunnelcoords = [ np.asfarray(atom) for atom in tunnel_atoms]
     adjresidues  = get_adjacent_residues(uL22, tunnelcoords,10)
-    [print(res) for res in adjresidues]
+    [ print(res) for res in adjresidues]
+
     
     
 def get_adjacent_residues(chain:Chain,hull, radius:int):
