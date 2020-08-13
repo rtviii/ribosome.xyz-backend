@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Tunnels>
+  <Input>/home/rtviii/dev/django_react_standalone/ribosome.xyz-backend/static/pdb-structs/5nwy-tunnel-w-30.pdb</Input>
+  <WorkingDirectory>/home/rtviii/dev/django_react_standalone/ribosome.xyz-backend/static/mole-outputs/</WorkingDirectory>
+  <Params  >
+    <Cavity ProbeRadius="3" InteriorThreshold="0.8"  />
+    <Tunnel OriginRadius="3"  SurfaceCoverRadius="20" 
+    />
+  </Params>
+  <Export >
+    <Formats PyMol="1" PDBStructure="1" />
+  </Export>
+  <Origins Auto="0">
+    <Origin >
+
+      <Point X="182.995" Y="257.239" Z="195.651"/>
+      <Point X="184.669" Y="213.71" Z="211.708"/>
+         
+
+
+    </Origin>
+  </Origins>
+</Tunnels>
+

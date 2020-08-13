@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Tunnels>
+  <Input>/home/rtviii/dev/django_react_standalone/ribosome.xyz-backend/static/pdb-structs/radiusobject.pdb</Input>
+  <WorkingDirectory>/home/rtviii/dev/django_react_standalone/ribosome.xyz-backend/static/mole-outputs/</WorkingDirectory>
+  <Params  > 
+    <Cavity  ProbeRadius="8" InteriorThreshold="1.25" /> 
+     <Tunnel 
+     BottleneckRadius="2.5" 
+     OriginRadius="4" 
+     SurfaceCoverRadius="15"
+     
+     />
+   </Params>
+  <Export >
+    <Formats PyMol="1" PDBStructure="1" />
+  </Export>
+  <Origins Auto="0">
+    <Origin >
+
+      <Residue Chain="L" SequenceNumber="4548" />
+      <Residue Chain="L" SequenceNumber="3908" />
+      <Residue Chain="L" SequenceNumber="2794" />
+
+      </Origin>
+      <!-- <Residue Chain="A" SequenceNumber="309" /> -->
+  </Origins>
+</Tunnels>
+

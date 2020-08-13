@@ -36,8 +36,8 @@ def main():
     
     
 def get_adjacent_residues(chain:Chain,hull, radius:int):
-    #@param hull -- the coordinate set for the tunnel as a convex hull
-    #@param radius -- angstrom radius to treshold adjacency
+    # @param hull -- the coordinate set for the tunnel as a convex hull
+    # @param radius -- angstrom radius to treshold adjacency
     adjacent_residues =set()
     for resn in [ *chain.get_residues()]:
         for atom in hull:

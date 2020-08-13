@@ -1,12 +1,10 @@
 from rest_framework.decorators import api_view
 from neo4j import GraphDatabase
 from rest_framework.response import Response
-from mole.call_mono_mole import command
 import os
 
 
-driver = GraphDatabase.driver(os.environ['NEO4J_URL'],
- auth=(os.environ["NEO4J_USER"], os.environ['NEO4J_PASSWORD' ]))
+driver = GraphDatabase.driver(os.environ['NEO4J_URL'],auth=(os.environ["NEO4J_USER"], os.environ['NEO4J_PASSWORD' ]))
 
 
 @api_view(['GET'])

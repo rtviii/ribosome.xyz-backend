@@ -15,7 +15,6 @@ parser.add_argument('--model-chain-tuples', nargs='+', type=modelChainTuple)
 parser.add_argument('--pmlxtnd')
 args =parser.parse_args()
 print(args)
-
 """
 -fetch the structures(arg) 
 -parseout the chains of interest(arg) 
