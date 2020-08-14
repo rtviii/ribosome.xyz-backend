@@ -35,7 +35,7 @@ def makeparxser():
     parser.add_argument('-o', '--output', action='store_true', help='output')
     parser.add_argument('-output', '--outputfolder',
                         help='output folder for mole')
-    parser.add_argument('-input', '--input_path',
+    parser.add_argument('-input', '--input_path', dest='Input',
                         help='input file to operate on')
     # Params ----
     # Cavity
@@ -80,6 +80,7 @@ def makeparxser():
     """,
                         required=False)
 
+
     return parser
 
 
@@ -89,5 +90,8 @@ if __name__ == "__main__":
     #get rid of the unutilized arg options
     args       = filter((lambda kvpair: None not in kvpair), vars(args).items())
     args       = dict(args)
-    moleconfig = asyncio.run( make_input_config(args))
+    # if 'help' in args:
+    #     pass
+        # optionsHelp()
+    asyncio.run(make_input_config(args))
     os.system("mono ./mole/mole2/mole2.exe ./input-auto.xml")
