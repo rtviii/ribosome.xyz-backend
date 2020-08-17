@@ -32,8 +32,7 @@ def makeparxser():
         "See MOLE2.pdf documentation for detailed options")
 
     # Paths
-    parser.add_argument('-o', '--output', action='store_true', help='output')
-    parser.add_argument('-output', '--outputfolder',
+    parser.add_argument('-output', '--output_path',dest='Output',
                         help='output folder for mole')
     parser.add_argument('-input', '--input_path', dest='Input',
                         help='input file to operate on')

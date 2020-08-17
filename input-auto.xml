@@ -8,8 +8,7 @@
     <Tunnel SurfaceCoverRadius="10" OriginRadius="5" AutoOriginCoverRadius="10" BottleneckRadius="2"/>
   </Params>
   <Export>
-    <Chimera/>
-    <Formats Mesh="1" PyMol="1" CSV="1" Chimera="1" JSON="1" PDBProfile="1" PDBStructure="1" VMD="1"/>
+    <Formats Mesh="1" PyMol="1" CSV="1"/>
     <Types Tunnels="1"/>
     <Mesh Density="1.33" Compress="1"/>
     <PyMol SurfaceType="Surface"/>
