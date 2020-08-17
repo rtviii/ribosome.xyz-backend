@@ -50,8 +50,7 @@ if __name__ =='__main__':
         print(i)
 
 
-    reduced = np.hstack(( eig_pairs[0][1].reshape(3,1), eig_pairs[1][1].reshape(3,1) ))
-    print(reduced)
+    # reduced = np.hstack(( eig_pairs[0][1].reshape(3,1), eig_pairs[1][1].reshape(3,1) ))
 
 
 
