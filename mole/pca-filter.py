@@ -1,4 +1,6 @@
 # p3 mole/driver.py   --exports=t -o_points 139,154,143  133.336,172.016,150.413 -pr 4 -it 0.9 -br 2  -input ./static/pdb-structs/scoop50-4ug0.pdb --output_path ./MOLEtrials/5tunnels
+# p3 mole/driver.py   --exports=t -o_points 139,154,143  133.336,172.016,150.413 -pr 4 -it 0.9 -br 2  -input ./static/pdb-structs/scoop50-4ug0.pdb --output_path ./MOLEtrials/5tunnels
+
 import numpy as np
 import pandas as pd
 from pandas import DataFrame
