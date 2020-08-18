@@ -36,15 +36,12 @@ if __name__ =='__main__':
     args = parser.parse_args()  
     csvspath = args.csvspath
     struct = args.struct
-
-
 exits = str_tunnel_map[struct]['exit']['points']
 
 def load_tunnel(path):
     df = pd.read_csv(path)
     x = list( df['X'].values );y = list( df['Y'].values );z = list( df['Z'].values )
     return np.array([ x,y,z ])
-    
 def load_tunnels(path=csvspath):
     tunnels=[]
     csvs = glob.glob(path + '/*.csv')
@@ -52,28 +49,12 @@ def load_tunnels(path=csvspath):
     for i in csvs:
         tunnels.append(load_tunnel(i))
     return  tunnels
-
 def get_mean(tunnel:np.array):
     mean_x      = np.mean(tunnel[0,:])
     mean_y      = np.mean(tunnel[1,:])
     mean_z      = np.mean(tunnel[2,:])
 
     return np.array([[mean_x],[mean_y],[mean_z]])
-def get_eig_pairs(tunnel):
-    # get mean 
-    # --> get scatter by subtracting mean from each datapoint(column) 
-    # --> sum over [ outer products of these distances with themselves ]
-
-    meanvec = get_mean(tunnel)
-    scatter_matrix = np.zeros((3,3))
-    for i in range(tunnel.shape[1]):
-        scatter_matrix += (tunnel[:,i].reshape(3,1) - meanvec).dot((tunnel[:,i].reshape(3,1) - meanvec).T)
-
-    eigvals, eigvecs = np.linalg.eig(scatter_matrix)
-    eig_pairs = [(np.abs(eigvals[i]), eigvecs[:,i]) for i in range(len(eigvals))]
-
-    return eig_pairs
-
 def global_mean(ts):
     xcoord = np.array([])
     ycoord = np.array([])
@@ -90,21 +71,31 @@ def global_mean(ts):
 
     return np.array([[mean_x_global],[mean_y_global],[mean_z_global]])
 
+def get_eig_pairs(tunnel, global_mean):
+    # get mean 
+    # --> get scatter matrix by subtracting *global* mean from each datapoint(column) 
+    # --> sum over [ outer products of these distances with themselves ]
+    scatter_matrix = np.zeros((3,3))
+    for i in range(tunnel.shape[1]):
+        scatter_matrix += (tunnel[:,i].reshape(3,1) - global_mean).dot((tunnel[:,i].reshape(3,1) - global_mean).T)
+    eigvals, eigvecs = np.linalg.eig(scatter_matrix)
+    eig_pairs = [(np.abs(eigvals[i]), eigvecs[:,i]) for i in range(len(eigvals))]
+    return eig_pairs
+
         
 tunnels  = load_tunnels();
 globmean = global_mean(tunnels)
 
 for i,tunnel in enumerate(tunnels):
 
-    print(f"\t\tTunnel {i+1}:")
-    eps = get_eig_pairs(tunnel)
+    print(f"\n\t\tTunnel {i+1}(of shape {tunnel.shape}):")
+    eps = get_eig_pairs(tunnel, globmean)
     eps.sort(key=lambda x: x[0], reverse=True)
 
-    print(f"\nEigenpairs {i+1}:")
+    print(f"Eigenpairs {i+1}:")
     totaleval = eps[0][0] + eps[1][0] + eps[2][0]
     for pair in eps:
         print(pair, f"\t| normalized : { round(pair[0]/totaleval, 2) }")
-    print("\n")
 
 
 fig = plt.figure(figsize=(7,7))
@@ -114,14 +105,12 @@ colors = ["b", "g", "r", "c", "m", "y", "k", "w"]
 for ext in exits:
     ax.plot(ext[0], ext[1],ext[2], '^', markersize=10, color='purple', alpha=1)
 for i, tunnel in enumerate(tunnels):
-    ax.plot(tunnel[0,:], tunnel[1,:], tunnel[2,:], '-', markersize=4, color=colors[i % len(colors)], alpha=0.8, label=f'Tunnel {i+1}')
+    ax.plot(tunnel[0,:], tunnel[1,:], tunnel[2,:], 'o', markersize=4, color=colors[i % len(colors)], alpha=0.5, label=f'Tunnel {i+1}')
 
 
 
 # GLOBAL MEAN
 ax.plot(globmean[0], globmean[1],globmean[2], 'x',markersize=20, color='r')
-
-
 # ax.plot(t1[0,:], t1[1,:], t1[2,:], 'o', markersize=8, color='green', alpha=0.2)
 ax.plot([ exits[0][0],exits[1][0] ],[ exits[0][1],exits[1][1] ], [ exits[0][2],exits[1][2] ])
 # universal origin 
