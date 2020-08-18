@@ -1,8 +1,7 @@
 # p3 mole/driver.py   --exports=t -o_points 139,154,143  133.336,172.016,150.413 -pr 4 -it 0.9 -br 2  -input ./static/pdb-structs/scoop50-4ug0.pdb --output_path ./MOLEtrials/5tunnels
-# p3 mole/driver.py   --exports=t -o_points 139,154,143  133.336,172.016,150.413 -pr 4 -it 0.9 -br 2  -input ./static/pdb-structs/scoop50-4ug0.pdb --output_path ./MOLEtrials/5tunnels
-
 import numpy as np
 import pandas as pd
+from pprint import pprint
 import glob
 from pandas import DataFrame
 import matplotlib.pyplot as plt
@@ -13,10 +12,6 @@ import matplotlib.patches as mpatches
 
 import seaborn as sns; sns.set()
 import argparse
-
-# Exit/entry
-#  resv 4200 P atom on exit [[159.12  185.127 152.528]]
-#  resv 136 CD1 atom on entry[[105.527 156.633 160.96 ]]
 
 str_tunnel_map = {
     "4UG0":{
@@ -43,9 +38,6 @@ if __name__ =='__main__':
     struct = args.struct
 
 
-# Does it make sense to take the mean of samples with different number of measurements?
-# How to extract the principal component alogn a certain axis, i.e. the one defined by the specified exits?
-
 exits = str_tunnel_map[struct]['exit']['points']
 
 def load_tunnel(path):
@@ -55,13 +47,11 @@ def load_tunnel(path):
     
 def load_tunnels(path=csvspath):
     tunnels=[]
-    print(f'got path {path}')
     csvs = glob.glob(path + '/*.csv')
+    csvs.sort()
     for i in csvs:
         tunnels.append(load_tunnel(i))
-    return tunnels
-ts = load_tunnels();
-
+    return  tunnels
 
 def get_mean(tunnel:np.array):
     mean_x      = np.mean(tunnel[0,:])
@@ -69,9 +59,6 @@ def get_mean(tunnel:np.array):
     mean_z      = np.mean(tunnel[2,:])
 
     return np.array([[mean_x],[mean_y],[mean_z]])
-
-    
-
 def get_eig_pairs(tunnel):
     # get mean 
     # --> get scatter by subtracting mean from each datapoint(column) 
@@ -87,9 +74,27 @@ def get_eig_pairs(tunnel):
 
     return eig_pairs
 
+def global_mean(ts):
+    xcoord = np.array([])
+    ycoord = np.array([])
+    zcoord = np.array([])
+    for tn in ts :
+        xcoord = np.hstack((xcoord, tn[0,:]))
+        ycoord = np.hstack((ycoord, tn[1,:]))
+        zcoord = np.hstack((zcoord, tn[2,:]))
+    allcoords = np.vstack((xcoord,ycoord,zcoord))
 
+    mean_x_global      = np.mean(allcoords[0,:])
+    mean_y_global      = np.mean(allcoords[1,:])
+    mean_z_global      = np.mean(allcoords[2,:])
 
-for i,tunnel in enumerate(ts):
+    return np.array([[mean_x_global],[mean_y_global],[mean_z_global]])
+
+        
+tunnels  = load_tunnels();
+globmean = global_mean(tunnels)
+
+for i,tunnel in enumerate(tunnels):
 
     print(f"\t\tTunnel {i+1}:")
     eps = get_eig_pairs(tunnel)
@@ -105,18 +110,22 @@ for i,tunnel in enumerate(ts):
 fig = plt.figure(figsize=(7,7))
 ax  = fig.add_subplot(111, projection='3d')
 
+colors = ["b", "g", "r", "c", "m", "y", "k", "w"]
 for ext in exits:
     ax.plot(ext[0], ext[1],ext[2], '^', markersize=10, color='purple', alpha=1)
+for i, tunnel in enumerate(tunnels):
+    ax.plot(tunnel[0,:], tunnel[1,:], tunnel[2,:], '-', markersize=4, color=colors[i % len(colors)], alpha=0.8, label=f'Tunnel {i+1}')
 
-colors = ["b", "g", "r", "c", "m", "y", "k", "w"]
 
-for i, tunnel in enumerate(ts):
-    ax.plot(tunnel[0,:], tunnel[1,:], tunnel[2,:], '-', markersize=4, color=colors[i % len(colors)], alpha=0.8, label=f'Tunnel {i}')
+
+# GLOBAL MEAN
+ax.plot(globmean[0], globmean[1],globmean[2], 'x',markersize=20, color='r')
+
 
 # ax.plot(t1[0,:], t1[1,:], t1[2,:], 'o', markersize=8, color='green', alpha=0.2)
 ax.plot([ exits[0][0],exits[1][0] ],[ exits[0][1],exits[1][1] ], [ exits[0][2],exits[1][2] ])
 # universal origin 
-origin = [ts[0][0][0],ts[0][1][0],ts[0][2][0]]
+origin = [tunnels[0][0][0], tunnels[0][1][0], tunnels[0][2][0]]
 ax.plot(origin[0],origin[1],origin[2], 'o', markersize=7, color='green', alpha=1)
 
 plt.legend()
