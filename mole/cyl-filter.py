@@ -11,7 +11,7 @@ from matplotlib.patches import FancyArrowPatch
 
 
 def load_tunnel(n):
-    df = pd.read_csv(f"./MOLEtrials/5tunnels/csv/tunnel_{n}.csv")
+    df = pd.read_csv(f"./MOLEtrials/4ug0/csv/tunnel_{n}.csv")
     x = list( df['X'].values );y = list( df['Y'].values );z = list( df['Z'].values )
     return np.array([ x,y,z ])
     
@@ -52,10 +52,10 @@ for ext in exits:
 
 [ t1,t2,t3,t4,t5 ] = alltnls
 
-ax.plot(t1[0,:], t1[1,:], t1[2,:], 'o', markersize=8, color='green', alpha=0.2)
-ax.plot(t2[0,:], t2[1,:], t2[2,:], 'o', markersize=8, color='blue', alpha=0.2)
-ax.plot(t3[0,:], t3[1,:], t3[2,:], 'o', markersize=8, color='purple', alpha=0.2)
-ax.plot(t4[0,:], t4[1,:], t4[2,:], 'o', markersize=8, color='yellow', alpha=0.2)
+ax.plot(t1[0,:], t1[1,:], t1[2,:], 'o', markersize=8, color='m', alpha=0.2)
+ax.plot(t2[0,:], t2[1,:], t2[2,:], 'o', markersize=8, color='c', alpha=0.2)
+ax.plot(t3[0,:], t3[1,:], t3[2,:], 'o', markersize=8, color='g', alpha=0.2)
+ax.plot(t4[0,:], t4[1,:], t4[2,:], 'o', markersize=8, color='k', alpha=0.2)
 ax.plot(t5[0,:], t5[1,:], t5[2,:], 'o', markersize=8, color='orange', alpha=0.2)
 
 # fulcrum
@@ -75,6 +75,6 @@ for tnum,t in enumerate(alltnls):
         d = dist(point)
         # print("POINT ", i,point," dist :", d)
         mx = d if d > mx else mx;
-    print(f"Maximum distance {tnum}:" ,mx)
+    print("Maximum distance {tnum}:" ,mx)
 
 plt.show()

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Tunnels>
+  <Input>/home/rtviii/dev/django_react_standalone/ribosome.xyz-backend/static/pdb-structs/1jj2.pdb</Input>
+  <WorkingDirectory>/home/rtviii/dev/django_react_standalone/ribosome.xyz-backend/static/mole-outputs/</WorkingDirectory>
+
+
+  <Params CutoffRation="0.7">
+    <Cavity 
+    ProbeRadius="5" 
+    InteriorThreshold="1.25" />
+    <Tunnel 
+    OriginRadius="5" 
+    SurfaceCoverRadius="10" 
+    BottleneckTolerance="3" 
+    BottleneckRadius="1.25" 
+    
+    />
+  </Params>
+
+  <Export >
+    <Types Cavities="1" Tunnels="1" PoresAuto="1" PoresMerged="1" PoresUser="1"/>
+    <Formats PyMol="1" PDBStructure="1" />
+  </Export>
+  <Origins Auto="0">
+    <Origin >
+      <Point X="69.84" Y="131.02" Z="84.46"/>
+    </Origin>
+  </Origins>
+</Tunnels>
+
