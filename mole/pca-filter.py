@@ -17,7 +17,7 @@ str_tunnel_map = {
     "4UG0":{
         "exit":{
             "points":np.array([[159,185, 152],[105,156, 160]]),
-            "residues":[  ]
+            "residues":[ ]
         }
     },
     "5NWY":{

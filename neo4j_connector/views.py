@@ -4,27 +4,28 @@ from rest_framework.response import Response
 import os
 
 
-driver = GraphDatabase.driver(os.environ['NEO4J_URL'],auth=(os.environ["NEO4J_USER"], os.environ['NEO4J_PASSWORD' ]))
+# driver = GraphDatabase.driver(os.environ['NEO4J_URL'],auth=(os.environ["NEO4J_USER"], os.environ['NEO4J_PASSWORD' ]))
+uri = "bolt://ribosome.xyz:7687/"
+driver = GraphDatabase.driver(uri,auth=('neo4j','55288'))
 
 
 @api_view(['GET'])
 def test_endpoint(request):
-
-    # call_mono_mole()
-    os.system(command)
-
     return Response("This is testing endpoint. What did you expect?")
 
 @api_view(['GET'])
-def get_structs(request):
+def get_struct(request):
     params = dict(request.GET)
     pdbid  = str.upper(params['pdbid'][0])
-    CYPHER_STRING="""match (P:PDBStructure {{ pdbid:"{}"}})-[]-(s:Subchain)
-                return * limit 25;""".format(pdbid)
+    print("got params {}".format(params))
+
+    CYPHER_STRING="""match (P:PDBStructure {{ pdbid:"{}"}})-[]-(s:Subchain) return * limit 25;""".format(pdbid)
+
     def make_query(tx):
         molecules = []
         return list(tx.run(CYPHER_STRING))
-    with driver.session(database='ribosome') as session:
+
+    with driver.session(database='ribosome-test') as session:
         result = session.read_transaction(make_query)
     driver.close()
     return Response(result)
