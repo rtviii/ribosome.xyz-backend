@@ -1,12 +1,14 @@
 from django.urls import path
-from .views import test_endpoint,get_struct, get_all_outgoing_struct, custom_cypher
+from .views import get_struct, custom_cypher, anything, get_homologs
+from .pdb_connector import FileDownloadListAPIView
 
 
 urlpatterns = [
-    path('test/', test_endpoint),
     path('get_struct/', get_struct),
-    path('get_all_struct/', get_all_outgoing_struct),
-    path('cypher/', custom_cypher)
+    path('get_homologs/', get_homologs),
+    path('cypher/', custom_cypher),
+    path('anything/', anything),
+    path('get_pdbsubchain/', FileDownloadListAPIView.as_view())
 ]
 
 app_name = 'neo4j_connector'

@@ -95,7 +95,8 @@ def load_cif_from_file():
 
     for namecoordpair in chainCoordinates:
         if coord_type=='list':
-            chain_coordinates_object[namecoordpair[0]] = [[ float('%.{}f'.format(precision) % coord) for coord in x.tolist() ] for x in  namecoordpair[1]]
+            chain_coordinates_object[namecoordpair[0]] = [[ float('%.{}f'.format(precision) % coord) 
+            for coord in x.tolist() ] for x in  namecoordpair[1]]
         elif coord_type=='nparray':
             chain_coordinates_object[namecoordpair[0]] = namecoordpair[1]
         else:
