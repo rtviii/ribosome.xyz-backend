@@ -2,19 +2,21 @@ from neo4j import GraphDatabase
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 import os
+import environ
 from Bio import PDB
 # Neo4j driver has to be created inside the __init__ of the object to persist with its life. Otherwise is consumed on the first call.
 
+environ.Env.read_env()
 
-# driver     = GraphDatabase.driver(os.environ['NEO4J_URL'],auth=(os.environ["NEO4J_USER"], os.environ['NEO4J_PASSWORD' ]))
-uri        = "bolt://ribosome.xyz:7687/"
-authglobal = ('rt','rrr')
-current_db = 'ribtyped'
+uri        = os.environ['NEO4J_URI']
+authglobal = (os.environ['NEO4J_USER'],os.environ['NEO4J_PASSWORD'])
+current_db = os.environ['NEO4J_CURRENTDB']
 
 # driver = GraphDatabase.driver(uri,auth=('neo4j','55288'))
 
 @api_view(['GET'])
 def anything(request):
+    print("OS environs :", os.environ )
     return Response('This is anything you want this to be;')
 
 @api_view(['GET'])
