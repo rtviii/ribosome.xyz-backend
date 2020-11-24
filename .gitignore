@@ -4,4 +4,5 @@ docs/_site/
 static/
 basefiles/
 .vscode
+.gitignore
 __pycache__/
