@@ -6,3 +6,4 @@ basefiles/
 .vscode
 .gitignore
 __pycache__/
+rxzvenv/
