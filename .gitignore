@@ -1,0 +1,7 @@
+static/**
+**/.env
+docs/_site/
+static/
+basefiles/
+.vscode
+__pycache__/
