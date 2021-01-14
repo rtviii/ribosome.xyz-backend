@@ -96,6 +96,7 @@ def tunnel(request):
 
 
     if filetype== 'report':
+        print("GOT REQUEST FOR REPORT with params", params)
         try:
             doc = open(report_filehandle, 'rb')
         except: 
