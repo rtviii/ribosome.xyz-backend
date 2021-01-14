@@ -7,3 +7,4 @@ basefiles/
 .gitignore
 __pycache__/
 rxzvenv/
+venv/

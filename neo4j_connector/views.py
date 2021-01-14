@@ -24,10 +24,14 @@ def anything(request):
 
 @api_view(['GET'])
 def get_all_structs(request):
-    CYPHER_STRING="""match (ribs:RibosomeStructure) 
+    CYPHER_STRING="""
+    
+    
+    
+    match (ribs:RibosomeStructure) 
         unwind ribs as rb
         optional match (l:Ligand)-[]-(rb)
-        with  collect(l.chemicalId) as ligs, rb
+        with collect(l.chemicalId) as ligs, rb
         optional match (rps:RibosomalProtein)-[]-(rb)
         with ligs, rb, collect({{strands:rps.entity_poly_strand_id, noms:rps.nomenclature}}) as rps
         optional match (rnas:rRNA)-[]-(rb)
@@ -39,6 +43,23 @@ def get_all_structs(request):
     return Response(qres)
 
 
+@api_view(['GET', 'POST'])
+def match_structs(request):
+    params       = dict( request.GET )
+    protstomatch = params['proteins'][0]
+    targets      = protstomatch.split(',')
+    targets      = [ *map(lambda x : f'\'{x}\'', targets) ]
+    targets      = ",".join(targets)
+    print(targets)
+    cypher       = """match (n:RibosomeStructure)-[]-(rp:RibosomalProtein)
+    with n, rp,[] as strnoms 
+    unwind rp.nomenclature as unwound
+    with collect(unwound) as unwound, n, [{targets}] as tgts
+    where all(x in tgts where x in unwound)
+    return n.rcsb_id""".format_map({"targets":targets})
+
+    return Response(_neoget(cypher))
+
 @api_view(['GET'])
 def test_endpoint(request):
     return Response("This is testing endpoint. What did you expect?")
@@ -47,17 +68,18 @@ def test_endpoint(request):
 def get_struct(request):
     params = dict(request.GET)
     pdbid  = str.upper(params['pdbid'][0])
-    CYPHER_STRING="""  match(rr:rRNA)-[:rRNA_of]-(n:RibosomeStructure{{`rcsb_id`:"{pdbid}"}})
-                        with collect(rr) as rRNAs, n
-                        match (rp:RibosomalProtein)-[:RibosomalProtein_of]-(n)
-                        with collect(rp) as RPs, rRNAs, n
-                        match (l:Ligand)-[w]-(n)
-                        with collect(l) as lls, RPs, rRNAs,n
-                        return {{rps: RPs,rnas: rRNAs,structure: n, ligands: lls }};""".format_map(
-                            {"pdbid":pdbid}
-                            )
+    cypher = """
+    match (n:RibosomeStructure{{rcsb_id:"{pdbid}"}})
+    optional match (rr:rRNA)-[]-(n)
+    with n, collect(rr) as rrna
+    optional match (rp:RibosomalProtein)-[]-(n)
+    with n, rrna,  collect(rp) as rps
+    optional match (l:Ligand)-[]-(n)
+    with n, rrna, rps, collect(l) as ligs
+    return {{structure: n, ligands:ligs,rnas:rrna,rps:rps}}""".format_map({"pdbid":pdbid})
 
-    return Response(_neoget(CYPHER_STRING))
+
+    return Response(_neoget(cypher))
 
 
 @api_view(['GET'])

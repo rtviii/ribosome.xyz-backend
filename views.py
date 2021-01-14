@@ -1,16 +1,12 @@
 from os import error
-import sys
-
-from Bio.PDB.Entity import Entity
-from Bio.PDB.PDBIO import PDBIO
-from Bio.PDB.Structure import Structure
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-import os
+import os, sys
 from rxz_backend.settings import STATIC_ROOT
 import json
 from django.http import HttpResponse
 from wsgiref.util import FileWrapper
+
 
 @api_view(['GET','POST'])
 def pairwise_align(request):
@@ -39,7 +35,7 @@ def pairwise_align(request):
     try:
         doc = open(alignedfile, 'rb')
     except: 
-        print(f"Could find {alignedfile}.Exited")
+        print(f"Could find {filehandle}.Exited")
         return Response(-1)
 
     response = HttpResponse(FileWrapper(doc), content_type='chemical/x-mmcif')
@@ -49,31 +45,21 @@ def pairwise_align(request):
     return response
 
 
+    return Response("Hey now,\
+    {} {} {} {}".format(
+    handle1,handle2,
+    struct1+"_"+strand1,
+    struct2+"_"+strand2
+    ))
 
 
-def fetch_strand(structid:str,strandid:str)->FileWrapper:
-    filename   = "{}_STRAND_{}.cif".format(structid.upper(),strandid)
-    filehandle = os.path.join(STATIC_ROOT, structid.upper(),'CHAINS', filename)
 
-    print("trying to open ", filehandle)
 
-    # try: 
-    doc = open(filehandle)
-    return doc
 
-@api_view(['GET','POST'])
-def get_chain(request):
-    params = dict(request.GET)
-    chainid = params['chainid'][0]
-    structid = str.upper(params['structid'][0])
-    filename = "{}_subchain_{}.pdb".format(structid, chainid)
 
-    file_handle = os.path.join(STATIC_ROOT,structid, filename)
 
-    document = open(file_handle, 'rb')
-    response = HttpResponse(FileWrapper(document), content_type='chemical/x-pdb')
-    response['Content-Disposition'] = 'attachment; filename="{}_subchain_{}.pdb"'.format(structid, chainid)
-    return response
+
+
 
 
 @api_view(['GET','POST'])
@@ -131,14 +117,10 @@ def cif_chain(request):
     except: 
         return Response("File not found")
 
-    response = HttpResponse(FileWrapper(doc), content_type='chemical/x-mmcif')
+    response = HttpResponse(FileWrapper(doc), content_type='application/json')
     response['Content-Disposition'] = 'attachment; filename="{}"'.format(filename)
 
     return response
-
-
-
-
 
 
 
@@ -146,6 +128,7 @@ def cif_chain(request):
 def tunnel(request):
     params     = dict(request.GET)
     struct     = params['struct'][0].upper()
+    # centerline, report
     filetype   = params['filetype'][0]
 
     cetrline_filehandle  =  os.path.join(STATIC_ROOT, struct,'TUNNEL', 'csv', 'centerline.csv')
