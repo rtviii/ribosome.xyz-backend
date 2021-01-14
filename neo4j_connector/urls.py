@@ -17,6 +17,7 @@ urlpatterns = [
     path('get_all_rnas/',               get_all_rnas),
     path('get_rnas_by_struct/' ,        get_rnas_by_struct) ,
     path('get_ligands_by_struct/',      get_ligands_by_struct),
+    path('match_structs/',              match_structs)          ,
 
 ]
 
