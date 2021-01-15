@@ -4,6 +4,7 @@ import sys
 from Bio.PDB.Entity import Entity
 from Bio.PDB.PDBIO import PDBIO
 from Bio.PDB.Structure import Structure
+from dotenv import load_dotenv
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 import os
@@ -12,12 +13,16 @@ import json
 from django.http import HttpResponse
 from wsgiref.util import FileWrapper
 
+
+
+
 @api_view(['GET','POST'])
 def pairwise_align(request):
     params = dict(request.GET)
 
     struct1 = params['struct1'][0].upper()
     struct2 = params['struct2'][0].upper()
+
     strand1 = params['strand1'][0]
     strand2 = params['strand2'][0]
 
@@ -26,15 +31,12 @@ def pairwise_align(request):
 
     handle1 = os.path.join(STATIC_ROOT, struct1, "CHAINS", name1)
     handle2 = os.path.join(STATIC_ROOT, struct2, "CHAINS", name2)
+    
+    protein_alignment_script = os.getenv('PROTEIN_ALIGNMENT_SCRIPT')
 
-    os.system('/home/rt/backend/static_files/align.sh {} {} {} {}'.format(
-    handle1,handle2,
-    struct1+"_"+strand1,
-    struct2+"_"+strand2
-    ))
+    os.system(f'{protein_alignment_script} {handle1} {handle2} {struct1+"_"+struct2} {struct2+"_"+strand2}')
 
-
-    alignedfile='/home/rt/backend/static/TEMP_aligned_chains.cif'
+    alignedfile=os.getenv("TEMP_CHAIN")
 
     try:
         doc = open(alignedfile, 'rb')
@@ -49,13 +51,9 @@ def pairwise_align(request):
     return response
 
 
-
-
 def fetch_strand(structid:str,strandid:str)->FileWrapper:
     filename   = "{}_STRAND_{}.cif".format(structid.upper(),strandid)
     filehandle = os.path.join(STATIC_ROOT, structid.upper(),'CHAINS', filename)
-
-    print("trying to open ", filehandle)
 
     # try: 
     doc = open(filehandle)

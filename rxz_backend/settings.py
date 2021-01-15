@@ -2,16 +2,16 @@ import os
 import json
 from dotenv import load_dotenv
 
-load_dotenv(dotenv_path='./.env')
+load_dotenv(dotenv_path='/home/rtviii/dev/ribosome.xyz-backend/rxz_backend/.env')
 
 SECRET_KEY  =  os.getenv('SECRET_KEY')
 DEBUG       =  os.getenv('DEBUG')
 
 from pathlib import Path
-BASE_DIR    =  Path(__file__).resolve().parent.parent
+BASE_DIR               =  Path(__file__).resolve().parent.parent
 
-ALLOWED_HOSTS=["*"]
-CORS_ORIGIN_ALLOW_ALL=True
+ALLOWED_HOSTS          =  ["*"]
+CORS_ORIGIN_ALLOW_ALL  =  True
 
 INSTALLED_APPS = [
     'corsheaders',
@@ -64,12 +64,12 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
-USE_I18N = True
-USE_L10N = True
-USE_TZ = True
+LANGUAGE_CODE  =  'en-us'
+TIME_ZONE      =  'UTC'
+USE_I18N       =  True
+USE_L10N       =  True
+USE_TZ         =  True
 
 
-STATIC_ROOT=os.path.join(BASE_DIR, 'static')
-STATIC_URL = '/static/'
+STATIC_ROOT  =  os.path.join(BASE_DIR, 'static')
+STATIC_URL   =  '/static/'

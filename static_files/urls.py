@@ -3,11 +3,11 @@ from .views import *
 
 
 urlpatterns = [
-    # path('get_ligand_nbhd/',            get_ligand_nbhd) ,
-    # path('download_ligand_nbhd/',       download_ligand_nbhd) ,
-    # path('cif_chain/',                  cif_chain),
-    # path('tunnel/',                     tunnel),
-    # path('align_chains/',               align_chains),
+    path('get_ligand_nbhd/',            get_ligand_nbhd) ,
+    path('download_ligand_nbhd/',       download_ligand_nbhd) ,
+    path('cif_chain/',                  cif_chain),
+    path('tunnel/',                     tunnel),
+    path('pairwise_align/',               pairwise_align),
 ]
 
 app_name = 'static_files'
