@@ -1,11 +1,14 @@
-import os
+import os,sys
 import json
 from dotenv import load_dotenv
 
-load_dotenv(dotenv_path='/home/rtviii/dev/ribosome.xyz-backend/rxz_backend/.env')
 
-SECRET_KEY  =  os.getenv('SECRET_KEY')
-DEBUG       =  os.getenv('DEBUG')
+
+
+load_dotenv(dotenv_path='/home/rxz/dev/ribosome.xyz-backend/rxz_backend/.env')
+
+SECRET_KEY = os.getenv('SECRET_KEY')
+DEBUG      = os.getenv('DEBUG')
 
 from pathlib import Path
 BASE_DIR               =  Path(__file__).resolve().parent.parent

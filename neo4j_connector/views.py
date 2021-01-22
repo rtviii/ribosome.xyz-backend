@@ -26,8 +26,6 @@ def anything(request):
 def get_all_structs(request):
     CYPHER_STRING="""
     
-    
-    
     match (ribs:RibosomeStructure) 
         unwind ribs as rb
         optional match (l:Ligand)-[]-(rb)
