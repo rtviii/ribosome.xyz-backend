@@ -22,6 +22,23 @@ def _neoget(CYPHER_STRING:str):
 def anything(request):
     return Response("This a testing endpoint")
 
+
+@api_view(['GET'])
+def TEMP_classification_sample(request):
+    CYPHER_STRING="""
+    match (n:RibosomalProtein)-[]-(f:RibosomeStructure) where n.surface_ratio is not null 
+    with distinct f as rb
+        optional match (l:Ligand)-[]-(rb)
+        with collect(l.chemicalId) as ligs, rb
+        optional match (rps:RibosomalProtein)-[]-(rb)
+        with ligs, rb, collect({{strands:rps.entity_poly_strand_id,surface_ratio:rps.surface_ratio, noms:rps.nomenclature}}) as rps
+        optional match (rnas:rRNA)-[]-(rb)
+        with ligs, rb, rps, collect(rnas.entity_poly_strand_id) as rnas
+        return {{struct:rb, ligands: ligs, rps:rps, rnas:rnas}}""".format()
+    qres = _neoget(CYPHER_STRING)
+    return Response(qres)
+
+
 @api_view(['GET'])
 def get_all_structs(request):
     CYPHER_STRING="""
@@ -31,7 +48,7 @@ def get_all_structs(request):
         optional match (l:Ligand)-[]-(rb)
         with collect(l.chemicalId) as ligs, rb
         optional match (rps:RibosomalProtein)-[]-(rb)
-        with ligs, rb, collect({{strands:rps.entity_poly_strand_id, noms:rps.nomenclature}}) as rps
+        with ligs, rb, collect({{strands:rps.entity_poly_strand_id,surface_ratio:rps.surface_ratio, noms:rps.nomenclature}}) as rps
         optional match (rnas:rRNA)-[]-(rb)
         with ligs, rb, rps, collect(rnas.entity_poly_strand_id) as rnas
         return {{struct:rb, ligands: ligs, rps:rps, rnas:rnas}}
@@ -40,6 +57,15 @@ def get_all_structs(request):
     qres = _neoget(CYPHER_STRING)
     return Response(qres)
 
+@api_view(['GET'])
+def get_surface_ratios(request):
+    params = dict(request.GET)
+    struct = params['pdbid'][0]
+    cypher ="""match (r:RibosomeStructure{{rcsb_id:"{}"}})-[]-(p:RibosomalProtein)
+    return {{strand:p.entity_poly_strand_id,nom:p.nomenclature,ratio:p.surface_ratio }}""".format(struct)
+    return Response(_neoget(cypher))
+    
+    
 
 @api_view(['GET', 'POST'])
 def match_structs(request):

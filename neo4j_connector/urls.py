@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import * 
+from .views import *
 
 
 urlpatterns = [
@@ -18,6 +18,8 @@ urlpatterns = [
     path('get_rnas_by_struct/' ,        get_rnas_by_struct) ,
     path('get_ligands_by_struct/',      get_ligands_by_struct),
     path('match_structs/',              match_structs)          ,
+    path('get_surface_ratios/',         get_surface_ratios)          ,
+    path('TEMP_classification_sample/',         TEMP_classification_sample)          ,
 
 ]
 
