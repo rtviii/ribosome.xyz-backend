@@ -33,15 +33,16 @@ def pairwise_align(request):
     handle2 = os.path.join(STATIC_ROOT, struct2, "CHAINS", name2)
     
     protein_alignment_script = os.getenv('PROTEIN_ALIGNMENT_SCRIPT')
-
     os.system(f'{protein_alignment_script} {handle1} {handle2} {struct1+"_"+struct2} {struct2+"_"+strand2}')
 
     alignedfile=os.getenv("TEMP_CHAIN")
 
+    print("Alignment script:", protein_alignment_script)
+    print("Alignment file:", alignedfile)
     try:
         doc = open(alignedfile, 'rb')
     except: 
-        print(f"Could find {alignedfile}.Exited")
+        print(f"Could find {alignedfile}. Exited")
         return Response(-1)
 
     response = HttpResponse(FileWrapper(doc), content_type='chemical/x-mmcif')
