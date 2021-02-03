@@ -154,11 +154,23 @@ def gmo_nom_class(request):
 @api_view(['GET', 'POST'])
 def get_all_ligands(request):
     CYPHER_STRING="""
-        match (l:Ligand)-[]-(r:RibosomeStructure)
-        return {{ligand: l, presentIn:
-         collect({{struct:r.rcsb_id, 
-         orgname: r.`_organismName`, 
-         orgid:r.`_organismId`}}) }}
+
+match (l:Ligand)-[]-(r:RibosomeStructure)
+        return {{
+         ligand: l, 
+
+         presentIn:collect({{
+            _organismId          : r._organismId,                 
+            _organismName        : r._organismName,                 
+            rcsb_id              : r.rcsb_id,                 
+            expMethod            : r.expMethod,                 
+            resolution           : r.resolution,                 
+            cryoem_exp_resolution: r.cryoem_exp_resolution,                 
+            citation_title       : r.citation_title,                 
+            pdbx_keywords_text   : r.pdbx_keywords_text}})      }}
+
+
+         
     """.format_map({})
     return Response(_neoget(CYPHER_STRING))
 
