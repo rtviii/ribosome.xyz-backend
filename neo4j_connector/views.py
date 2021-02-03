@@ -110,11 +110,13 @@ def get_struct(request):
 def get_homologs(request):
     params        = dict(request.GET)
     ban           = str(params['banName'][0])
-    CYPHER_STRING = """match (s:RibosomalProtein)-[]-(q:RibosomeStructure) where "{ban}" in s.nomenclature  return {{protein:s, subchain_of: q.`_PDBId`}}""".format_map(
-        {
+
+    CYPHER_STRING = """
+    match (s:RibosomalProtein)-[]-(q:RibosomeStructure) where 
+    "{ban}" in s.nomenclature  
+    return {{protein:s, subchain_of: q.`_PDBId`}}""".format_map({
             "ban":ban
-        }
-    )
+        })
     return Response(_neoget(CYPHER_STRING))
 
 @api_view(['GET'])
@@ -165,12 +167,13 @@ def get_all_ligands(request):
 def get_all_rnas(request):
     CYPHER_STRING="""
     match (n:rRNA)-[]-(str:RibosomeStructure)
-    return {{strand: n.entity_poly_strand_id,
-     description: n.rcsb_pdbx_description, 
-     length: n.entity_poly_seq_length, 
+    return {{
+    rna: n,
      parent: str.rcsb_id, 
      orgname:str._organismName,
-     orgid:str._organismId}}
+     orgid:str._organismId,
+     title: str.citation_title
+     }}
     """.format_map({})
     return Response(_neoget(CYPHER_STRING))
 
