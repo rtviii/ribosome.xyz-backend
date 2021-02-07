@@ -1,9 +1,5 @@
 from os import error
 import sys
-
-from Bio.PDB.Entity import Entity
-from Bio.PDB.PDBIO import PDBIO
-from Bio.PDB.Structure import Structure
 from dotenv import load_dotenv
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -12,7 +8,7 @@ from rxz_backend.settings import STATIC_ROOT
 import json
 from django.http import HttpResponse
 from wsgiref.util import FileWrapper
-
+import subprocess
 
 
 
@@ -33,7 +29,10 @@ def pairwise_align(request):
     handle2 = os.path.join(STATIC_ROOT, struct2, "CHAINS", name2)
     
     protein_alignment_script = os.getenv('PROTEIN_ALIGNMENT_SCRIPT')
-    os.system(f'{protein_alignment_script} {handle1} {handle2} {struct1+"_"+struct2} {struct2+"_"+strand2}')
+    # subprocess.call(f'{protein_alignment_script} {handle1} {handle2} {struct1+"_"+struct2} {struct2+"_"+strand2}')
+    subprocess.call([protein_alignment_script, handle1 ,handle2 ,struct1+"_"+strand1, struct2+"_"+strand2])
+
+    # os.system(f'{protein_alignment_script} {handle1} {handle2} {struct1+"_"+struct2} {struct2+"_"+strand2}')
 
     alignedfile=os.getenv("TEMP_CHAIN")
 
@@ -51,7 +50,6 @@ def pairwise_align(request):
 
     return response
 
-
 def fetch_strand(structid:str,strandid:str)->FileWrapper:
     filename   = "{}_STRAND_{}.cif".format(structid.upper(),strandid)
     filehandle = os.path.join(STATIC_ROOT, structid.upper(),'CHAINS', filename)
@@ -59,6 +57,18 @@ def fetch_strand(structid:str,strandid:str)->FileWrapper:
     # try: 
     doc = open(filehandle)
     return doc
+
+
+@api_view(['GET','POST'])
+def get_static_catalogue(request):
+
+    file_handle = os.path.join(os.getenv('STATIC_ROOT'),'static_files_catalogue.json')
+
+    with open(file_handle) as infile:
+        catalogue = json.load(infile)
+        print(catalogue)
+    return Response(catalogue)
+
 
 @api_view(['GET','POST'])
 def get_chain(request):
@@ -134,12 +144,6 @@ def cif_chain(request):
     response['Content-Disposition'] = 'attachment; filename="{}"'.format(filename)
 
     return response
-
-
-
-
-
-
 
 @api_view(['GET', 'POST'])
 def tunnel(request):

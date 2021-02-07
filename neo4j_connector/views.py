@@ -155,10 +155,9 @@ def gmo_nom_class(request):
 def get_all_ligands(request):
     CYPHER_STRING="""
 
-match (l:Ligand)-[]-(r:RibosomeStructure)
+        match (l:Ligand)-[]-(r:RibosomeStructure)
         return {{
-         ligand: l, 
-
+             ligand: l, 
          presentIn:collect({{
             _organismId          : r._organismId,                 
             _organismName        : r._organismName,                 
