@@ -65,6 +65,13 @@ def get_surface_ratios(request):
     return {{strand:p.entity_poly_strand_id,nom:p.nomenclature,ratio:p.surface_ratio }}""".format(struct)
     return Response(_neoget(cypher))
     
+@api_view(['GET', 'POST'])
+def get_individual_ligand(request):
+    params = dict(request.GET)
+    chemId = params['chemId'][0]
+    cypher ="""
+    match (n:Ligand{{chemicalId:"{}"}}) return n;""".format(chemId)
+    return Response(_neoget(cypher))
     
 
 @api_view(['GET', 'POST'])
