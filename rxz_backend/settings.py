@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 
 
-load_dotenv(dotenv_path='/home/rxz/dev/ribosome.xyz-backend/rxz_backend/.env')
+load_dotenv(dotenv_path='/home/rtviii/dev/ribosome.xyz-backend/rxz_backend/.env')
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG      = os.getenv('DEBUG')
