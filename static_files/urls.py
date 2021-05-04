@@ -9,6 +9,7 @@ urlpatterns = [
     path('tunnel/',                     tunnel),
     path('pairwise_align/',             pairwise_align),
     path('get_static_catalogue/',       get_static_catalogue),
+    path('downloadArchive/',            downloadArchive),
 ]
 
 

@@ -13,6 +13,9 @@ urlpatterns = [
 
     path('get_all_structs/',            get_all_structs) ,
     path('gmo_nom_class/',              gmo_nom_class),
+    path('get_banclasses_metadata/',    get_banclasses_metadata),
+
+
     path('get_all_ligands/',            get_all_ligands),
     path('get_all_rnas/',               get_all_rnas),
     path('get_individual_ligand/',               get_individual_ligand),

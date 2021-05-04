@@ -8,8 +8,8 @@ from rxz_backend.settings import STATIC_ROOT
 import json
 from django.http import HttpResponse
 from wsgiref.util import FileWrapper
+import zipfile
 import subprocess
-
 
 
 @api_view(['GET','POST'])
@@ -177,3 +177,33 @@ def tunnel(request):
 
 
 
+@api_view(['GET', 'POST'])
+def downloadArchive(request):
+    params     =  request.GET.dict()
+    file_names = [
+        ]
+
+    for item in params.items():
+        file_names.append(os.path.join(STATIC_ROOT,item[0],'CHAINS',"{}_STRAND_{}.cif".format(item[0],item[1])))
+    path         =  os.path.join(STATIC_ROOT, 'zipfile.zip')
+    compression  =  zipfile.ZIP_DEFLATED
+
+    # create the zip file first parameter path/name, second mode
+    zf = zipfile.ZipFile(path, mode="w")
+    try:
+        for i,file_name in enumerate( file_names ):
+            print(file_name)
+            # Add file to the zip file
+            # first parameter file to zip, second filename in zip
+            zf.write( file_name, "{}_{}.cif".format(file_name,i), compress_type=compression)
+
+    except FileNotFoundError:
+        print("An error occurred")
+    finally:
+        # Don't forget to close the file!
+        zf.close()
+
+       
+    response = HttpResponse(zf, content_type='application/force-download')
+    response['Content-Disposition'] = f'attachment; filename="%s"' % 'compressed.zip'
+    return response

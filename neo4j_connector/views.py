@@ -126,9 +126,23 @@ def get_homologs(request):
         })
     return Response(_neoget(CYPHER_STRING))
 
+
+
+@api_view(['GET'])
+def get_banclasses_metadata(request):
+    CYPHER_STRING="""
+    match (n:NomenclatureClass)-[]-(rp:RibosomalProtein)-[]-(s:RibosomeStructure)
+    unwind s.`_organismId` as orgid
+    with collect(distinct orgid) as allorgs, n as n, collect(s.rcsb_id) as structures, avg(rp.entity_poly_seq_length)
+     as seqlength, collect(distinct rp.pfam_comments) as comments
+    return {banClass: n.class_id, organisms:  allorgs, structs: structures,avgseqlength:seqlength, comments:comments }
+    """
+    return Response(_neoget(CYPHER_STRING))
+
 @api_view(['GET'])
 def list_nom_classes(request):
-    CYPHER_STRING="""match (b:NomenclatureClass)-[]-(rp)-[]-(str:RibosomeStructure)
+    CYPHER_STRING="""
+    match (b:NomenclatureClass)-[]-(rp)-[]-(str:RibosomeStructure)
     with str, b, rp
     return {{
     nom_class: b.class_id,
@@ -150,11 +164,11 @@ def gmo_nom_class(request):
     ban    = str(params['banName'][0])
     CYPHER_STRING="""
     match (q:RibosomeStructure)-[]-(n:RibosomalProtein)-[]-(nc:NomenclatureClass{{class_id:"{ban}"}})
-    return {{parent:q.rcsb_id, 
-    orgid: q._organismId,title: q.citation_title, orgname:q._organismName ,protein:n}};
+    return collect(n);
     """.format_map({
         "ban":ban
     })
+
     return Response(_neoget(CYPHER_STRING))
 
 
