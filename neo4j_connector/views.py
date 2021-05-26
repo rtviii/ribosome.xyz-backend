@@ -1,3 +1,4 @@
+from operator import sub
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from neo4j import  Result, GraphDatabase
@@ -130,13 +131,23 @@ def get_homologs(request):
 
 @api_view(['GET'])
 def get_banclasses_metadata(request):
+    params  = dict(request.GET)
+    family  = str(params['family'][0]).lower()
+    subunit = str(params['subunit'][0]).lower()
+
+
+    if subunit == "ssu":
+        fstring = 'toLower(n.class_id) contains "s" or toLower(n.class_id) contains "bthx" or toLower(n.class_id) contains "rack"' 
+    elif subunit == "lsu": 
+        fstring = 'toLower(n.class_id) contains "l"' 
+
     CYPHER_STRING="""
-    match (n:NomenclatureClass)-[]-(rp:RibosomalProtein)-[]-(s:RibosomeStructure)
+    match (n:NomenclatureClass)-[]-(rp:RibosomalProtein)-[]-(s:RibosomeStructure) where  toLower(n.class_id) contains "{}"  and {} 
     unwind s.`_organismId` as orgid
-    with collect(distinct orgid) as allorgs, n as n, collect(s.rcsb_id) as structures, avg(rp.entity_poly_seq_length)
-     as seqlength, collect(distinct rp.pfam_comments) as comments
-    return {banClass: n.class_id, organisms:  allorgs, structs: structures,avgseqlength:seqlength, comments:comments }
-    """
+    with collect(distinct orgid) as allorgs, n as n, collect(s.rcsb_id) as structures, collect(distinct rp.pfam_comments) as comments
+    return {{banClass: n.class_id, organisms:  allorgs, comments:comments, structs: structures }}""".format(family, fstring)
+
+
     return Response(_neoget(CYPHER_STRING))
 
 @api_view(['GET'])
@@ -196,18 +207,52 @@ def get_all_ligands(request):
 
 
 @api_view(['GET']) 
-def get_all_rnas(request):
-    CYPHER_STRING="""
-    match (n:rRNA)-[]-(str:RibosomeStructure)
+def get_rna_class(request):
+    params        = dict(request.GET)
+    rna_class     = str(params['rna_class'][0])
+
+    CYPHER_STRING = """
+    match (n:rRNA) where 
+    toLower(n.rcsb_pdbx_description) contains '{}'
     return {{
-    rna: n,
-     parent: str.rcsb_id, 
-     orgname:str._organismName,
-     orgid:str._organismId,
-     title: str.citation_title
-     }}
-    """.format_map({})
+    struct     : n.parent_rcsb_id,
+    orgid      : n.rcsb_source_organism_id,
+    description: n.rcsb_pdbx_description,
+    seq        : n.entity_poly_seq_one_letter_code}}
+    """.format(rna_class)
+
     return Response(_neoget(CYPHER_STRING))
+
+@api_view(['GET']) 
+def get_uncategorized_rna(request):
+
+    CYPHER_STRING = """match (n:rRNA) where not
+    (toLower(n.rcsb_pdbx_description) contains '23'
+    or toLower(n.rcsb_pdbx_description) contains '5'
+    or toLower(n.rcsb_pdbx_description) contains '28'
+    or toLower(n.rcsb_pdbx_description) contains '12'
+    or toLower(n.rcsb_pdbx_description) contains '21'
+
+    or toLower(n.rcsb_pdbx_description) contains '26'
+
+    or toLower(n.rcsb_pdbx_description) contains '16'
+    or toLower(n.rcsb_pdbx_description) contains '18'
+    or toLower(n.rcsb_pdbx_description) contains 'trna'
+    or toLower(n.rcsb_pdbx_description) contains 'transport'
+    or toLower(n.rcsb_pdbx_description) contains 'mrna'
+    or toLower(n.rcsb_pdbx_description) contains 'messenger')
+
+    return {{
+    struct     : n.parent_rcsb_id,
+    orgid      : n.rcsb_source_organism_id,
+    description: n.rcsb_pdbx_description,
+    seq        : n.entity_poly_seq_one_letter_code
+    }}"""
+
+    return Response(_neoget(CYPHER_STRING))
+
+
+
 
 
 @api_view(['GET','POST'])
@@ -232,6 +277,16 @@ def get_ligands_by_struct(request):
     return Response(_neoget(CYPHER_STRING))
 
 
+@api_view(['GET'])
+def nomclass_visualize(request):
 
+    params = dict(request.GET)
+    ban    = str(params['ban'][0])
 
-
+    CYPHER_STRING="""
+    match (n:NomenclatureClass)-[]-(rp:RibosomalProtein) where n.class_id ="{}" return  {{
+    class: n.class_id,
+    members: collect({{parent: rp.parent_rcsb_id, chain:rp.entity_poly_strand_id}}),
+    comments:collect(distinct rp.pfam_comments)}} """.format(ban)
+    
+    return Response(_neoget(CYPHER_STRING))

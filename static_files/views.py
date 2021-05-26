@@ -1,6 +1,8 @@
 from os import error
 import sys
+from xml.dom import NotFoundErr
 from dotenv import load_dotenv
+from neo4j import GraphDatabase
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 import os
@@ -9,7 +11,23 @@ import json
 from django.http import HttpResponse
 from wsgiref.util import FileWrapper
 import zipfile
+from neo4j import  Result, GraphDatabase
 import subprocess
+
+uri         =  os.getenv( 'NEO4J_URI' )
+authglobal  =  (os.getenv( 'NEO4J_USER' ),os.getenv( 'NEO4J_PASSWORD' ))
+current_db  =  os.getenv( 'NEO4J_CURRENTDB' )
+#-⋯⋯⋅⋱⋰⋆⋅⋅⋄⋅⋅∶⋅⋅⋄▫▪▭┈┅✕⋅⋅⋄⋅⋅✕∶⋅⋅⋄⋱⋰⋯⋯⋯⋯⋅⋱⋰⋆⋅⋅⋄⋅⋅∶⋅⋅⋄▫▪▭┈┅✕⋅⋅⋄⋅⋅✕∶⋅⋅⋄⋱⋰⋯⋯⋯⋅⋱⋰⋆⋅⋅⋄⋅⋅∶⋅⋅⋄▫▪▭┈┅✕⋅⋅⋄⋅⋅✕∶⋅⋅⋄⋱⋰⋯⋯⋯
+
+def _neoget(CYPHER_STRING:str):
+    driver = GraphDatabase.driver(uri, auth= authglobal )
+    def parametrized_query(tx, **kwargs):
+        result:Result = tx.run(CYPHER_STRING, **kwargs)
+        return result.value()
+
+    with driver.session() as session:
+        return session.read_transaction(parametrized_query)
+
 
 
 @api_view(['GET','POST'])
@@ -144,6 +162,37 @@ def cif_chain(request):
     return response
 
 @api_view(['GET', 'POST'])
+def cif_chain_by_class(request):
+    params     = dict(request.GET)
+    classid    = params['classid'][0]
+    struct     = params['struct'][0].upper()
+
+
+    CYPHER = """match (n:RibosomeStructure)-[]-(r:RibosomalProtein)-[]-(b:NomenclatureClass)
+    where n.rcsb_id ="{}" and b.class_id = "{}"
+    return {{ struct: n.rcsb_id, strand: r.entity_poly_strand_id }}""".format(struct,classid)
+    print("C----->" ,CYPHER)
+    chains = _neoget(CYPHER)
+    
+    if len( chains ) < 1 :
+        return Response(NotFoundErr)
+    strand = chains[0]['strand']
+    filename   = "{}_STRAND_{}.cif".format(struct,strand)
+    filehandle = os.path.join(STATIC_ROOT, struct,'CHAINS', filename)
+
+
+    print(filehandle)
+    try:
+        doc = open(filehandle, 'rb')
+    except: 
+        return Response("File not found")
+
+    response = HttpResponse(FileWrapper(doc), content_type='chemical/x-mmcif')
+    response['Content-Disposition'] = 'attachment; filename="{}"'.format(filename)
+    return response
+
+    # return Response(chains[0]['strand'])
+@api_view(['GET', 'POST'])
 def tunnel(request):
     params     = dict(request.GET)
     struct     = params['struct'][0].upper()
@@ -174,7 +223,6 @@ def tunnel(request):
         response['Content-Disposition'] = 'attachment; filename="{}"'.format(f"{struct}_tunnel_centerline.csv")
 
         return response
-
 
 
 @api_view(['GET', 'POST'])

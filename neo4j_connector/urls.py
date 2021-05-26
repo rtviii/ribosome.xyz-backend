@@ -14,10 +14,12 @@ urlpatterns = [
     path('get_all_structs/',            get_all_structs) ,
     path('gmo_nom_class/',              gmo_nom_class),
     path('get_banclasses_metadata/',    get_banclasses_metadata),
+    path('nomclass_visualize/',         nomclass_visualize),
 
 
     path('get_all_ligands/',            get_all_ligands),
-    path('get_all_rnas/',               get_all_rnas),
+    path('get_rna_class/',               get_rna_class),
+    path('get_uncategorized_rna/',               get_uncategorized_rna),
     path('get_individual_ligand/',               get_individual_ligand),
     path('get_rnas_by_struct/' ,        get_rnas_by_struct) ,
     path('get_ligands_by_struct/',      get_ligands_by_struct),
