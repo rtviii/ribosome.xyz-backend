@@ -82,7 +82,6 @@ def match_structs(request):
     targets      = protstomatch.split(',')
     targets      = [ *map(lambda x : f'\'{x}\'', targets) ]
     targets      = ",".join(targets)
-    print(targets)
     cypher       = """match (n:RibosomeStructure)-[]-(rp:RibosomalProtein)
     with n, rp,[] as strnoms 
     unwind rp.nomenclature as unwound
@@ -210,49 +209,85 @@ def get_all_ligands(request):
 def get_rna_class(request):
     params        = dict(request.GET)
     rna_class     = str(params['rna_class'][0])
-
     CYPHER_STRING = """
-    match (n:rRNA) where 
-    toLower(n.rcsb_pdbx_description) contains '{}'
+    match (n:rRNA) where toLower(n.rcsb_pdbx_description) contains '{}'
     return {{
     struct     : n.parent_rcsb_id,
     orgid      : n.rcsb_source_organism_id,
     description: n.rcsb_pdbx_description,
-    seq        : n.entity_poly_seq_one_letter_code}}
+    seq        : n.entity_poly_seq_one_letter_code,
+        strand: n.entity_poly_strand_id 
+    
+    }}
     """.format(rna_class)
 
+    if rna_class == '5':
+        CYPHER_STRING = """
+        match (n:rRNA) where toLower(n.rcsb_pdbx_description) contains '5' and  
+        not ( toLower(n.rcsb_pdbx_description) contains '5.8'
+        or toLower(n.rcsb_pdbx_description) contains '4.55'
+        or toLower(n.rcsb_pdbx_description) contains '25'
+        or toLower(n.rcsb_pdbx_description) contains '35'
+        )
+        return {{
+        struct     : n.parent_rcsb_id,
+        orgid      : n.rcsb_source_organism_id,
+        description: n.rcsb_pdbx_description,
+        seq        : n.entity_poly_seq_one_letter_code,
+        strand     : n.entity_poly_strand_id
+        }}
+        """.format(rna_class)
+    if rna_class == 'trna':
+        CYPHER_STRING = """
+        match (n:rRNA) where toLower(n.rcsb_pdbx_description) contains 'trna' or  toLower(n.rcsb_pdbx_description) contains 'transport'
+        return {{
+        struct     : n.parent_rcsb_id,
+        orgid      : n.rcsb_source_organism_id,
+        description: n.rcsb_pdbx_description,
+        seq        : n.entity_poly_seq_one_letter_code,
+        strand: n.entity_poly_strand_id
+        }}
+        """.format(rna_class)
+    if rna_class == 'mrna':
+        CYPHER_STRING = """
+        match (n:rRNA) where toLower(n.rcsb_pdbx_description) contains 'mrna' or  toLower(n.rcsb_pdbx_description) contains 'messenger'
+        return {{
+        struct     : n.parent_rcsb_id,
+        orgid      : n.rcsb_source_organism_id,
+        description: n.rcsb_pdbx_description,
+        seq        : n.entity_poly_seq_one_letter_code,
+        strand: n.entity_poly_strand_id
+        }}
+        """.format(rna_class)
+    if rna_class == 'other':
+
+        CYPHER_STRING = """match (n:rRNA) where not
+        (toLower(n.rcsb_pdbx_description) contains   '5'
+        or toLower(n.rcsb_pdbx_description) contains '5.8'
+        or toLower(n.rcsb_pdbx_description) contains '12'
+        or toLower(n.rcsb_pdbx_description) contains '21'
+        or toLower(n.rcsb_pdbx_description) contains '16'
+        or toLower(n.rcsb_pdbx_description) contains '18'
+        or toLower(n.rcsb_pdbx_description) contains '23'
+        or toLower(n.rcsb_pdbx_description) contains '26'
+        or toLower(n.rcsb_pdbx_description) contains '28'
+        or toLower(n.rcsb_pdbx_description) contains 'trna'
+        or toLower(n.rcsb_pdbx_description) contains 'transport'
+        or toLower(n.rcsb_pdbx_description) contains 'mrna'
+        or toLower(n.rcsb_pdbx_description) contains 'messenger'
+        )
+
+        return {
+        struct     : n.parent_rcsb_id,
+        orgid      : n.rcsb_source_organism_id,
+        description: n.rcsb_pdbx_description,
+        seq        : n.entity_poly_seq_one_letter_code,
+        strand: n.entity_poly_strand_id
+        }
+
+        """
+
     return Response(_neoget(CYPHER_STRING))
-
-@api_view(['GET']) 
-def get_uncategorized_rna(request):
-
-    CYPHER_STRING = """match (n:rRNA) where not
-    (toLower(n.rcsb_pdbx_description) contains '23'
-    or toLower(n.rcsb_pdbx_description) contains '5'
-    or toLower(n.rcsb_pdbx_description) contains '28'
-    or toLower(n.rcsb_pdbx_description) contains '12'
-    or toLower(n.rcsb_pdbx_description) contains '21'
-
-    or toLower(n.rcsb_pdbx_description) contains '26'
-
-    or toLower(n.rcsb_pdbx_description) contains '16'
-    or toLower(n.rcsb_pdbx_description) contains '18'
-    or toLower(n.rcsb_pdbx_description) contains 'trna'
-    or toLower(n.rcsb_pdbx_description) contains 'transport'
-    or toLower(n.rcsb_pdbx_description) contains 'mrna'
-    or toLower(n.rcsb_pdbx_description) contains 'messenger')
-
-    return {{
-    struct     : n.parent_rcsb_id,
-    orgid      : n.rcsb_source_organism_id,
-    description: n.rcsb_pdbx_description,
-    seq        : n.entity_poly_seq_one_letter_code
-    }}"""
-
-    return Response(_neoget(CYPHER_STRING))
-
-
-
 
 
 @api_view(['GET','POST'])
