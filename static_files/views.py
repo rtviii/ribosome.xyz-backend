@@ -162,6 +162,22 @@ def cif_chain(request):
     return response
 
 @api_view(['GET', 'POST'])
+def download_structure(request):
+    params     = dict(request.GET)
+    struct_id    = params['struct_id'][0].upper()
+
+    filename   = "{}.cif".format(struct_id)
+    filehandle = os.path.join(STATIC_ROOT, struct_id, filename)
+
+    try:
+        doc = open(filehandle, 'rb')
+    except: 
+        return Response("File not found")
+    response = HttpResponse(FileWrapper(doc), content_type='chemical/x-mmcif')
+    response['Content-Disposition'] = 'attachment; filename="{}"'.format(filename)
+    return response
+
+@api_view(['GET', 'POST'])
 def cif_chain_by_class(request):
     params     = dict(request.GET)
     classid    = params['classid'][0]
@@ -223,6 +239,10 @@ def tunnel(request):
         response['Content-Disposition'] = 'attachment; filename="{}"'.format(f"{struct}_tunnel_centerline.csv")
 
         return response
+
+
+
+
 
 
 @api_view(['GET', 'POST'])
