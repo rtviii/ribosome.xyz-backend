@@ -209,59 +209,82 @@ def get_all_ligands(request):
 def get_rna_class(request):
     params        = dict(request.GET)
     rna_class     = str(params['rna_class'][0])
+
+
     CYPHER_STRING = """
-    match (n:rRNA) where toLower(n.rcsb_pdbx_description) contains '{}'
+    match (n:rRNA)-[]-(rib:RibosomeStructure) where toLower(n.rcsb_pdbx_description) contains '{}'
+
     return {{
-    struct     : n.parent_rcsb_id,
-    orgid      : n.rcsb_source_organism_id,
-    description: n.rcsb_pdbx_description,
-    seq        : n.entity_poly_seq_one_letter_code,
-        strand: n.entity_poly_strand_id 
-    
+    struct           : n.parent_rcsb_id,
+    orgid            : n.rcsb_source_organism_id,
+    description      : n.rcsb_pdbx_description,
+    seq              : n.entity_poly_seq_one_letter_code,
+    strand           : n.entity_poly_strand_id,
+    parent_year      : rib.citation_year,
+    parent_resolution: rib.resolution,
+    parent_citation  : rib.citation_title,
+    parent_method    : rib.expMethod
     }}
     """.format(rna_class)
+        
+
+
+
 
     if rna_class == '5':
         CYPHER_STRING = """
-        match (n:rRNA) where toLower(n.rcsb_pdbx_description) contains '5' and  
+        match (n:rRNA)-[]-(rib:RibosomeStructure) where toLower(n.rcsb_pdbx_description) 
+        contains '5' and  
         not ( toLower(n.rcsb_pdbx_description) contains '5.8'
         or toLower(n.rcsb_pdbx_description) contains '4.55'
         or toLower(n.rcsb_pdbx_description) contains '25'
         or toLower(n.rcsb_pdbx_description) contains '35'
         )
-        return {{
-        struct     : n.parent_rcsb_id,
-        orgid      : n.rcsb_source_organism_id,
-        description: n.rcsb_pdbx_description,
-        seq        : n.entity_poly_seq_one_letter_code,
-        strand     : n.entity_poly_strand_id
-        }}
-        """.format(rna_class)
+            return {
+            struct           : n.parent_rcsb_id,
+            orgid            : n.rcsb_source_organism_id,
+            description      : n.rcsb_pdbx_description,
+            seq              : n.entity_poly_seq_one_letter_code,
+            strand           : n.entity_poly_strand_id,
+            parent_year      : rib.citation_year,
+            parent_resolution: rib.resolution,
+            parent_citation  : rib.citation_title,
+            parent_method    : rib.expMethod
+            }"""
+
     if rna_class == 'trna':
         CYPHER_STRING = """
-        match (n:rRNA) where toLower(n.rcsb_pdbx_description) contains 'trna' or  toLower(n.rcsb_pdbx_description) contains 'transport'
-        return {{
-        struct     : n.parent_rcsb_id,
-        orgid      : n.rcsb_source_organism_id,
-        description: n.rcsb_pdbx_description,
-        seq        : n.entity_poly_seq_one_letter_code,
-        strand: n.entity_poly_strand_id
-        }}
-        """.format(rna_class)
+        match (n:rRNA)-[]-(rib:RibosomeStructure) where toLower(n.rcsb_pdbx_description) 
+        contains 'trna' or  toLower(n.rcsb_pdbx_description) contains 'transport'
+                    return {
+                    struct           : n.parent_rcsb_id,
+                    orgid            : n.rcsb_source_organism_id,
+                    description      : n.rcsb_pdbx_description,
+                    seq              : n.entity_poly_seq_one_letter_code,
+                    strand           : n.entity_poly_strand_id,
+                    parent_year      : rib.citation_year,
+                    parent_resolution: rib.resolution,
+                    parent_citation  : rib.citation_title,
+                    parent_method    : rib.expMethod
+                    }"""
     if rna_class == 'mrna':
         CYPHER_STRING = """
-        match (n:rRNA) where toLower(n.rcsb_pdbx_description) contains 'mrna' or  toLower(n.rcsb_pdbx_description) contains 'messenger'
-        return {{
-        struct     : n.parent_rcsb_id,
-        orgid      : n.rcsb_source_organism_id,
-        description: n.rcsb_pdbx_description,
-        seq        : n.entity_poly_seq_one_letter_code,
-        strand: n.entity_poly_strand_id
-        }}
-        """.format(rna_class)
+        match (n:rRNA)-[]-(rib:RibosomeStructure) where toLower(n.rcsb_pdbx_description) 
+        contains 'mrna' or  toLower(n.rcsb_pdbx_description) contains 'messenger'
+                    return {
+                    struct           : n.parent_rcsb_id,
+                    orgid            : n.rcsb_source_organism_id,
+                    description      : n.rcsb_pdbx_description,
+                    seq              : n.entity_poly_seq_one_letter_code,
+                    strand           : n.entity_poly_strand_id,
+                    parent_year      : rib.citation_year,
+                    parent_resolution: rib.resolution,
+                    parent_citation  : rib.citation_title,
+                    parent_method    : rib.expMethod
+                    }"""
     if rna_class == 'other':
 
-        CYPHER_STRING = """match (n:rRNA) where not
+        CYPHER_STRING = """match (n:rRNA)-[]-(rib:RibosomeStructure) where not
         (toLower(n.rcsb_pdbx_description) contains   '5'
         or toLower(n.rcsb_pdbx_description) contains '5.8'
         or toLower(n.rcsb_pdbx_description) contains '12'
@@ -276,17 +299,19 @@ def get_rna_class(request):
         or toLower(n.rcsb_pdbx_description) contains 'mrna'
         or toLower(n.rcsb_pdbx_description) contains 'messenger'
         )
+            return {
+            struct           : n.parent_rcsb_id,
+            orgid            : n.rcsb_source_organism_id,
+            description      : n.rcsb_pdbx_description,
+            seq              : n.entity_poly_seq_one_letter_code,
+            strand           : n.entity_poly_strand_id,
+            parent_year      : rib.citation_year,
+            parent_resolution: rib.resolution,
+            parent_citation  : rib.citation_title,
+            parent_method    : rib.expMethod
+            }"""
 
-        return {
-        struct     : n.parent_rcsb_id,
-        orgid      : n.rcsb_source_organism_id,
-        description: n.rcsb_pdbx_description,
-        seq        : n.entity_poly_seq_one_letter_code,
-        strand: n.entity_poly_strand_id
-        }
-
-        """
-
+    print("->>>>>>>>>", CYPHER_STRING)
     return Response(_neoget(CYPHER_STRING))
 
 
