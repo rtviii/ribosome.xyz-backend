@@ -1,3 +1,4 @@
+from cgi import parse_multipart
 from os import error
 import sys
 from xml.dom import NotFoundErr
@@ -247,31 +248,36 @@ def tunnel(request):
 
 @api_view(['GET', 'POST'])
 def downloadArchive(request):
-    params     =  request.GET.dict()
-    file_names = [
-        ]
+    params  = dict(request.GET)
+    if 'rna' in params:
+        rnas    = params['rna']
+        rnas  =[*map(lambda x: x.split('.'),rnas)]
+        rnas  =[*map(lambda x:  os.path.join(STATIC_ROOT,x[0].upper(),'CHAINS',"{}_STRAND_{}.cif".format(x[0].upper(),x[1])),rnas)]
+        print("dict:", rnas)
 
-    for item in params.items():
-        file_names.append(os.path.join(STATIC_ROOT,item[0],'CHAINS',"{}_STRAND_{}.cif".format(item[0],item[1])))
-    path         =  os.path.join(STATIC_ROOT, 'zipfile.zip')
+    if 'structs' in params:
+        structs = params['structs']
+        structs = [*map(lambda x:  os.path.join(STATIC_ROOT,x.upper(),"{}.cif".format(x.upper())),structs)]
+        print("structs", structs)
+
+    file_names = [*structs,*rnas]
+# 
+    zippath         =  os.path.join(STATIC_ROOT, 'temporary_file.zip')
     compression  =  zipfile.ZIP_DEFLATED
 
     # create the zip file first parameter path/name, second mode
-    zf = zipfile.ZipFile(path, mode="w")
+    zf = zipfile.ZipFile(zippath, mode="w")
+    for i,file_name in enumerate( file_names ):
+        print("adding",file_name)
+        zf.write( file_name, "file{}_{}.cif".format(file_name,i), compress_type=compression)
+    zf.close()
+
+
     try:
-        for i,file_name in enumerate( file_names ):
-            print(file_name)
-            # Add file to the zip file
-            # first parameter file to zip, second filename in zip
-            zf.write( file_name, "{}_{}.cif".format(file_name,i), compress_type=compression)
-
-    except FileNotFoundError:
-        print("An error occurred")
-    finally:
-        # Don't forget to close the file!
-        zf.close()
-
+        doc = open(zippath, 'rb')
+    except: 
+        return Response("File not found")
        
-    response = HttpResponse(zf, content_type='application/force-download')
+    response = HttpResponse(zf, content_type='application/zip')
     response['Content-Disposition'] = f'attachment; filename="%s"' % 'compressed.zip'
     return response

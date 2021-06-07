@@ -173,8 +173,28 @@ def gmo_nom_class(request):
     params = dict(request.GET)
     ban    = str(params['banName'][0])
     CYPHER_STRING="""
-    match (q:RibosomeStructure)-[]-(n:RibosomalProtein)-[]-(nc:NomenclatureClass{{class_id:"{ban}"}})
-    return collect(n);
+    match (rib:RibosomeStructure)-[]-(n:RibosomalProtein)-[]-(nc:NomenclatureClass{{class_id:"{ban}"}})
+
+    return {{  parent_resolution                  : rib.resolution,
+    parent_year                        : rib.citation_year,
+    parent_method                      : rib.expMethod,
+    parent_rcsb_id                      :n.parent_rcsb_id,
+    pfam_accessions                     :n.pfam_accessions,
+    pfam_comments                       :n.pfam_comments,
+    pfam_descriptions                   :n.pfam_descriptions,
+    rcsb_source_organism_id             :n.rcsb_source_organism_id,
+    rcsb_source_organism_description    :n.rcsb_source_organism_description,
+    uniprot_accession                   :n.uniprot_accession,
+    rcsb_pdbx_description               :n.rcsb_pdbx_description,
+    entity_poly_strand_id               :n.entity_poly_strand_id,
+    entity_poly_seq_one_letter_code     :n.entity_poly_seq_one_letter_code,
+    entity_poly_seq_one_letter_code_can :n.entity_poly_seq_one_letter_code_can,
+    entity_poly_seq_length              :n.entity_poly_seq_length,
+    entity_poly_polymer_type            :n.entity_poly_polymer_type,
+    entity_poly_entity_type             :n.entity_poly_entity_type,
+    surface_ratio                       :n.surface_ratio,
+    nomenclature                        :n.nomenclature
+        }}
     """.format_map({
         "ban":ban
     })
@@ -311,7 +331,6 @@ def get_rna_class(request):
             parent_method    : rib.expMethod
             }"""
 
-    print("->>>>>>>>>", CYPHER_STRING)
     return Response(_neoget(CYPHER_STRING))
 
 
