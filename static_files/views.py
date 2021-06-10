@@ -2,18 +2,22 @@ from cgi import parse_multipart
 from os import error
 import sys
 from xml.dom import NotFoundErr
+from django.template import response
 from dotenv import load_dotenv
+from io import StringIO, BytesIO
 from neo4j import GraphDatabase
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 import os
+import tempfile
 from rxz_backend.settings import STATIC_ROOT
 import json
-from django.http import HttpResponse
+from django.http import FileResponse, HttpResponse
 from wsgiref.util import FileWrapper
 import zipfile
 from neo4j import  Result, GraphDatabase
 import subprocess
+from django_zipfile import TemplateZipFile
 
 uri         =  os.getenv( 'NEO4J_URI' )
 authglobal  =  (os.getenv( 'NEO4J_USER' ),os.getenv( 'NEO4J_PASSWORD' ))
@@ -248,36 +252,33 @@ def tunnel(request):
 
 @api_view(['GET', 'POST'])
 def downloadArchive(request):
+
     params  = dict(request.GET)
+
     if 'rna' in params:
+
         rnas    = params['rna']
         rnas  =[*map(lambda x: x.split('.'),rnas)]
         rnas  =[*map(lambda x:  os.path.join(STATIC_ROOT,x[0].upper(),'CHAINS',"{}_STRAND_{}.cif".format(x[0].upper(),x[1])),rnas)]
         print("dict:", rnas)
 
     if 'structs' in params:
+
         structs = params['structs']
         structs = [*map(lambda x:  os.path.join(STATIC_ROOT,x.upper(),"{}.cif".format(x.upper())),structs)]
         print("structs", structs)
 
     file_names = [*structs,*rnas]
-# 
-    zippath         =  os.path.join(STATIC_ROOT, 'temporary_file.zip')
-    compression  =  zipfile.ZIP_DEFLATED
+    zip_subdir = 'ribosome_xyz_archive'
+    zf         = zipfile.ZipFile('temp_zip.zip', "w")
 
-    # create the zip file first parameter path/name, second mode
-    zf = zipfile.ZipFile(zippath, mode="w")
-    for i,file_name in enumerate( file_names ):
-        print("adding",file_name)
-        zf.write( file_name, "file{}_{}.cif".format(file_name,i), compress_type=compression)
+    for fpath in file_names:
+        fdir, fname = os.path.split(fpath)
+        zip_path = os.path.join(zip_subdir, fname)
+        zf.write(fpath, zip_path)
+
     zf.close()
+    r = open('temp_zip.zip','rb')
+    os.remove('temp_zip.zip')
+    return FileResponse(r)
 
-
-    try:
-        doc = open(zippath, 'rb')
-    except: 
-        return Response("File not found")
-       
-    response = HttpResponse(zf, content_type='application/zip')
-    response['Content-Disposition'] = f'attachment; filename="%s"' % 'compressed.zip'
-    return response
