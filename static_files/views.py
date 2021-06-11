@@ -254,19 +254,22 @@ def tunnel(request):
 def downloadArchive(request):
 
     params  = dict(request.GET)
+    print("received dict " , params)
 
     if 'rna' in params:
-
         rnas    = params['rna']
         rnas  =[*map(lambda x: x.split('.'),rnas)]
         rnas  =[*map(lambda x:  os.path.join(STATIC_ROOT,x[0].upper(),'CHAINS',"{}_STRAND_{}.cif".format(x[0].upper(),x[1])),rnas)]
         print("dict:", rnas)
+    else:
+        rnas = []
 
     if 'structs' in params:
-
         structs = params['structs']
         structs = [*map(lambda x:  os.path.join(STATIC_ROOT,x.upper(),"{}.cif".format(x.upper())),structs)]
         print("structs", structs)
+    else:
+        structs = []
 
     file_names = [*structs,*rnas]
     zip_subdir = 'ribosome_xyz_archive'
@@ -275,7 +278,11 @@ def downloadArchive(request):
     for fpath in file_names:
         fdir, fname = os.path.split(fpath)
         zip_path = os.path.join(zip_subdir, fname)
-        zf.write(fpath, zip_path)
+        try:
+            zf.write(fpath, zip_path)
+            print(f"Failed to find file { fpath }")
+        except:
+            continue
 
     zf.close()
     r = open('temp_zip.zip','rb')
