@@ -53,15 +53,6 @@ def pairwise_align(request):
     ))
 
 
-
-
-
-
-
-
-
-
-
 @api_view(['GET','POST'])
 def download_ligand_nbhd(request):
     params = dict(request.GET)
@@ -80,7 +71,6 @@ def download_ligand_nbhd(request):
     response = HttpResponse(FileWrapper(doc), content_type='application/json')
     response['Content-Disposition'] = 'attachment; filename="{}_LIGAND_{}.json"'.format(structid, chemid)
     return response
-
 
 @api_view(['GET','POST'])
 def get_ligand_nbhd(request):
@@ -121,7 +111,6 @@ def cif_chain(request):
     response['Content-Disposition'] = 'attachment; filename="{}"'.format(filename)
 
     return response
-
 
 
 @api_view(['GET', 'POST'])
