@@ -3,7 +3,6 @@ from .views import *
 
 
 urlpatterns = [
-
     path('get_struct/'                 , get_struct                ) ,
     path('get_homologs/'               , get_homologs              ) ,
     path('cypher/'                     , custom_cypher             ) ,
@@ -21,7 +20,7 @@ urlpatterns = [
     path('get_all_ligands/'            , get_all_ligands            ) ,
     path('match_structs/'              , match_structs              ) ,
     path('TEMP_classification_sample/' , TEMP_classification_sample ) ,
-
+    path('proteins_number/'            , proteins_number            )
 ]
 
 app_name = 'neo4j_connector'

@@ -66,7 +66,6 @@ def get_ligands_by_struct(request):
            ligands:collect({{ chemid: l.chemicalId, name:l.chemicalName }})}}""".format_map({})
     return Response(_neoget(CYPHER_STRING))
 
-
 @api_view(['GET'])
 def get_struct(request):
     params = dict(request.GET)
@@ -79,11 +78,8 @@ def get_struct(request):
     with n, rrna,  collect(rp) as rps
     optional match (l:Ligand)-[]-(n)
     with n, rrna, rps, collect(l) as ligs
-    return {{
-          structure: n,
-
-           ligands                     : ligs,                           rnas: rrna, rps: rps
-        }}""".format_map({"pdbid":pdbid})
+    return {{structure: n, ligands: ligs,rnas: rrna, rps: rps}}
+    """.format_map({"pdbid":pdbid})
 
 
 
@@ -152,18 +148,17 @@ def get_banclasses_metadata(request):
         fstring = 'toLower(n.class_id) contains "l"' 
 
     CYPHER_STRING="""
-    match (n:NomenclatureClass)-[]-(rp:RibosomalProtein)-[]-(s:RibosomeStructure) where  toLower(n.class_id) contains "{}"  and {} 
+    match (n:RPClass)-[]-(rp:RibosomalProtein)-[]-(s:RibosomeStructure) where  toLower(n.class_id) contains "{}"  and {} 
     unwind s.`_organismId` as orgid
     with collect(distinct orgid) as allorgs, n as n, collect(s.rcsb_id) as structures, collect(distinct rp.pfam_comments) as comments
     return {{banClass: n.class_id, organisms:  allorgs, comments:comments, structs: structures }}""".format(family, fstring)
-
 
     return Response(_neoget(CYPHER_STRING))
 
 @api_view(['GET'])
 def list_nom_classes(request):
     CYPHER_STRING="""
-    match (b:NomenclatureClass)-[]-(rp)-[]-(str:RibosomeStructure)
+    match (b:RPClass)-[]-(rp)-[]-(str:RibosomeStructure)
     with str, b, rp
     return {{
     nom_class: b.class_id,
@@ -183,7 +178,7 @@ def gmo_nom_class(request):
     params = dict(request.GET)
     ban    = str(params['banName'][0])
     CYPHER_STRING="""
-    match (rib:RibosomeStructure)-[]-(n:RibosomalProtein)-[]-(nc:NomenclatureClass{{class_id:"{ban}"}})
+    match (rib:RibosomeStructure)-[]-(n:RibosomalProtein)-[]-(nc:RPClass{{class_id:"{ban}"}})
 
     return {{  parent_resolution                  : rib.resolution,
     parent_year                        : rib.citation_year,
@@ -218,7 +213,7 @@ def banclass_annotation(request):
 
     CYPHER_STRING=f"""
     
-            match (n:NomenclatureClass{{class_id:"{banclass}"}})-[]-(rp:RibosomalProtein) 
+            match (n:RPClass{{class_id:"{banclass}"}})-[]-(rp:RibosomalProtein) 
             with rp.rcsb_pdbx_description as dd 
             return  dd limit 6;
            
@@ -232,12 +227,19 @@ def nomclass_visualize(request):
     ban    = str(params['ban'][0])
 
     CYPHER_STRING="""
-    match (n:NomenclatureClass)-[]-(rp:RibosomalProtein) where n.class_id ="{}" return  {{
+    match (n:RPClass)-[]-(rp:RibosomalProtein) where n.class_id ="{}" return  {{
     class: n.class_id,
     members: collect({{parent: rp.parent_rcsb_id, chain:rp.entity_poly_strand_id}}),
     comments:collect(distinct rp.pfam_comments)}} """.format(ban)
     
     return Response(_neoget(CYPHER_STRING))
+
+
+@api_view(['GET'])
+def proteins_number(request):
+    CYPHER_STRING="""match (n:RibosomalProtein) return count(n);"""
+    return Response(_neoget(CYPHER_STRING))
+
 
 #? ---------------------------RNA
 @api_view(['GET']) 

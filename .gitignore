@@ -1,5 +1,6 @@
 static/**
 **/.env
+**/.env.json
 docs/_site/
 static/
 basefiles/

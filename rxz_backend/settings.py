@@ -1,12 +1,9 @@
 import os,sys
 import json
-from dotenv import load_dotenv
 
-
-load_dotenv(dotenv_path='/home/rxz/dev/ribosome.xyz-backend/rxz_backend/.env')
-print("yup", os.getenv('SECRET_KEY'))
-SECRET_KEY = os.getenv('SECRET_KEY')
-DEBUG      = os.getenv('DEBUG')
+with open('./rxz_backend/.env.json', 'rb') as envf:env=json.load(envf)
+SECRET_KEY = env[ 'SECRET_KEY' ]
+DEBUG      = env[ 'DEBUG' ]
 
 from pathlib import Path
 BASE_DIR               =  Path(__file__).resolve().parent.parent
