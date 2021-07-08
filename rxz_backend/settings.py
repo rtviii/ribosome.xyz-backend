@@ -5,6 +5,16 @@ with open('./rxz_backend/.env.json', 'rb') as envf:env=json.load(envf)
 SECRET_KEY = env[ 'SECRET_KEY' ]
 DEBUG      = env[ 'DEBUG' ]
 
+
+
+os.environ["SECRET_KEY"      ] = env[ 'SECRET_KEY'      ]
+os.environ["DEBUG"           ] = env[ 'DEBUG'           ]
+os.environ["NEO4J_USER"      ] = env[ 'NEO4J_USER'      ]
+os.environ["NEO4J_URI"       ] = env[ 'NEO4J_URI'       ]
+os.environ["NEO4J_CURRENTDB" ] = env[ 'NEO4J_CURRENTDB' ]
+os.environ["NEO4J_PASSWORD"  ] = env[ 'NEO4J_PASSWORD'  ]
+
+
 from pathlib import Path
 BASE_DIR               =  Path(__file__).resolve().parent.parent
 
