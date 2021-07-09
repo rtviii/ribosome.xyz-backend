@@ -250,15 +250,32 @@ def get_rnas_by_struct(request):
         return {{struct:n.rcsb_id, rnas:collect(r.rcsb_pdbx_description)}};""".format_map({})
     return Response(_neoget(CYPHER_STRING))
 
+
 @api_view(['GET']) 
 def get_rna_class(request):
     params        = dict(request.GET)
     rna_class     = str(params['rna_class'][0])
 
 
-    CYPHER_STRING = """
-    match (n:rRNA)-[]-(rib:RibosomeStructure) where toLower(n.rcsb_pdbx_description) contains '{}'
+    param2class = {
+        '5'   : '5SrRNA',
+        '5.8' : '5.8SrRNA',
+        '12'  : '12SrRNA',
+        '16'  : '16SrRNA',
+        '21'  : '21SrRNA',
+        '23'  : '23SrRNA',
+        '25'  : '25SrRNA',
+        '28'  : '28SrRNA',
+        '35'  : '35SrRNA',
+        'mrna': 'mRNA',
+        'trna': 'tRNA',
+    }
 
+
+
+
+
+    CYPHER_STRING  = """match (c:RNAClass {{ class_id:"{}" }})-[]-(n)-[]-(rib:RibosomeStructure)
     return {{
     struct           : n.parent_rcsb_id,
     orgid            : n.rcsb_source_organism_id,
@@ -268,92 +285,12 @@ def get_rna_class(request):
     parent_year      : rib.citation_year,
     parent_resolution: rib.resolution,
     parent_citation  : rib.citation_title,
-    parent_method    : rib.expMethod
-    }}
-    """.format(rna_class)
+    parent_method    : rib.expMethod,
+    nomenclature     : c.class_id}}
+    """.format(param2class[rna_class])
 
-    if rna_class == '5':
-        CYPHER_STRING = """
-        match (n:rRNA)-[]-(rib:RibosomeStructure) where toLower(n.rcsb_pdbx_description) 
-        contains '5' and  
-        not ( toLower(n.rcsb_pdbx_description) contains '5.8'
-        or toLower(n.rcsb_pdbx_description) contains '4.55'
-        or toLower(n.rcsb_pdbx_description) contains '25'
-        or toLower(n.rcsb_pdbx_description) contains '35'
-        )
-            return {
-            struct           : n.parent_rcsb_id,
-            orgid            : n.rcsb_source_organism_id,
-            description      : n.rcsb_pdbx_description,
-            seq              : n.entity_poly_seq_one_letter_code,
-            strand           : n.entity_poly_strand_id,
-            parent_year      : rib.citation_year,
-            parent_resolution: rib.resolution,
-            parent_citation  : rib.citation_title,
-            parent_method    : rib.expMethod
-            }"""
-
-    if rna_class == 'trna':
-        CYPHER_STRING = """
-        match (n:rRNA)-[]-(rib:RibosomeStructure) where toLower(n.rcsb_pdbx_description) 
-        contains 'trna' or  toLower(n.rcsb_pdbx_description) contains 'transport'
-                    return {
-                    struct           : n.parent_rcsb_id,
-                    orgid            : n.rcsb_source_organism_id,
-                    description      : n.rcsb_pdbx_description,
-                    seq              : n.entity_poly_seq_one_letter_code,
-                    strand           : n.entity_poly_strand_id,
-                    parent_year      : rib.citation_year,
-                    parent_resolution: rib.resolution,
-                    parent_citation  : rib.citation_title,
-                    parent_method    : rib.expMethod
-                    }"""
-    if rna_class == 'mrna':
-        CYPHER_STRING = """
-        match (n:rRNA)-[]-(rib:RibosomeStructure) where toLower(n.rcsb_pdbx_description) 
-        contains 'mrna' or  toLower(n.rcsb_pdbx_description) contains 'messenger'
-                    return {
-                    struct           : n.parent_rcsb_id,
-                    orgid            : n.rcsb_source_organism_id,
-                    description      : n.rcsb_pdbx_description,
-                    seq              : n.entity_poly_seq_one_letter_code,
-                    strand           : n.entity_poly_strand_id,
-                    parent_year      : rib.citation_year,
-                    parent_resolution: rib.resolution,
-                    parent_citation  : rib.citation_title,
-                    parent_method    : rib.expMethod
-                    }"""
-    if rna_class == 'other':
-
-        CYPHER_STRING = """match (n:rRNA)-[]-(rib:RibosomeStructure) where not
-        (toLower(n.rcsb_pdbx_description) contains   '5'
-        or toLower(n.rcsb_pdbx_description) contains '5.8'
-        or toLower(n.rcsb_pdbx_description) contains '12'
-        or toLower(n.rcsb_pdbx_description) contains '21'
-        or toLower(n.rcsb_pdbx_description) contains '16'
-        or toLower(n.rcsb_pdbx_description) contains '18'
-        or toLower(n.rcsb_pdbx_description) contains '23'
-        or toLower(n.rcsb_pdbx_description) contains '26'
-        or toLower(n.rcsb_pdbx_description) contains '28'
-        or toLower(n.rcsb_pdbx_description) contains 'trna'
-        or toLower(n.rcsb_pdbx_description) contains 'transport'
-        or toLower(n.rcsb_pdbx_description) contains 'mrna'
-        or toLower(n.rcsb_pdbx_description) contains 'messenger'
-        )
-            return {
-            struct           : n.parent_rcsb_id,
-            orgid            : n.rcsb_source_organism_id,
-            description      : n.rcsb_pdbx_description,
-            seq              : n.entity_poly_seq_one_letter_code,
-            strand           : n.entity_poly_strand_id,
-            parent_year      : rib.citation_year,
-            parent_resolution: rib.resolution,
-            parent_citation  : rib.citation_title,
-            parent_method    : rib.expMethod
-            }"""
 
     return Response(_neoget(CYPHER_STRING))
-
 
 @api_view(['GET'])
 def anything(request):
