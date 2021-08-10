@@ -2,10 +2,8 @@
 
 import sys,os
 from pymol import cmd
-from dotenv import load_dotenv
 
 # Temporary file to server aligned protein 
-
 
 handle1=sys.argv[1]
 handle2=sys.argv[2]

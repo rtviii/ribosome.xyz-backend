@@ -30,14 +30,6 @@ def get_individual_ligand(request):
     match (n:Ligand{{chemicalId:"{}"}}) return n;""".format(chemId)
     return Response(_neoget(cypher))
 
-# @api_view(['GET', 'POST'])
-# def struct_to_ligands(request):
-    
-#     params = dict(request.GET)
-#     struct_id = params['struct_id'][0]
-#     cypher ="""
-#     match (n:Ligand{{chemicalId:"{}"}}) return n;""".format(chemId)
-#     return Response(_neoget(cypher))
 
 @api_view(['GET', 'POST'])
 def get_all_ligands(request):
@@ -87,7 +79,6 @@ def get_struct(request):
 
     return Response(_neoget(cypher))
 
-
 @api_view(['GET', 'POST'])
 def match_structs(request):
     params       = dict( request.GET )
@@ -102,7 +93,6 @@ def match_structs(request):
     where all(x in tgts where x in unwound)
     return n.rcsb_id""".format_map({"targets":targets})
     return Response(_neoget(cypher))
-
 
 @api_view(['GET'])
 def get_all_structs(request):

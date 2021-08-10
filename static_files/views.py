@@ -18,6 +18,8 @@ import zipfile
 from neo4j import  Result, GraphDatabase
 import subprocess
 from django_zipfile import TemplateZipFile
+from ciftools import transpose_ligand
+
 
 uri         =  os.getenv( 'NEO4J_URI' )
 authglobal  =  (os.getenv( 'NEO4J_USER' ),os.getenv( 'NEO4J_PASSWORD' ))
@@ -39,6 +41,7 @@ def _neoget(CYPHER_STRING:str):
 def pairwise_align(request):
     params = dict(request.GET)
 
+    print("________________________________^@%@%#@")
     struct1 = params['struct1'][0].upper()
     struct2 = params['struct2'][0].upper()
 
@@ -52,6 +55,8 @@ def pairwise_align(request):
     handle2 = os.path.join(STATIC_ROOT, struct2, "CHAINS", name2)
     
     protein_alignment_script = os.getenv('PROTEIN_ALIGNMENT_SCRIPT')
+    print("alignment script is supposed to be at", protein_alignment_script)
+
     # subprocess.call(f'{protein_alignment_script} {handle1} {handle2} {struct1+"_"+struct2} {struct2+"_"+strand2}')
     subprocess.call([protein_alignment_script, handle1 ,handle2 ,struct1+"_"+strand1, struct2+"_"+strand2])
 
@@ -64,7 +69,7 @@ def pairwise_align(request):
     try:
         doc = open(alignedfile, 'rb')
     except: 
-        print(f"Could find {alignedfile}. Exited")
+        print(f"Could not find {alignedfile}. Exited")
         return Response(-1)
 
     response = HttpResponse(FileWrapper(doc), content_type='chemical/x-mmcif')
@@ -108,9 +113,9 @@ def get_chain(request):
 
 @api_view(['GET','POST'])
 def download_ligand_nbhd(request):
-    params = dict(request.GET)
+    params   = dict(request.GET)
     structid = params['structid'][0].upper()
-    chemid = params['chemid'][0].upper()
+    chemid   = params['chemid'][0].upper()
 
     filename   = "LIGAND_{}.json".format(chemid)
     filehandle = os.path.join(STATIC_ROOT, structid, filename)
@@ -127,6 +132,33 @@ def download_ligand_nbhd(request):
 
 
 @api_view(['GET','POST'])
+def ligand_prediction(request):
+    params = dict(request.GET)
+    src_struct = params['src_struct' ][0].upper()
+    chemid     = params['chemid'     ][0].upper()
+    tgt_struct = params['tgt_struct' ][0].upper()
+
+    print("Attempting to render ligand {} from {}(orig) in {}.".format(chemid,src_struct,tgt_struct))
+    prediction_filename   = "PREDICTION_{}_{}_{}.json".format(chemid,src_struct,tgt_struct)
+    filehandle = os.path.join(STATIC_ROOT, tgt_struct, prediction_filename)
+
+    # print(">>>>>>>>>>>>>>>>>>>\033[93m Attempting to open \033[0m", filehandle)
+    # print("got params", filehandle)
+
+    #* Transpose Ligand Script
+
+    transpose_ligand.transpose_ligand(src_struct,tgt_struct,chemid)
+
+
+    try:
+        with open(filehandle) as infile:
+            data = json.load(infile)
+            return Response(data)
+    except error: 
+        return Response(-1)
+
+
+@api_view(['GET','POST'])
 def get_ligand_nbhd(request):
     params = dict(request.GET)
     struct = params['struct'][0].upper()
@@ -134,6 +166,7 @@ def get_ligand_nbhd(request):
 
     filename   = "LIGAND_{}.json".format(chemid)
     filehandle = os.path.join(STATIC_ROOT, struct, filename)
+    print(">>>>>>>>>>>>>>>>>>>\033[93m Attempting to open \033[0m", filehandle)
 
 
     print("got params", filehandle)

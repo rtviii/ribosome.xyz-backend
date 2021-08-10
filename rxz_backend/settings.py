@@ -2,22 +2,27 @@ import os,sys
 import json
 
 with open('./rxz_backend/.env.json', 'rb') as envf:env=json.load(envf)
+
 SECRET_KEY = env[ 'SECRET_KEY' ]
 DEBUG      = env[ 'DEBUG' ]
 
 
 
-os.environ["SECRET_KEY"      ] = env[ 'SECRET_KEY'      ]
-os.environ["DEBUG"           ] = env[ 'DEBUG'           ]
-os.environ["NEO4J_USER"      ] = env[ 'NEO4J_USER'      ]
-os.environ["NEO4J_URI"       ] = env[ 'NEO4J_URI'       ]
-os.environ["NEO4J_CURRENTDB" ] = env[ 'NEO4J_CURRENTDB' ]
-os.environ["NEO4J_PASSWORD"  ] = env[ 'NEO4J_PASSWORD'  ]
-
+os.environ["SECRET_KEY"      ]           = env[ 'SECRET_KEY'      ]
+os.environ["DEBUG"           ]           = env[ 'DEBUG'           ]
+os.environ["NEO4J_USER"      ]           = env[ 'NEO4J_USER'      ]
+os.environ["NEO4J_URI"       ]           = env[ 'NEO4J_URI'       ]
+os.environ["NEO4J_CURRENTDB" ]           = env[ 'NEO4J_CURRENTDB' ]
+os.environ["NEO4J_PASSWORD"  ]           = env[ 'NEO4J_PASSWORD'  ]
+os.environ["PROTEIN_ALIGNMENT_SCRIPT"  ] = env[ 'PROTEIN_ALIGNMENT_SCRIPT'  ]
+os.environ["TEMP_CHAIN"  ]               = env[ 'TEMP_CHAIN'  ]
+os.environ['STATIC_ROOT']                = env['STATIC_ROOT']
+STATIC_ROOT  =  env['STATIC_ROOT']
 
 from pathlib import Path
 BASE_DIR               =  Path(__file__).resolve().parent.parent
-
+# print("BASE DIR IS ", BASE_DIR)
+sys.path.append(str(BASE_DIR))
 ALLOWED_HOSTS          =  ["*"]
 CORS_ORIGIN_ALLOW_ALL  =  True
 
@@ -79,5 +84,5 @@ USE_L10N       =  True
 USE_TZ         =  True
 
 
-STATIC_ROOT  =  os.path.join(BASE_DIR, 'static')
+# STATIC_ROOT  =  os.path.join(BASE_DIR, 'static')
 STATIC_URL   =  '/static/'
