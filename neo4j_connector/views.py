@@ -96,17 +96,27 @@ def match_structs(request):
 
 @api_view(['GET'])
 def get_all_structs(request):
-    CYPHER_STRING="""
     
+    # match (ribs:RibosomeStructure) 
+    #     unwind ribs as rb
+    #     optional match (l:Ligand)-[]-(rb)
+    #     with collect(l.chemicalId) as ligs, rb
+    #     optional match (rps:RibosomalProtein)-[]-(rb)
+    #     with ligs, rb, collect({{strands:rps.entity_poly_strand_id,surface_ratio:rps.surface_ratio, noms:rps.nomenclature}}) as rps
+    #     optional match (rnas:rRNA)-[]-(rb)
+    #     with ligs, rb, rps, collect(rnas.entity_poly_strand_id) as rnas
+
+    #     return {{struct:rb, ligands: ligs, rps:rps, rnas:rnas}}
+    CYPHER_STRING="""
     match (ribs:RibosomeStructure) 
         unwind ribs as rb
         optional match (l:Ligand)-[]-(rb)
         with collect(l.chemicalId) as ligs, rb
         optional match (rps:RibosomalProtein)-[]-(rb)
-        with ligs, rb, collect({{strands:rps.entity_poly_strand_id,surface_ratio:rps.surface_ratio, noms:rps.nomenclature}}) as rps
+        with ligs, rb, collect({{strands:rps.entity_poly_strand_id, noms:rps.nomenclature}}) as rps
         optional match (rnas:rRNA)-[]-(rb)
-        with ligs, rb, rps, collect(rnas.entity_poly_strand_id) as rnas
-        return {{struct:rb, ligands: ligs, rps:rps, rnas:rnas}}
+        with ligs, rb, rps, collect({{strands: rnas.entity_poly_strand_id, noms: rnas.nomenclature }}) as struct_rnas
+        return {{struct:rb, ligands: ligs, rps:rps, rnas:struct_rnas}}
         """.format()
 
     qres = _neoget(CYPHER_STRING)
