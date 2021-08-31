@@ -1,6 +1,9 @@
 from cgi import parse_multipart
+from genericpath import isfile
+from multiprocessing import ProcessError
 from os import error
 import sys
+from tkinter import PROJECTING
 from xml.dom import NotFoundErr
 from django.template import response
 from dotenv import load_dotenv
@@ -17,7 +20,6 @@ from wsgiref.util import FileWrapper
 import zipfile
 from neo4j import  Result, GraphDatabase
 import subprocess
-from django_zipfile import TemplateZipFile
 from ciftools import transpose_ligand
 
 
@@ -41,7 +43,7 @@ def _neoget(CYPHER_STRING:str):
 def pairwise_align(request):
     params = dict(request.GET)
 
-    print("________________________________^@%@%#@")
+    print("-------------------+------------------")
     struct1 = params['struct1'][0].upper()
     struct2 = params['struct2'][0].upper()
 
@@ -50,22 +52,28 @@ def pairwise_align(request):
 
     name1   = "{}_STRAND_{}.cif".format(struct1,strand1)
     name2   = "{}_STRAND_{}.cif".format(struct2,strand2)
-
+    print(f"Attempting to align \033[95m {name1}\033[0m with \033[95m{name2}\033[0m.")
     handle1 = os.path.join(STATIC_ROOT, struct1, "CHAINS", name1)
     handle2 = os.path.join(STATIC_ROOT, struct2, "CHAINS", name2)
+
+    for x in [handle1,handle2]:
+        if not os.path.isfile(x):
+            raise FileNotFoundError(f"File {x} is not found in {STATIC_ROOT}")
     
     protein_alignment_script = os.getenv('PROTEIN_ALIGNMENT_SCRIPT')
-    print("alignment script is supposed to be at", protein_alignment_script)
+    print("Using alignment script ", protein_alignment_script)
 
     # subprocess.call(f'{protein_alignment_script} {handle1} {handle2} {struct1+"_"+struct2} {struct2+"_"+strand2}')
-    subprocess.call([protein_alignment_script, handle1 ,handle2 ,struct1+"_"+strand1, struct2+"_"+strand2])
+    try:
+        subprocess.call([protein_alignment_script, handle1 ,handle2 ,struct1+"_"+strand1, struct2+"_"+strand2])
+    except:
+        raise ProcessError
 
     # os.system(f'{protein_alignment_script} {handle1} {handle2} {struct1+"_"+struct2} {struct2+"_"+strand2}')
 
     alignedfile=os.getenv("TEMP_CHAIN")
+    print("Produced alignment file:", alignedfile)
 
-    print("Alignment script:", protein_alignment_script)
-    print("Alignment file:", alignedfile)
     try:
         doc = open(alignedfile, 'rb')
     except: 
