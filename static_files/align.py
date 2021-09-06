@@ -15,9 +15,12 @@ TEMP_CHAIN = os.getenv("TEMP_CHAIN")
 
 cmd.load (handle1    ,pymol_name1)
 cmd.load (handle2    ,pymol_name2)
-cmd.align(pymol_name1,pymol_name2)
+cmd.super(pymol_name1,pymol_name2)
 
-cmd.save(TEMP_CHAIN,state=1,partial=1)
+print("Aligning using SUPER")
 
+cmd.save(TEMP_CHAIN)
+
+print(f"Saved to {TEMP_CHAIN}")
 
 
