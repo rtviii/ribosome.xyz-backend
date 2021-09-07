@@ -20,7 +20,7 @@ import itertools
 from asyncio import run
 import itertools
 import numpy as np
-import binding_site as bsite
+import ribetl.ciftools.binding_site as bsite
 flatten = itertools.chain.from_iterable
 n1      = np.array
 
@@ -134,113 +134,112 @@ class SeqMatch:
 #? KIR:
 # 5afi, 4v8q, 4v5s,4v5g, 
 
-source_struct = str(sys.argv[1] ).upper()
-target_struct = str(sys.argv[2] ).upper()
-ligand        = str(sys.argv[3]).upper()
+# source_struct = str(sys.argv[1] ).upper()
+# target_struct = str(sys.argv[2] ).upper()
+# ligand        = str(sys.argv[3]).upper()
+
+def init_transpose_ligand(source_struct,target_struct, ligand):
+
+	with open(os.path.join(os.getenv('STATIC_ROOT' ),source_struct,f'LIGAND_{ligand}.json'), 'rb') as infile:
+		data = json.load(infile)
+	bs = bsite.BindingSite(data)
+
+
+	origin_chains = {
+	}
+
+	target_chains = {
+	}
+
+
+	#* For every chain in a ligand file, if it has nomenclature, append its residues, strand and sequence
+	for chain in bs.data:
+		if len(bs.data[chain]['nomenclature'] ) <1:
+			continue
+		else:
+			resids :List[int] = [
+				resid for  resid in [*map(lambda x : x['residue_id'], bs.data[chain]['residues'])]
+			]
+			origin_chains[bs.data[chain]['nomenclature'][0]] = {
+				'strand': chain,
+				'seq'   : bs.data[chain]['sequence'],
+				'ids'   : resids
+			}
+
+	for nom in origin_chains:
+		name_matches = []
+		cypher       = f"""match (n:RibosomeStructure {{rcsb_id:"{target_struct}"}})-[]-(c)-[]-(r {{class_id:"{nom}"}}) return c.entity_poly_seq_one_letter_code, c.entity_poly_strand_id, c.asym_ids"""
+		response     = bsite._neoget(cypher)
+		if len( response )  < 1:
+			print(f"No chain-class matches for {nom} in {target_struct} in the database.")
+			continue
+		else:
+			match = response[0]
+
+		seq                 = match[0]
+		strand              = match[1]
+		asymid              = match[2][0]
+
+		target_chains[nom] ={
+			'seq'   : seq,
+			'strand': strand,
+			'asymid': asymid,
+		}
+	#! """Only the chains with nomenclature matches in source and origin make their way into the prediction file """
 
 
 
-with open(f'../static/{source_struct}/LIGAND_{ligand}.json', 'rb') as infile:
-	data = json.load(infile)
-bs = bsite.BindingSite(data)
+	prediction ={}
 
 
-origin_chains = {
-}
+	for name in origin_chains:
+		if name not in target_chains:
+			continue
+		src_ids = origin_chains[name]['ids']
+		src     = origin_chains[name]['seq']
+		tgt     = target_chains[name]['seq']
 
-target_chains = {
-}
+		sq      = SeqMatch(src,tgt,src_ids)
 
+		src_aln = sq.src_aln
+		tgt_aln = sq.tgt_aln
 
-#* For every chain in a ligand file, if it has nomenclature, append its residues, strand and sequence
-for chain in bs.data:
-	if len(bs.data[chain]['nomenclature'] ) <1:
-		continue
-	else:
-		resids :List[int] = [
-			resid for  resid in [*map(lambda x : x['residue_id'], bs.data[chain]['residues'])]
-		]
-		origin_chains[bs.data[chain]['nomenclature'][0]] = {
-			  'strand': chain,
-			  'seq'   : bs.data[chain]['sequence'],
-			  'ids'   : resids
+		aln_ids = sq.aligned_ids
+
+		tgt_ids = sq.tgt_ids
+
+		prediction[name] = {
+			"source":{
+				"src"    : src,
+				"src_ids": src_ids,
+				"strand" : origin_chains[name]['strand']
+			},
+			"target":{
+				"tgt"    : tgt,
+				"tgt_ids": tgt_ids,
+				'strand' : target_chains[name]['strand']
+			},
+			"alignment" :{
+				"aln_ids": aln_ids,
+				"src_aln": src_aln,
+				"tgt_aln": tgt_aln,
+			},
 		}
 
-for nom in origin_chains:
-	name_matches = []
-	cypher       = f"""match (n:RibosomeStructure {{rcsb_id:"{target_struct}"}})-[]-(c)-[]-(r {{class_id:"{nom}"}}) return c.entity_poly_seq_one_letter_code, c.entity_poly_strand_id, c.asym_ids"""
-	response     = bsite._neoget(cypher)
-	if len( response )  < 1:
-		print(f"No chain-class matches for {nom} in {target_struct} in the database.")
-		continue
-	else:
-		match = response[0]
-
-	seq                 = match[0]
-	strand              = match[1]
-	asymid              = match[2][0]
-
-	target_chains[nom] ={
-		'seq'   : seq,
-		'strand': strand,
-		'asymid': asymid,
-	}
-#! """Only the chains with nomenclature matches in source and origin make their way into the prediction file """
+		print(f"Chain {name}")
+		print("Source length:", len(sq.src))
+		print("Target length:", len(sq.tgt))
+		# print("Aligned ids" , src_ids)
+		# print("To ------->" , sq        .aligned_ids  )
+		# print("To targets :", sq        .tgt_ids      )
 
 
+		print("ORG   : \t",SeqMatch.hl_ixs(sq.src    , sq.src_ids    ),"\n")
+		# print("ORG AL: \t",SeqMatch.hl_ixs(sq.src_aln, sq.aligned_ids),"\n")
+		# print("TGT AL: \t",SeqMatch.hl_ixs(sq.tgt_aln, sq.aligned_ids),"\n")
+		print("TGT   : \t",SeqMatch.hl_ixs(sq.tgt    , sq.tgt_ids    ),"\n")
 
-prediction ={}
-
-
-for name in origin_chains:
-	if name not in target_chains:
-		continue
-	src_ids = origin_chains[name]['ids']
-	src     = origin_chains[name]['seq']
-	tgt     = target_chains[name]['seq']
-
-	sq      = SeqMatch(src,tgt,src_ids)
-
-	src_aln = sq.src_aln
-	tgt_aln = sq.tgt_aln
-
-	aln_ids = sq.aligned_ids
-
-	tgt_ids = sq.tgt_ids
-
-	prediction[name] = {
-		"source":{
-			"src"    : src,
-			"src_ids": src_ids,
-			"strand" : origin_chains[name]['strand']
-		},
-		"target":{
-			"tgt"    : tgt,
-			"tgt_ids": tgt_ids,
-			'strand' : target_chains[name]['strand']
-		},
-		"alignment" :{
-			"aln_ids": aln_ids,
-			"src_aln": src_aln,
-			"tgt_aln": tgt_aln,
-		},
-	}
-
-	print(f"Chain {name}")
-	print("Source length:", len(sq.src))
-	print("Target length:", len(sq.tgt))
-	# print("Aligned ids" , src_ids)
-	# print("To ------->" , sq        .aligned_ids  )
-	# print("To targets :", sq        .tgt_ids      )
-
-
-	print("ORG   : \t",SeqMatch.hl_ixs(sq.src    , sq.src_ids    ),"\n")
-	# print("ORG AL: \t",SeqMatch.hl_ixs(sq.src_aln, sq.aligned_ids),"\n")
-	# print("TGT AL: \t",SeqMatch.hl_ixs(sq.tgt_aln, sq.aligned_ids),"\n")
-	print("TGT   : \t",SeqMatch.hl_ixs(sq.tgt    , sq.tgt_ids    ),"\n")
-
-fname = f'PREDICTION_{ligand}_{source_struct}_{target_struct}.json'
-
-with open(f'/home/rxz/dev/ribetl/static/{target_struct}/{fname}', 'w') as outfile:
-	json.dump(prediction,outfile)
-	print("Sucessfully saved prediction {}".format(fname))
+	fname = f'PREDICTION_{ligand}_{source_struct}_{target_struct}.json'
+	with open(os.path.join(os.getenv('STATIC_ROOT' ),target_struct,fname), 'w') as outfile:
+		json.dump(prediction,outfile)
+		print("Sucessfully saved prediction {}".format(fname))

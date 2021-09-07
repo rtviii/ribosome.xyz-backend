@@ -1,7 +1,7 @@
 from ast import expr_context
 import builtins
 from pydoc import resolve
-from neoget import _neoget
+from ribetl.ciftools.neoget import _neoget
 import dataclasses
 import json
 from pprint import pprint

@@ -328,11 +328,9 @@ def tax_ids(request):
     match (s:RibosomeStructure) where orgs in s.`_organismId`
     return {{organism: orgs, struct: s.rcsb_id}}  limit 5000
     """.format()
-
     by_struct = _neoget(BY_STRUCT_CYPHER)
-    d = {}
+    d         = {}
     for _ in by_struct:
-
         if _['organism'] not in d:
             d[_['organism']] = [_['struct']]
         else:
