@@ -3,8 +3,6 @@ from genericpath import isfile
 from multiprocessing import ProcessError
 from os import error
 import sys
-from tkinter import PROJECTING
-from xml.dom import NotFoundErr
 from django.template import response
 from dotenv import load_dotenv
 from io import StringIO, BytesIO
@@ -60,7 +58,7 @@ def pairwise_align(request):
         if not os.path.isfile(x):
             raise FileNotFoundError(f"File {x} is not found in {STATIC_ROOT}")
     
-    protein_alignment_script = os.getenv('PROTEIN_ALIGNMENT_SCRIPT')
+    protein_alignment_script = os.environ['PROTEIN_ALIGNMENT_SCRIPT']
     print("Using alignment script ", protein_alignment_script)
 
     # subprocess.call(f'{protein_alignment_script} {handle1} {handle2} {struct1+"_"+struct2} {struct2+"_"+strand2}')
@@ -71,7 +69,7 @@ def pairwise_align(request):
 
     # os.system(f'{protein_alignment_script} {handle1} {handle2} {struct1+"_"+struct2} {struct2+"_"+strand2}')
 
-    alignedfile=os.getenv("TEMP_CHAIN")
+    alignedfile=os.environ["TEMP_CHAIN"]
     print("Produced alignment file:", alignedfile)
 
     try:

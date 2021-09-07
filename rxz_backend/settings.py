@@ -1,7 +1,7 @@
 import os,sys
 import json
 
-with open('./rxz_backend/.env.json', 'rb') as envf:env=json.load(envf)
+with open('/home/ubuntu/backend/rxz_backend/.env.json', 'rb') as envf:env=json.load(envf)
 
 SECRET_KEY = env[ 'SECRET_KEY' ]
 DEBUG      = env[ 'DEBUG' ]
