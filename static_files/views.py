@@ -20,7 +20,7 @@ from wsgiref.util import FileWrapper
 import zipfile
 from neo4j import  Result, GraphDatabase
 import subprocess
-from ciftools import transpose_ligand
+from ribetl.ciftools import transpose_ligand
 
 
 uri         =  os.getenv( 'NEO4J_URI' )
@@ -155,7 +155,7 @@ def ligand_prediction(request):
 
     #* Transpose Ligand Script
 
-    transpose_ligand.transpose_ligand(src_struct,tgt_struct,chemid)
+    transpose_ligand.init_transpose_ligand(src_struct,tgt_struct,chemid)
 
 
     try:
