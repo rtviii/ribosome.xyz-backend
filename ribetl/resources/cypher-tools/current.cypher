@@ -5,30 +5,48 @@ CREATE CONSTRAINT ON (pf:PFAMFamily) assert pf.family_id is unique
 CREATE CONSTRAINT ON (lig:Ligand) assert lig.chemicalId is unique
 CREATE CONSTRAINT ON (nc:NomenclatureClass) assert nc.class_id is unique
 
-call apoc.load.json("file:///resources/cumulative/interpro.json") yield value
+call apoc.load.json("file:///resources/cumulativeData/interpro.json") yield value
 with value as v
 merge (q:InterProFamily{ family_id:KEYS(v)[0],type:v[KEYS(v)[0]].type,description:v[KEYS(v)[0]].name})
 
-CALL apoc.load.json('file:///resources/cumulative/interpro-go/part{1-4}.json') yield value as go
+CALL apoc.load.json('file:///resources/cumulativeData/interpro-go/part{1-4}.json') yield value as go
 merge (inode:InterProFamily{family_id:go.InterPro})
 merge (gonode:GOClass{go_class:go.GO})
 on create set gonode.annotation = go.GO_annotation
 merge (inode)-[:mp_InterPro_GO{annotation:go.interpro_class}]-(gonode)
 
-call apoc.load.json("file:///resources/cumulative/pfam-interpro/part{1-4}.json") yield value as entry
+call apoc.load.json("file:///resources/cumulativeData/pfam-interpro/part{1-4}.json") yield value as entry
 with entry.metadata as datum
 with datum where datum.integrated is not null
 merge (inode:InterProFamily{family_id: datum.integrated})
 merge (pnode:PFAMFamily{family_id: datum.accession, family_type:datum.type})
 merge (inode)-[:mp_InterPro_PFAM]-(pnode)
 
-call apoc.load.json('file:///SSUmap.json') yield value
+call apoc.load.json('file:///resources/SSUMap.json') yield value
 unwind(keys(value)) as key
 merge (nc:NomenclatureClass {class_id:key})
 
-call apoc.load.json('file:///LSUmap.json') yield value
+call apoc.load.json('file:///resources/LSUMap.json') yield value
 unwind(keys(value)) as key
 merge (nc:NomenclatureClass {class_id:key})
+
+UNWIND [ 
+  "5SrRNA"  ,
+  "5.8SrRNA",
+  "12SrRNA" ,
+  "16SrRNA" ,
+  "21SrRNA" ,
+  "23SrRNA" ,
+  "25SrRNA" ,
+  "28SrRNA" ,
+  "35SrRNA" ,
+  "mRNA"    ,
+  "tRNA"    ]  as rnaclass
+  create (n:NomenclatureClass {class_id:rnaclass})
+
+
+
+
 
 // following the type
 call apoc.load.json("file:///static/$structid/$file") yield value
@@ -108,14 +126,14 @@ with protein                            ,
     on create                set
     rp.rcsb_pdbx_description = CASE WHEN protein.rcsb_pdbx_description = null then "null" else protein.rcsb_pdbx_description END
 //     connect protein to PFAMFamily
-with rp    , struct,   value
+with rp,struct,value
      unwind  rp    .   pfam_accessions as pfamils
      match  (pf    :   PFAMFamily      {family_id:pfamils})
-with rp    , struct,   value          ,pf
+with rp,struct,value,pf
      merge  (rp    )-[:Belogns_To     ]->(pf)
 
 // Connect RNAS
-with value                              ,   struct
+with value ,struct
      unwind                                 value .rnas as rna
      merge                               (  newrna:rRNA {
      asym_ids                         : rna.asym_ids,
@@ -133,7 +151,7 @@ with value                              ,   struct
      entity_poly_polymer_type            :  rna   .entity_poly_polymer_type,
      entity_poly_entity_type             :  rna   .entity_poly_entity_type
 })-[:rRNA_of                            ]->(struct)
-     on                                     create set newrna.rcsb_pdbx_description = CASE WHEN rna.rcsb_pdbx_description = null then "null" else rna.rcsb_pdbx_description END
+on create set newrna.rcsb_pdbx_description = CASE WHEN rna.rcsb_pdbx_description = null then "null" else rna.rcsb_pdbx_description END
 // connect Ligands
 with   value           , struct
        unwind           value.ligands as lig

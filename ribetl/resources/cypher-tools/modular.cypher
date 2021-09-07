@@ -1,26 +1,51 @@
-#!/usr/bin/bash
+CREATE CONSTRAINT ON (ipro:InterProFamily) ASSERT ipro.family_id IS UNIQUE
+CREATE CONSTRAINT ON (go:GOClass) ASSERT go.class_id IS UNIQUE
+CREATE CONSTRAINT ON (q:RibosomeStructure) Assert q.rcsb_id IS UNIQUE
+CREATE CONSTRAINT ON (pf:PFAMFamily) assert pf.family_id is unique
+CREATE CONSTRAINT ON (lig:Ligand) assert lig.chemicalId is unique
+CREATE CONSTRAINT ON (nc:NomenclatureClass) assert nc.class_id is unique
 
-NEOIMPORT='/var/lib/neo4j/import'
+call apoc.load.json("file:///resources/cumulativeData/interpro.json") yield value
+with value as v
+merge (q:InterProFamily{ family_id:KEYS(v)[0],type:v[KEYS(v)[0]].type,description:v[KEYS(v)[0]].name})
 
-filepath=$1
-if [ -f $filepath ];
-then
-	file=$(basename $filepath)
-	extension=${file: -4}
-	if [ $extension != "json" ];
-	then
-		echo "The profile file must be a .json. Exiting."
-		exit 2
-	fi
-	structid=${file::4}
-	structid=${structid^^}
-else
-	echo "$filepath is not an acceptable file"
-	exit -1
-fi
+CALL apoc.load.json('file:///resources/cumulativeData/interpro-go/part{1-4}.json') yield value as go
+merge (inode:InterProFamily{family_id:go.InterPro})
+merge (gonode:GOClass{go_class:go.GO})
+on create set gonode.annotation = go.GO_annotation
+merge (inode)-[:mp_InterPro_GO{annotation:go.interpro_class}]-(gonode)
 
-#Throwing struct into cypher-shell
-echo "call apoc.load.json(\"file:///static/$structid/$file\") yield value
+call apoc.load.json("file:///resources/cumulativeData/pfam-interpro/part{1-4}.json") yield value as entry
+with entry.metadata as datum
+with datum where datum.integrated is not null
+merge (inode:InterProFamily{family_id: datum.integrated})
+merge (pnode:PFAMFamily{family_id: datum.accession, family_type:datum.type})
+merge (inode)-[:mp_InterPro_PFAM]-(pnode)
+
+call apoc.load.json('file:///resources/SSUMap.json') yield value
+unwind(keys(value)) as key
+merge (nc:NomenclatureClass {class_id:key})
+
+call apoc.load.json('file:///resources/LSUMap.json') yield value
+unwind(keys(value)) as key
+merge (nc:NomenclatureClass {class_id:key})
+
+UNWIND [ 
+  "5SrRNA"  ,
+  "5.8SrRNA",
+  "12SrRNA" ,
+  "16SrRNA" ,
+  "21SrRNA" ,
+  "23SrRNA" ,
+  "25SrRNA" ,
+  "28SrRNA" ,
+  "35SrRNA" ,
+  "mRNA"    ,
+  "tRNA"    ]  as rnaclass
+  create (n:NomenclatureClass {class_id:rnaclass})
+
+// following the type
+call apoc.load.json("file:///static/$structid/$file") yield value
 with                                                       value.rcsb_id as pdbid,
                                                            value.expMethod as exp,
                                                            value.resolution as reso,
@@ -62,6 +87,10 @@ merge                 ( struct                                 :RibosomeStructur
         struct .  rcsb_external_ref_id                    = CASE WHEN ref_id                = null then "null" else ref_id END,
         struct .  rcsb_external_ref_type                  = CASE WHEN ref_type              = null then "null" else ref_type END,
         struct .  rcsb_external_ref_link                  = CASE WHEN ref_link              = null then "null" else ref_link END
+with struct
+
+
+call apoc.load.json("file:///static/$structid/$file") yield value
 with value                              , struct
      unwind                              value.proteins as protein
 with protein                            ,
@@ -92,21 +121,26 @@ with protein                            ,
      entity_poly_entity_type            : protein.entity_poly_entity_type,
 
      nomenclature                        : protein.nomenclature
+})
+on create                set
+rp.rcsb_pdbx_description = CASE WHEN protein.rcsb_pdbx_description = null then "null" else protein.rcsb_pdbx_description END
+with rp, value
+match(s:RibosomeStructure {rcsb_id: value.rcsb_id})
+create (protein)-[:RibosomalProtein_of]->(s)
 
-})-[:RibosomalProtein_of                ]->(struct)
-    on create                set
-    rp.rcsb_pdbx_description = CASE WHEN protein.rcsb_pdbx_description = null then "null" else protein.rcsb_pdbx_description END
 //     connect protein to PFAMFamily
-with rp    , struct,   value
+with rp,struct,value
      unwind  rp    .   pfam_accessions as pfamils
      match  (pf    :   PFAMFamily      {family_id:pfamils})
-with rp    , struct,   value          ,pf
+with rp,struct,value,pf
      merge  (rp    )-[:Belogns_To     ]->(pf)
-
 // Connect RNAS
-with value                              ,   struct
+
+
+call apoc.load.json("file:///static/7OF4/7OF4.json") yield value
+with value 
      unwind                                 value .rnas as rna
-     merge                               (  newrna:rRNA {
+     Merge                               (  newrna:rRNA {
      asym_ids                         : rna.asym_ids,
      auth_asym_ids                    : rna.auth_asym_ids,
      parent_rcsb_id                      :  rna   .parent_rcsb_id,
@@ -121,16 +155,41 @@ with value                              ,   struct
      entity_poly_seq_length              :  rna   .entity_poly_seq_length,
      entity_poly_polymer_type            :  rna   .entity_poly_polymer_type,
      entity_poly_entity_type             :  rna   .entity_poly_entity_type
-})-[:rRNA_of                            ]->(struct)
-     on                                     create set newrna.rcsb_pdbx_description = CASE WHEN rna.rcsb_pdbx_description = null then "null" else rna.rcsb_pdbx_description END
+})on create set newrna.rcsb_pdbx_description = CASE WHEN rna.rcsb_pdbx_description = null then "null" else rna.rcsb_pdbx_description END
+with newrna, value
+match(s:RibosomeStructure {rcsb_id: value.rcsb_id})
+create (newrna)-[:rRNA_of                            ]->(s)
+
+
+
 // connect Ligands
-with   value           , struct
+call apoc.load.json("file:///static/7OF4/7OF4.json") yield value
        unwind           value.ligands as lig
        merge            (l:Ligand {
        chemicalId      : lig.chemicalId,
        chemicalName    : lig.chemicalName,
        formula_weight  : lig.formula_weight,
        pdbx_description: lig.pdbx_description})
-       merge            (l)<-[:ContainsLigand]-(struct)
-return {struct: struct.rcsb_id}
-" | cypher-shell -u rt -p rrr  --format plain
+
+with l, value
+match(s:RibosomeStructure {rcsb_id: value.rcsb_id})
+create            (l)<-[:ContainsLigand]-(s)
+return struct;
+
+// ---------------------------------------------
+
+// CONNECT NOMENCLATURE
+match (n:RibosomalProtein) where n.nomenclature[0] is not null
+merge (nc:RPClass{class_id:n.nomenclature[0]})
+merge (n)-[:BelongsTo]-(nc)
+
+// CONNECT NOMENCLATURE
+match (n:rRNA) where n.nomenclature[0] is not null
+merge (nc:RNAClass{class_id:n.nomenclature[0]})
+merge (n)-[:BelongsTo]-(nc)
+
+
+
+
+
+
