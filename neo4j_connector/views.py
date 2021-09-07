@@ -313,7 +313,32 @@ def TEMP_classification_sample(request):
 
 
     
-    
+@api_view(['GET','POST'])
+def tax_ids(request):
+    CYPHER_STRING="""
+    match (r:RibosomeStructure) 
+    unwind r._organismId as orgs
+    return  collect(distinct orgs);
+    """
+    qres = _neoget(CYPHER_STRING)
+    BY_STRUCT_CYPHER="""
+    match (r:RibosomeStructure) 
+    unwind r._organismId as orgs
+    with distinct orgs as orgs
+    match (s:RibosomeStructure) where orgs in s.`_organismId`
+    return {{organism: orgs, struct: s.rcsb_id}}  limit 5000
+    """.format()
+
+    by_struct = _neoget(BY_STRUCT_CYPHER)
+    d = {}
+    for _ in by_struct:
+
+        if _['organism'] not in d:
+            d[_['organism']] = [_['struct']]
+        else:
+            d[_['organism']].append(_['struct'])
+    return Response(d)
+
 
 
 @api_view(['GET','POST'])
