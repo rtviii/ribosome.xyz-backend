@@ -147,11 +147,9 @@ def ligand_prediction(request):
     tgt_struct = params['tgt_struct' ][0].upper()
 
     print("Attempting to render ligand {} from {}(orig) in {}.".format(chemid,src_struct,tgt_struct))
-    prediction_filename   = "PREDICTION_{}_{}_{}.json".format(chemid,src_struct,tgt_struct)
-    filehandle = os.path.join(STATIC_ROOT, tgt_struct, prediction_filename)
+    prediction_filename = "PREDICTION_{}_{}_{}.json".format     (chemid     ,src_struct ,tgt_struct          )
+    filehandle          = os                        .path  .join(STATIC_ROOT, tgt_struct, prediction_filename)
 
-    # print(">>>>>>>>>>>>>>>>>>>\033[93m Attempting to open \033[0m", filehandle)
-    # print("got params", filehandle)
 
     #* Transpose Ligand Script
 

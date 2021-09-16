@@ -187,8 +187,6 @@ def init_transpose_ligand(source_struct,target_struct, ligand):
 		}
 	#! """Only the chains with nomenclature matches in source and origin make their way into the prediction file """
 
-
-
 	prediction ={}
 
 
