@@ -20,7 +20,9 @@ urlpatterns = [
     path('get_all_ligands/'            , get_all_ligands            ) ,
     path('match_structs/'              , match_structs              ) ,
     path('TEMP_classification_sample/' , TEMP_classification_sample ) ,
-    path('proteins_number/'            , proteins_number            )
+    path('proteins_number/'            , proteins_number            ),
+    path('tax_ids/'                    , tax_ids                    ),
+    path('nomenclature/'                    , nomenclature                    )
 ]
 
 app_name = 'neo4j_connector'
