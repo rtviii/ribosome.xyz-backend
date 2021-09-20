@@ -40,7 +40,7 @@ def _neoget(CYPHER_STRING:str):
 
 
 @api_view(['GET','POST'])
-def pairwise_align(request):
+def align_3d(request):
     params = dict(request.GET)
 
     print("-------------------+------------------")
@@ -52,6 +52,7 @@ def pairwise_align(request):
 
     name1   = "{}_STRAND_{}.cif".format(struct1,strand1)
     name2   = "{}_STRAND_{}.cif".format(struct2,strand2)
+
     print(f"Attempting to align \033[95m {name1}\033[0m with \033[95m{name2}\033[0m.")
     handle1 = os.path.join(STATIC_ROOT, struct1, "CHAINS", name1)
     handle2 = os.path.join(STATIC_ROOT, struct2, "CHAINS", name2)
@@ -61,8 +62,6 @@ def pairwise_align(request):
             raise FileNotFoundError(f"File {x} is not found in {STATIC_ROOT}")
     
     protein_alignment_script = os.getenv('PROTEIN_ALIGNMENT_SCRIPT')
-    print("Using alignment script ", protein_alignment_script)
-
     # subprocess.call(f'{protein_alignment_script} {handle1} {handle2} {struct1+"_"+struct2} {struct2+"_"+strand2}')
     try:
         subprocess.call([protein_alignment_script, handle1 ,handle2 ,struct1+"_"+strand1, struct2+"_"+strand2])
