@@ -33,8 +33,8 @@ n1      = np.array
 
 
 
-load_dotenv(dotenv_path='/home/rxz/dev/ribetl/.env'      )
-STATIC_ROOT = os  .getenv   ('STATIC_ROOT')
+# load_dotenv(dotenv_path='/home/rxz/dev/ribetl/.env'      )
+# STATIC_ROOT = os  .getenv   ('STATIC_ROOT')
 
 #? By electrostatic charge
 AMINO_ACIDS = {

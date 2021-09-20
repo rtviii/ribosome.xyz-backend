@@ -2,9 +2,17 @@ from neo4j import GraphDatabase, Result
 import os
 
 def _neoget(CYPHER_STRING:str):
+
+    print("PASSSWORD IS ", os.getenv("NEO4J_PASSWORD"))
     driver = GraphDatabase.driver(
-    os.getenv( 'NEO4J_URI' ),
-    auth=(os.getenv( 'NEO4J_USER' ),os.getenv( 'NEO4J_PASSWORD' )))
+    #     os.getenv( 'NEO4J_URI' ),
+    #     auth=(
+    #     os.getenv( 'NEO4J_USER' ),
+    #     os.getenv( 'NEO4J_PASSWORD')
+    # )
+    'bolt://ribosome.xyz/7687',auth=('rt','rrr')
+    )
+
     def parametrized_query(tx, **kwargs):
         result:Result = tx.run(CYPHER_STRING, **kwargs)
         return result.values()

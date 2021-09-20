@@ -1,5 +1,4 @@
 from neo4j import GraphDatabase, Result
-from dotenv import load_dotenv
 import os
 from typing import List, Tuple, TypedDict, Union, Callable
 import sys
@@ -11,14 +10,9 @@ from Bio.PDB.Residue import Residue
 from Bio.PDB.Structure import Structure
 import json
 from asyncio import run
-from dotenv import load_dotenv
 
-
-load_dotenv(dotenv_path='/home/rxz/dev/ribxz/.env')
-
-STATIC_ROOT = os.getenv('STATIC_ROOT')
-print("Got static root:", STATIC_ROOT)
-print("Got static root:", STATIC_ROOT)
+# from dotenv import load_dotenv
+# STATIC_ROOT = os.getenv('STATIC_ROOT')
 
 def _neoget(CYPHER_STRING:str)->Result:
     driver = GraphDatabase.driver(
