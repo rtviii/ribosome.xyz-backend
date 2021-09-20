@@ -58,13 +58,7 @@ def align_3d(request):
         if not os.path.isfile(x):
             raise FileNotFoundError(f"File {x} is not found in {STATIC_ROOT}")
     
-<<<<<<< HEAD
-    protein_alignment_script = os.environ['PROTEIN_ALIGNMENT_SCRIPT']
-    print("Using alignment script ", protein_alignment_script)
-
-=======
     protein_alignment_script = os.getenv('PROTEIN_ALIGNMENT_SCRIPT')
->>>>>>> b6a8bfcc6ae126dbfcb9ccd0a4ed685ec1336a8c
     # subprocess.call(f'{protein_alignment_script} {handle1} {handle2} {struct1+"_"+struct2} {struct2+"_"+strand2}')
     try:
         subprocess.call([protein_alignment_script, handle1 ,handle2 ,struct1+"_"+strand1, struct2+"_"+strand2])

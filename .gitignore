@@ -18,3 +18,5 @@ rxzvenv/
 **/*.part
 **/*.pem
 **/*.json
+
+**/settings.py
