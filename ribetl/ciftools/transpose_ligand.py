@@ -5,7 +5,6 @@ import json
 from pprint import pprint
 import re
 import struct
-from dotenv import load_dotenv
 import os
 from typing import Dict, List, Tuple, TypedDict, Union, Callable
 import operator

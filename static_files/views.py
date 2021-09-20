@@ -13,7 +13,6 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 import os
 import tempfile
-from rxz_backend.settings import STATIC_ROOT
 import json
 from django.http import FileResponse, HttpResponse
 from wsgiref.util import FileWrapper
@@ -23,9 +22,9 @@ import subprocess
 from ribetl.ciftools import transpose_ligand
 
 
-uri         =  os.getenv( 'NEO4J_URI' )
-authglobal  =  (os.getenv( 'NEO4J_USER' ),os.getenv( 'NEO4J_PASSWORD' ))
-current_db  =  os.getenv( 'NEO4J_CURRENTDB' )
+uri         =  os.environ.get( 'NEO4J_URI' )
+authglobal  =  (os.environ.get( 'NEO4J_USER' ),os.environ.get( 'NEO4J_PASSWORD' ))
+current_db  =  os.environ.get( 'NEO4J_CURRENTDB' )
 #-⋯⋯⋅⋱⋰⋆⋅⋅⋄⋅⋅∶⋅⋅⋄▫▪▭┈┅✕⋅⋅⋄⋅⋅✕∶⋅⋅⋄⋱⋰⋯⋯⋯⋯⋅⋱⋰⋆⋅⋅⋄⋅⋅∶⋅⋅⋄▫▪▭┈┅✕⋅⋅⋄⋅⋅✕∶⋅⋅⋄⋱⋰⋯⋯⋯⋅⋱⋰⋆⋅⋅⋄⋅⋅∶⋅⋅⋄▫▪▭┈┅✕⋅⋅⋄⋅⋅✕∶⋅⋅⋄⋱⋰⋯⋯⋯
 
 def _neoget(CYPHER_STRING:str):
