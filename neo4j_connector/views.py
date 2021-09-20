@@ -4,13 +4,15 @@ from rest_framework.response import Response
 from neo4j import  Result, GraphDatabase
 import os
 #-⋯⋯⋅⋱⋰⋆⋅⋅⋄⋅⋅∶⋅⋅⋄▫▪▭┈┅✕⋅⋅⋄⋅⋅✕∶⋅⋅⋄⋱⋰⋯⋯⋯⋯⋅⋱⋰⋆⋅⋅⋄⋅⋅∶⋅⋅⋄▫▪▭┈┅✕⋅⋅⋄⋅⋅✕∶⋅⋅⋄⋱⋰⋯⋯⋯⋅⋱⋰⋆⋅⋅⋄⋅⋅∶⋅⋅⋄▫▪▭┈┅✕⋅⋅⋄⋅⋅✕∶⋅⋅⋄⋱⋰⋯⋯⋯
-uri         =  os.environ[ 'NEO4J_URI' ]
-authglobal  =  (os.environ[ 'NEO4J_USER' ],os.environ[ 'NEO4J_PASSWORD' ])
-current_db  =  os.environ[ 'NEO4J_CURRENTDB' ]
+uri         =  os.getenv( 'NEO4J_URI' )
+authglobal  =  (os.getenv( 'NEO4J_USER' ),os.getenv( 'NEO4J_PASSWORD' ))
+current_db  =  os.getenv( 'NEO4J_CURRENTDB' )
 
 #-⋯⋯⋅⋱⋰⋆⋅⋅⋄⋅⋅∶⋅⋅⋄▫▪▭┈┅✕⋅⋅⋄⋅⋅✕∶⋅⋅⋄⋱⋰⋯⋯⋯⋯⋅⋱⋰⋆⋅⋅⋄⋅⋅∶⋅⋅⋄▫▪▭┈┅✕⋅⋅⋄⋅⋅✕∶⋅⋅⋄⋱⋰⋯⋯⋯⋅⋱⋰⋆⋅⋅⋄⋅⋅∶⋅⋅⋄▫▪▭┈┅✕⋅⋅⋄⋅⋅✕∶⋅⋅⋄⋱⋰⋯⋯⋯
 
 def _neoget(CYPHER_STRING:str):
+
+    print("PASSSWORD IS ", os.getenv("NEO4J_PASSWORD"))
     driver = GraphDatabase.driver(uri, auth= authglobal )
     def parametrized_query(tx, **kwargs):
         result:Result = tx.run(CYPHER_STRING, **kwargs)

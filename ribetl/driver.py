@@ -11,7 +11,6 @@ import logging
 import numpy as np
 flatten = itertools.chain.from_iterable
 n1      = np.array
-load_dotenv(dotenv_path='/home/rxz/dev/ribetl/.env')
 STATIC_ROOT = os  .getenv   ('STATIC_ROOT')
 
 io = mmcifio.MMCIFIO()

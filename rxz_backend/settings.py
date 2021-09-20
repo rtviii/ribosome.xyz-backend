@@ -1,23 +1,21 @@
 import os,sys
-import json
+from dotenv import dotenv_values, load_dotenv, find_dotenv
 
-with open('/home/ubuntu/backend/rxz_backend/.env.json', 'rb') as envf:env=json.load(envf)
+DOTENV = ".env"
+load_dotenv(DOTENV)
 
-SECRET_KEY = env[ 'SECRET_KEY' ]
-DEBUG      = env[ 'DEBUG' ]
-
-
-
-os.environ["SECRET_KEY"      ]           = env[ 'SECRET_KEY'      ]
-os.environ["DEBUG"           ]           = env[ 'DEBUG'           ]
-os.environ["NEO4J_USER"      ]           = env[ 'NEO4J_USER'      ]
-os.environ["NEO4J_URI"       ]           = env[ 'NEO4J_URI'       ]
-os.environ["NEO4J_CURRENTDB" ]           = env[ 'NEO4J_CURRENTDB' ]
-os.environ["NEO4J_PASSWORD"  ]           = env[ 'NEO4J_PASSWORD'  ]
-os.environ["PROTEIN_ALIGNMENT_SCRIPT"  ] = env[ 'PROTEIN_ALIGNMENT_SCRIPT'  ]
-os.environ["TEMP_CHAIN"  ]               = env[ 'TEMP_CHAIN'  ]
-os.environ['STATIC_ROOT']                = env['STATIC_ROOT']
-STATIC_ROOT  =  env['STATIC_ROOT']
+STATIC_ROOT              = os.getenv( "STATIC_ROOT" )
+DEBUG                    = os.getenv( "DEBUG"       )
+SECRET_KEY               = os.getenv('SECRET_KEY')
+# DEBUG                    = os.getenv( 'DEBUG'                    )
+# NEO4J_USER               = os.getenv( 'NEO4J_USER'               )
+# NEO4J_URI                = os.getenv( 'NEO4J_URI'                )
+# NEO4J_CURRENTDB          = os.getenv( 'NEO4J_CURRENTDB'          )
+# NEO4J_PASSWORD           = os.getenv( 'NEO4J_PASSWORD'           )
+# PROTEIN_ALIGNMENT_SCRIPT = os.getenv( 'PROTEIN_ALIGNMENT_SCRIPT' )
+# LIGAND_PREDICTION_SCRIPT = os.getenv( 'LIGAND_PREDICTION_SCRIPT' )
+# TEMP_CHAIN               = os.getenv( 'TEMP_CHAIN'               )
+# STATIC_ROOT              = os.getenv( 'STATIC_ROOT'              )
 
 from pathlib import Path
 BASE_DIR               =  Path(__file__).resolve().parent.parent

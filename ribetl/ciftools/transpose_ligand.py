@@ -5,7 +5,6 @@ import json
 from pprint import pprint
 import re
 import struct
-from dotenv import load_dotenv
 import os
 from typing import Dict, List, Tuple, TypedDict, Union, Callable
 import operator
@@ -186,8 +185,6 @@ def init_transpose_ligand(source_struct,target_struct, ligand):
 			'asymid': asymid,
 		}
 	#! """Only the chains with nomenclature matches in source and origin make their way into the prediction file """
-
-
 
 	prediction ={}
 

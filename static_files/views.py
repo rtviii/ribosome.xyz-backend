@@ -11,7 +11,6 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 import os
 import tempfile
-from rxz_backend.settings import STATIC_ROOT
 import json
 from django.http import FileResponse, HttpResponse
 from wsgiref.util import FileWrapper
@@ -21,9 +20,9 @@ import subprocess
 from ribetl.ciftools import transpose_ligand
 
 
-uri         =  os.getenv( 'NEO4J_URI' )
-authglobal  =  (os.getenv( 'NEO4J_USER' ),os.getenv( 'NEO4J_PASSWORD' ))
-current_db  =  os.getenv( 'NEO4J_CURRENTDB' )
+uri         =  os.environ.get( 'NEO4J_URI' )
+authglobal  =  (os.environ.get( 'NEO4J_USER' ),os.environ.get( 'NEO4J_PASSWORD' ))
+current_db  =  os.environ.get( 'NEO4J_CURRENTDB' )
 #-⋯⋯⋅⋱⋰⋆⋅⋅⋄⋅⋅∶⋅⋅⋄▫▪▭┈┅✕⋅⋅⋄⋅⋅✕∶⋅⋅⋄⋱⋰⋯⋯⋯⋯⋅⋱⋰⋆⋅⋅⋄⋅⋅∶⋅⋅⋄▫▪▭┈┅✕⋅⋅⋄⋅⋅✕∶⋅⋅⋄⋱⋰⋯⋯⋯⋅⋱⋰⋆⋅⋅⋄⋅⋅∶⋅⋅⋄▫▪▭┈┅✕⋅⋅⋄⋅⋅✕∶⋅⋅⋄⋱⋰⋯⋯⋯
 
 def _neoget(CYPHER_STRING:str):
@@ -38,7 +37,7 @@ def _neoget(CYPHER_STRING:str):
 
 
 @api_view(['GET','POST'])
-def pairwise_align(request):
+def align_3d(request):
     params = dict(request.GET)
 
     print("-------------------+------------------")
@@ -50,6 +49,7 @@ def pairwise_align(request):
 
     name1   = "{}_STRAND_{}.cif".format(struct1,strand1)
     name2   = "{}_STRAND_{}.cif".format(struct2,strand2)
+
     print(f"Attempting to align \033[95m {name1}\033[0m with \033[95m{name2}\033[0m.")
     handle1 = os.path.join(STATIC_ROOT, struct1, "CHAINS", name1)
     handle2 = os.path.join(STATIC_ROOT, struct2, "CHAINS", name2)
@@ -58,9 +58,13 @@ def pairwise_align(request):
         if not os.path.isfile(x):
             raise FileNotFoundError(f"File {x} is not found in {STATIC_ROOT}")
     
+<<<<<<< HEAD
     protein_alignment_script = os.environ['PROTEIN_ALIGNMENT_SCRIPT']
     print("Using alignment script ", protein_alignment_script)
 
+=======
+    protein_alignment_script = os.getenv('PROTEIN_ALIGNMENT_SCRIPT')
+>>>>>>> b6a8bfcc6ae126dbfcb9ccd0a4ed685ec1336a8c
     # subprocess.call(f'{protein_alignment_script} {handle1} {handle2} {struct1+"_"+struct2} {struct2+"_"+strand2}')
     try:
         subprocess.call([protein_alignment_script, handle1 ,handle2 ,struct1+"_"+strand1, struct2+"_"+strand2])
@@ -145,11 +149,9 @@ def ligand_prediction(request):
     tgt_struct = params['tgt_struct' ][0].upper()
 
     print("Attempting to render ligand {} from {}(orig) in {}.".format(chemid,src_struct,tgt_struct))
-    prediction_filename   = "PREDICTION_{}_{}_{}.json".format(chemid,src_struct,tgt_struct)
-    filehandle = os.path.join(STATIC_ROOT, tgt_struct, prediction_filename)
+    prediction_filename = "PREDICTION_{}_{}_{}.json".format     (chemid     ,src_struct ,tgt_struct          )
+    filehandle          = os                        .path  .join(STATIC_ROOT, tgt_struct, prediction_filename)
 
-    # print(">>>>>>>>>>>>>>>>>>>\033[93m Attempting to open \033[0m", filehandle)
-    # print("got params", filehandle)
 
     #* Transpose Ligand Script
 

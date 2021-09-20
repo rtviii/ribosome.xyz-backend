@@ -33,9 +33,10 @@ n1      = np.array
 
 
 
-load_dotenv(dotenv_path='/home/rxz/dev/ribetl/.env'      )
-STATIC_ROOT = os  .getenv   ('STATIC_ROOT')
-#? Charges
+# load_dotenv(dotenv_path='/home/rxz/dev/ribetl/.env'      )
+# STATIC_ROOT = os  .getenv   ('STATIC_ROOT')
+
+#? By electrostatic charge
 AMINO_ACIDS = {
 "ALA":0,
 'ARG':1,
@@ -59,12 +60,21 @@ AMINO_ACIDS = {
 'VAL':0,
 'SEC':0,
 'PYL':0}
+
 NUCLEOTIDES = ['A','T','C','G','U']
 
 
 
-# * Ecoli structs :  3j7z, 7k00, 6q97, 5j30
-# ! yeast : 6z6n, 5mrc, 3j6b,6xir, 4u4n
+
+# hsapiens               : 9606
+# s       .cervicea(yeas): 4932
+# e       .coli          : 562
+# e       .coli K-12     : 83333
+# t       .thermophilus  : 262724
+
+
+# * Ecoli    structs : 3j7z, 7k00, 6q97, 5j30
+# ! yeast : 6z6n    ,  5mrc, 3j6b, 6xir, 4u4n
 
 #? PAR:
 # 6az1 , 5tcu, 5iqr, 5el7,4wsd,4l71
