@@ -311,9 +311,64 @@ def TEMP_classification_sample(request):
     qres = _neoget(CYPHER_STRING)
     return Response(qres)
 
+@api_view(['GET'])
+def nomenclature(request):
+    params        = dict(request.GET)
+    if 'rcsb_id' in params and len( params['rcsb_id'] ) > 0:
+        cypher_single ="""match (n:RibosomeStructure{{rcsb_id:"{}"}})-[]-(c) where c:RibosomalProtein or c:rRNA 
+        return {{struct:n.rcsb_id, strand:c.entity_poly_strand_id,nomenclature:c.nomenclature}}""".format(params['rcsb_id'][0].upper())
+        maps=  _neoget(cypher_single)
+        d={}
+        for _ in maps:
+            d.update({ _['strand']:_['nomenclature'] })
+        return Response(d)
+    else:
+        cypher_all ="""match (n:RibosomeStructure)-[]-(c) where c:RibosomalProtein or c:rRNA 
+        return {{struct:n.rcsb_id, strand:c.entity_poly_strand_id,nomenclature:c.nomenclature}}""".format()
+        all_maps = {
+
+        }
+
+        resp = _neoget(cypher_all)
+        for _ in resp:
+            if _['struct'] in all_maps:
+                all_maps[_['struct']].update({_['strand']:_['nomenclature']})
+            else:
+                all_maps.update(
+                    {
+                    _['struct']:{_['strand']:_['nomenclature']}
+                    }
+                )
+
+        return Response(all_maps)
+
+
 
     
-    
+@api_view(['GET','POST'])
+def tax_ids(request):
+    CYPHER_STRING="""
+    match (r:RibosomeStructure) 
+    unwind r._organismId as orgs
+    return  collect(distinct orgs);
+    """
+    qres = _neoget(CYPHER_STRING)
+    BY_STRUCT_CYPHER="""
+    match (r:RibosomeStructure) 
+    unwind r._organismId as orgs
+    with distinct orgs as orgs
+    match (s:RibosomeStructure) where orgs in s.`_organismId`
+    return {{organism: orgs, struct: s.rcsb_id}}  limit 5000
+    """.format()
+    by_struct = _neoget(BY_STRUCT_CYPHER)
+    d         = {}
+    for _ in by_struct:
+        if _['organism'] not in d:
+            d[_['organism']] = [_['struct']]
+        else:
+            d[_['organism']].append(_['struct'])
+    return Response(d)
+
 
 
 @api_view(['GET','POST'])

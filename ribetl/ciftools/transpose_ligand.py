@@ -5,6 +5,7 @@ import json
 from pprint import pprint
 import re
 import struct
+from dotenv import load_dotenv
 import os
 from typing import Dict, List, Tuple, TypedDict, Union, Callable
 import operator
@@ -19,7 +20,7 @@ import itertools
 from asyncio import run
 import itertools
 import numpy as np
-import ciftools.binding_site as bsite
+import ribetl.ciftools.binding_site as bsite
 flatten = itertools.chain.from_iterable
 n1      = np.array
 
@@ -133,17 +134,13 @@ class SeqMatch:
 #? KIR:
 # 5afi, 4v8q, 4v5s,4v5g, 
 
+# source_struct = str(sys.argv[1] ).upper()
+# target_struct = str(sys.argv[2] ).upper()
+# ligand        = str(sys.argv[3]).upper()
 
+def init_transpose_ligand(source_struct,target_struct, ligand):
 
-def transpose_ligand(source_struct, target_struct,chemid):
-
-	source_struct = source_struct.upper()
-	target_struct = target_struct.upper()
-	chemid        = chemid.upper()
-
-
-
-	with open(os.path.join(os.getenv('STATIC_ROOT'), source_struct, f'LIGAND_{chemid}.json'), 'rb') as infile:
+	with open(os.path.join(os.getenv('STATIC_ROOT' ),source_struct,f'LIGAND_{ligand}.json'), 'rb') as infile:
 		data = json.load(infile)
 	bs = bsite.BindingSite(data)
 
@@ -153,6 +150,7 @@ def transpose_ligand(source_struct, target_struct,chemid):
 
 	target_chains = {
 	}
+
 
 	#* For every chain in a ligand file, if it has nomenclature, append its residues, strand and sequence
 	for chain in bs.data:
@@ -188,8 +186,6 @@ def transpose_ligand(source_struct, target_struct,chemid):
 			'asymid': asymid,
 		}
 	#! """Only the chains with nomenclature matches in source and origin make their way into the prediction file """
-
-
 
 	prediction ={}
 
@@ -241,8 +237,7 @@ def transpose_ligand(source_struct, target_struct,chemid):
 		# print("TGT AL: \t",SeqMatch.hl_ixs(sq.tgt_aln, sq.aligned_ids),"\n")
 		print("TGT   : \t",SeqMatch.hl_ixs(sq.tgt    , sq.tgt_ids    ),"\n")
 
-	fname = f'PREDICTION_{chemid}_{source_struct}_{target_struct}.json'
-
-	with open(f'/home/rxz/dev/ribetl/static/{target_struct}/{fname}', 'w') as outfile:
+	fname = f'PREDICTION_{ligand}_{source_struct}_{target_struct}.json'
+	with open(os.path.join(os.getenv('STATIC_ROOT' ),target_struct,fname), 'w') as outfile:
 		json.dump(prediction,outfile)
-	print("Sucessfully saved prediction {}".format(fname))
+		print("Sucessfully saved prediction {}".format(fname))
