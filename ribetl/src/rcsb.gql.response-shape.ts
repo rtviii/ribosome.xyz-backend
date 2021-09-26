@@ -16,16 +16,22 @@ export interface Polymer_Entity {
     rcsb_pfam_description: string;
     }[] | null;
 
-  rcsb_entity_source_organism: { 
-    ncbi_taxonomy_id: number;
-    scientific_name : string;
-    }[];
+  rcsb_entity_source_organism : {
+    ncbi_taxonomy_id            : number;
+    scientific_name             : string;}[];
 
-  uniprots: {rcsb_id: string;}[] | null;
+  rcsb_entity_host_organism : {
+    ncbi_taxonomy_id          : number;
+    scientific_name           : string;}[];
 
-  rcsb_polymer_entity: {
-    pdbx_description: string;
-  };
+  uniprots: {
+        rcsb_id: string;
+    }[] | null;
+
+    rcsb_polymer_entity: 
+    {
+      pdbx_description: string;
+    };
 
   entity_poly: {
     pdbx_seq_one_letter_code    : string;
@@ -54,7 +60,6 @@ export interface Nonpolymer_Entity {
   };
 
 }
-
 export interface PDBGQLResponse {
   entry: {
     rcsb_id: string;

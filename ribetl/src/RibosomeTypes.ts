@@ -1,5 +1,4 @@
 export interface RibosomeStructure {
-
   rcsb_id               : string;
   expMethod             : string;
   resolution            : number;
@@ -19,8 +18,11 @@ export interface RibosomeStructure {
   citation_pdbx_doi    : string
   // keywords
   // custom
-  _organismId   : number[];
-  _organismName : string[];
+  src_organism_ids   : number[];
+  src_organism_names : string[];
+
+  host_organism_ids   : number[];
+  host_organism_names : string[];
 
   proteins : RibosomalProtein[]       ;
   rnas     : rRNA            [] | null;
@@ -53,15 +55,17 @@ export interface RibosomalProtein {
   asym_ids     : string[],
   auth_asym_ids: string[],
 
-  parent_rcsb_id                     : string;
+  parent_rcsb_id    : string;
+  pfam_accessions   : string[]
+  pfam_comments     : string[]
+  pfam_descriptions : string[]
+
+  src_organism_names : string[],
+  host_organism_names: string[],
+  src_organism_ids   : number[],
+  host_organism_ids  : number[],
 
 
-  pfam_accessions                    : string[]
-  pfam_comments                      : string[]
-  pfam_descriptions                  : string[]
-
-  rcsb_source_organism_id            : number[];
-  rcsb_source_organism_description   : string[];
   uniprot_accession                  : string[]
 
   rcsb_pdbx_description              : string | null;

@@ -2,13 +2,11 @@ import path from 'path'
 import fs from 'fs'
 import yargs from 'yargs';
 import shell from 'shelljs'
-import {processPDBRecord} from './requestGQLProfile'
-import { RibosomeStructure } from './RibosomeTypesv2';
+import {processPDBRecord} from './requestGqlProfile'
+import { RibosomeStructure } from './RibosomeTypes';
 import * as dotenv from "dotenv";
 
-dotenv.config({ path: '/home/rxz/dev/ribetl/.env' });
-
-
+dotenv.config({ path: '/home/rxz/dev/riboxyzbackend/rxz_backend/.env' });
 
 export const writeupdateStruct = (r:RibosomeStructure) =>{
 
@@ -25,16 +23,15 @@ export const writeupdateStruct = (r:RibosomeStructure) =>{
 
 }
 
-
-
 export const updateCatalogueWStruct = async (
   new_entry:CatalogueEntry,
   mode?  : 'write' | 'update') =>{
 
     if (fs.existsSync(process.env.CATALOGUE as string)){
+
     } else{
       console.log("Catalogue file doesn't exist. Creating.");
-      fs.writeFileSync(path.join(process.env.STATIC_ROOT as string, 'structures_catalogue.json'),JSON.stringify({}))
+      fs.writeFileSync(process.env.CATALOGUE as string,JSON.stringify({}))
     }
         var catalogue = JSON.parse(fs.readFileSync(process.env.CATALOGUE as string, 'utf-8'))
 
@@ -47,8 +44,6 @@ export const updateCatalogueWStruct = async (
         }
         fs.writeFileSync(process.env.CATALOGUE as string, JSON.stringify(catalogue, null, 4))
     }
-
-
 
 (async () =>{
 
@@ -91,11 +86,10 @@ export const updateCatalogueWStruct = async (
 	  console.log("Failed: \n\n");
 	  console.log("+++++++++++++++++")
     console.log(e);
-    
-      console.log("+++++++++++++++++")
+    console.log("+++++++++++++++++")
 
       
-      await updateCatalogueWStruct(new_entry)
+    await updateCatalogueWStruct(new_entry)
 
     }
   }

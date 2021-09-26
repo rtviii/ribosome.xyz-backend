@@ -7,7 +7,7 @@ import {
   RibosomeStructure,
   RNAClass,
   rRNA,
-} from "./RibosomeTypesv2";
+} from "./RibosomeTypes";
 import { small_subunit_map } from "./../resources/small-subunit-map";
 import { large_subunit_map } from './../resources/large-subunit-map';
 import {
@@ -15,14 +15,17 @@ import {
   PDBGQLResponse,
   Polymer_Entity,
 } from "./rcsb.gql.response-shape";
+import {gql, useQuery} from '@apollo/client'
+
+
+
+// Renamed, added so far:  host organisms, host ids, srcids srcnames
 
 
 
 const query_template = (pdbid: string) => {
-  pdbid = pdbid.toUpperCase();
-  return `https://data.rcsb.org/graphql?query=
-  {
-  entry(entry_id: "${pdbid}") {
+  const GQL_QUERY_SHAPE = `{
+  entry(entry_id: "${pdbid.toUpperCase()}") {
     rcsb_id
     struct_keywords {
       pdbx_keywords
@@ -68,6 +71,12 @@ const query_template = (pdbid: string) => {
         ncbi_taxonomy_id
         scientific_name
       }
+
+      rcsb_entity_host_organism {
+        ncbi_taxonomy_id
+        scientific_name
+      }
+
       uniprots {
         rcsb_id
       }
@@ -92,16 +101,12 @@ const query_template = (pdbid: string) => {
       rcsb_nonpolymer_entity {
         formula_weight
         pdbx_description
-      }
-      rcsb_nonpolymer_entity_container_identifiers {
-        chem_ref_def_id
-        nonpolymer_comp_id
-        prd_id
-        rcsb_id
+        pdbx_number_of_molecules
       }
     }
   }
-}`;
+}`
+  return `https://data.rcsb.org/graphql?query=${GQL_QUERY_SHAPE}`;
 };
 
 const matchRPNomenclature = (
@@ -140,8 +145,6 @@ const matchRPNomenclature = (
   }
 };
 
-
-
 const matchRNANomenclature = (polymer: Polymer_Entity): RNAClass[] => {
 
 
@@ -170,22 +173,34 @@ const matchRNANomenclature = (polymer: Polymer_Entity): RNAClass[] => {
 
 }
 
+interface Organisms {
+  src_organism_ids   :number[]
+ src_organism_names  :string[]
+ host_organism_ids   :number[]
+ host_organism_names :string[]
+  
+}
+const inferOrganismsFromPolymers= ( proteins:RibosomalProtein[] ):Organisms => {
 
-const inferOrganismFromPolymers: (
-  proteins: RibosomalProtein[]
-) => [string[], number[]] = proteins => {
-  var structOrgIds  : number[] = [];
-  var structOrgNames: string[] = [];
+  var host_organism_names : string[] = [];
+  var src_organism_names  : string[] = [];
+
+  var host_organism_ids   : number[] = [];
+  var src_organism_ids    : number[] = [];
 
   proteins.map(protein => {
-    protein.rcsb_source_organism_description
-      ? structOrgNames.push(...protein.rcsb_source_organism_description)
-      : "";
-    protein.rcsb_source_organism_id
-      ? structOrgIds.push(...protein.rcsb_source_organism_id)
-      : "";
+    protein.src_organism_names  ? src_organism_names .push(...protein.src_organism_names  ) : null;
+    protein.src_organism_ids    ? src_organism_ids   .push(...protein.src_organism_ids    ) : null;
+    protein.host_organism_names ? src_organism_names .push(...protein.host_organism_names ) : null;
+    protein.host_organism_ids   ? src_organism_ids   .push(...protein.host_organism_ids   ) : null;
   });
-  return [uniq(structOrgNames), uniq(structOrgIds)];
+
+  return {
+    src_organism_ids   : uniq(src_organism_ids   ) ,
+    src_organism_names : uniq(src_organism_names ) ,
+    host_organism_ids  : uniq(host_organism_ids  ) ,
+    host_organism_names: uniq(host_organism_names) ,
+  };
 };
 
 const extractRefs = (
@@ -244,7 +259,6 @@ const reshape_PolyEntity_to_rRNA =(plm:Polymer_Entity):rRNA =>{
     entity_poly_polymer_type           : plm                  .entity_poly.rcsb_entity_polymer_type
   }
 }
-
 const reshape_PolyEntity_to_RibosomalProtein = (plm:Polymer_Entity):RibosomalProtein =>{
 
       if (plm.pfams) {
@@ -266,11 +280,20 @@ const reshape_PolyEntity_to_RibosomalProtein = (plm:Polymer_Entity):RibosomalPro
         var pfam_accessions  : string[] = [];
       }
 
-      var organism_ids         : number[];
-      var organism_descriptions: string[];
+      
 
-      organism_ids          = plm.rcsb_entity_source_organism.map(org => org.ncbi_taxonomy_id);
-      organism_descriptions = plm.rcsb_entity_source_organism.map(org => org.scientific_name);
+
+
+    // plm.src_organism_names  ? src_organism_names .push(...protein.src_organism_names  ) : null;
+    // plm.src_organism_ids    ? src_organism_ids   .push(...protein.src_organism_ids    ) : null;
+    // plm.host_organism_names ? src_organism_names .push(...protein.host_organism_names ) : null;
+    // plm.host_organism_ids   ? src_organism_ids   .push(...protein.host_organism_ids   ) : null;
+
+      var src_organism_ids    : number []= plm.rcsb_entity_source_organism.map(org => org.ncbi_taxonomy_id );
+      var src_organism_names  : string []= plm.rcsb_entity_source_organism.map(org => org.scientific_name  );
+
+      var host_organism_ids   : number []= plm.rcsb_entity_host_organism ? plm.rcsb_entity_host_organism.map(org => org.ncbi_taxonomy_id ) : [];
+      var host_organism_names : string []= plm.rcsb_entity_host_organism ? plm.rcsb_entity_host_organism.map(org => org.scientific_name  ) : [];
 
   return {
 
@@ -281,8 +304,12 @@ const reshape_PolyEntity_to_RibosomalProtein = (plm:Polymer_Entity):RibosomalPro
     pfam_accessions                    : pfam_accessions,
     pfam_comments                      : pfam_comments,
     pfam_descriptions                  : pfam_descriptions,
-    rcsb_source_organism_id            : organism_ids,
-    rcsb_source_organism_description   : organism_descriptions,
+
+    host_organism_ids   :host_organism_ids   ,
+    host_organism_names :host_organism_names ,
+    src_organism_ids    :src_organism_ids    ,
+    src_organism_names  :src_organism_names  ,
+
     uniprot_accession                  : plm                  .uniprots ? plm.uniprots.map(entry => entry.rcsb_id)    : [],
     rcsb_pdbx_description              : plm                  .rcsb_polymer_entity.pdbx_description,
     entity_poly_strand_id              : plm                  .entity_poly.pdbx_strand_id,
@@ -297,19 +324,21 @@ const reshape_PolyEntity_to_RibosomalProtein = (plm:Polymer_Entity):RibosomalPro
 export const processPDBRecord = async (
   pdbid: string
 ): Promise<RibosomeStructure> => {
-
   return await axios.get(query_template(pdbid))
   .then(response => {
-    var pdbRecord: PDBGQLResponse = response .data .data                                                                                       ;
+
+    var pdbRecord: PDBGQLResponse = response.data.data                                                                                       ;
+    console.log(pdbRecord);
     var            proteins       = pdbRecord.entry.polymer_entities   .filter(poly => poly.entity_poly.rcsb_entity_polymer_type === "Protein");
     var            rnas           = pdbRecord.entry.polymer_entities   .filter(poly => poly.entity_poly.rcsb_entity_polymer_type === "RNA")    ;
     var            ligands        = pdbRecord.entry.nonpolymer_entities                                                                        ;
 
-    var reshaped_proteins : RibosomalProtein []        = proteins                         .map(protein => reshape_PolyEntity_to_RibosomalProtein (protein ));
+    var reshaped_proteins : RibosomalProtein []        = proteins.map(protein => reshape_PolyEntity_to_RibosomalProtein (protein ));
     var reshaped_rrnas    : rRNA             []        = rnas                             .map(rna     => reshape_PolyEntity_to_rRNA             (rna     ));
     var reshaped_ligands  : Ligand           [] | null = ligands  == null ? null : ligands.map(r       => reshape_ToLigand                       (r       ));
 
-    var [organismNames, organismIds] = inferOrganismFromPolymers(reshaped_proteins);
+    var organisms =       inferOrganismsFromPolymers(reshaped_proteins)
+
     var externalRefs = extractRefs(pdbRecord.entry.rcsb_external_references);
     var pub          = pdbRecord.entry.citation[0];
 
@@ -334,11 +363,10 @@ export const processPDBRecord = async (
       citation_title       : pub.title,
       citation_pdbx_doi    : pub.pdbx_database_id_DOI,
 
+      ...organisms,
+
       pdbx_keywords_text: kwords_text,
       pdbx_keywords     : kwords,
-      _organismId       : organismIds,
-      _organismName     : organismNames,
-
       proteins: reshaped_proteins,
       rnas    : reshaped_rrnas,
       ligands : reshaped_ligands,
