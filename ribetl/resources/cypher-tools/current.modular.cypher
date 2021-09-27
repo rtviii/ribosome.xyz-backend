@@ -1,9 +1,9 @@
-CREATE CONSTRAINT ON (ipro:InterProFamily) ASSERT ipro.family_id IS UNIQUE
-CREATE CONSTRAINT ON (go:GOClass) ASSERT go.class_id IS UNIQUE
-CREATE CONSTRAINT ON (q:RibosomeStructure) Assert q.rcsb_id IS UNIQUE
-CREATE CONSTRAINT ON (pf:PFAMFamily) assert pf.family_id is unique
-CREATE CONSTRAINT ON (lig:Ligand) assert lig.chemicalId is unique
-CREATE CONSTRAINT ON (nc:NomenclatureClass) assert nc.class_id is unique
+CREATE CONSTRAINT ON (ipro:InterProFamily   ) ASSERT ipro.family_id  IS UNIQUE
+CREATE CONSTRAINT ON (go  :GOClass          ) ASSERT go  .class_id   IS UNIQUE
+CREATE CONSTRAINT ON (q   :RibosomeStructure) Assert q   .rcsb_id    IS UNIQUE
+CREATE CONSTRAINT ON (pf  :PFAMFamily       ) assert pf  .family_id  is unique
+CREATE CONSTRAINT ON (lig :Ligand           ) assert lig .chemicalId is unique
+CREATE CONSTRAINT ON (nc  :NomenclatureClass) assert nc  .class_id   is unique
 
 call apoc.load.json("file:///resources/cumulativeData/interpro.json") yield value
 with value as v
@@ -134,6 +134,15 @@ with rp,struct,value
      match  (pf    :   PFAMFamily      {family_id:pfamils})
 with rp,struct,value,pf
      merge  (rp    )-[:Belogns_To     ]->(pf)
+
+
+// CONNECT NOMENCLATURE
+match (n:RibosomalProtein) where n.nomenclature[0] is not null
+merge (nc:RPClass{class_id:n.nomenclature[0]})
+merge (n)-[:BelongsTo]-(nc)
+
+
+
 // Connect RNAS
 
 
@@ -160,6 +169,11 @@ with newrna, value
 match(s:RibosomeStructure {rcsb_id: value.rcsb_id})
 create (newrna)-[:rRNA_of                            ]->(s)
 
+// CONNECT NOMENCLATURE
+match (n:rRNA) where n.nomenclature[0] is not null
+merge (nc:RNAClass{class_id:n.nomenclature[0]})
+merge (n)-[:BelongsTo]-(nc)
+
 
 
 // connect Ligands
@@ -178,15 +192,6 @@ return struct;
 
 // ---------------------------------------------
 
-// CONNECT NOMENCLATURE
-match (n:RibosomalProtein) where n.nomenclature[0] is not null
-merge (nc:RPClass{class_id:n.nomenclature[0]})
-merge (n)-[:BelongsTo]-(nc)
-
-// CONNECT NOMENCLATURE
-match (n:rRNA) where n.nomenclature[0] is not null
-merge (nc:RNAClass{class_id:n.nomenclature[0]})
-merge (n)-[:BelongsTo]-(nc)
 
 
 

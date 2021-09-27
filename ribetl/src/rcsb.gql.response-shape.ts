@@ -41,6 +41,8 @@ export interface Polymer_Entity {
     rcsb_sample_sequence_length : number;
     type                        : string;
   };
+
+
 }
 export interface Nonpolymer_Entity {
 

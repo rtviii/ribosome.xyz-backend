@@ -18,10 +18,7 @@ import {
 import {gql, useQuery} from '@apollo/client'
 
 
-
 // Renamed, added so far:  host organisms, host ids, srcids srcnames
-
-
 
 const query_template = (pdbid: string) => {
   const GQL_QUERY_SHAPE = `{
@@ -209,7 +206,6 @@ const extractRefs = (
   var externalRefIds  : string[] = [];
   var externalRefTypes: string[] = [];
   var externalRefLinks: string[] = [];
-
   external_refs.map(ref => {
     externalRefIds.push(ref.id);
     externalRefTypes.push(ref.type);
@@ -228,22 +224,27 @@ const reshape_ToLigand = (nonpoly: Nonpolymer_Entity): Ligand => {
   };
 };
 
-const reshape_PolyEntity_to_rRNA =(plm:Polymer_Entity):rRNA =>{
+const is_ligand_like = (plm:Polymer_Entity) =>{
+  // ? Look for enzymes, factors and antibiotics
+  var reg =  /(\w*(?<!(cha|pro\w*))in\b)|(\b\w*zyme\b)|(factor)/gi;
+  if (plm.rcsb_polymer_entity.pdbx_description.match(reg)!== null){
+    return true
+  }
+  return false
 
+}
+
+const reshape_PolyEntity_to_rRNA =(plm:Polymer_Entity):rRNA =>{
       var organism_ids          : number[] ;
       var organism_descriptions : string[] ;
-
   if (plm.rcsb_entity_source_organism) {
-
       organism_ids = plm.rcsb_entity_source_organism.map(org => org.ncbi_taxonomy_id);
       organism_descriptions = plm.rcsb_entity_source_organism.map(org => org.scientific_name)
-  }else{
-
- organism_ids = []; organism_descriptions = [] 
+  } else{
+    organism_ids = []; organism_descriptions = [] 
   }
-    
-
   return {
+    ligand_like                      : is_ligand_like(plm),
     nomenclature                       : matchRNANomenclature(plm),
     asym_ids                           : plm                  .rcsb_polymer_entity_container_identifiers.asym_ids,
     auth_asym_ids                      : plm                  .rcsb_polymer_entity_container_identifiers.auth_asym_ids,
@@ -280,23 +281,17 @@ const reshape_PolyEntity_to_RibosomalProtein = (plm:Polymer_Entity):RibosomalPro
         var pfam_accessions  : string[] = [];
       }
 
-      
-
-
-
     // plm.src_organism_names  ? src_organism_names .push(...protein.src_organism_names  ) : null;
     // plm.src_organism_ids    ? src_organism_ids   .push(...protein.src_organism_ids    ) : null;
     // plm.host_organism_names ? src_organism_names .push(...protein.host_organism_names ) : null;
     // plm.host_organism_ids   ? src_organism_ids   .push(...protein.host_organism_ids   ) : null;
 
-      var src_organism_ids    : number []= plm.rcsb_entity_source_organism.map(org => org.ncbi_taxonomy_id );
-      var src_organism_names  : string []= plm.rcsb_entity_source_organism.map(org => org.scientific_name  );
-
-      var host_organism_ids   : number []= plm.rcsb_entity_host_organism ? plm.rcsb_entity_host_organism.map(org => org.ncbi_taxonomy_id ) : [];
-      var host_organism_names : string []= plm.rcsb_entity_host_organism ? plm.rcsb_entity_host_organism.map(org => org.scientific_name  ) : [];
+      var src_organism_ids    : number []= uniq(plm.rcsb_entity_source_organism.map(org => org.ncbi_taxonomy_id ));
+      var src_organism_names  : string []= uniq(plm.rcsb_entity_source_organism.map(org => org.scientific_name  ));
+      var host_organism_ids   : number []= plm.rcsb_entity_host_organism ? uniq(plm.rcsb_entity_host_organism.map(org => org.ncbi_taxonomy_id )) : [];
+      var host_organism_names : string []= plm.rcsb_entity_host_organism ? uniq( plm.rcsb_entity_host_organism.map(org => org.scientific_name  ) ) : [];
 
   return {
-
     nomenclature                       : matchRPNomenclature(plm),
     asym_ids                           : plm                  .rcsb_polymer_entity_container_identifiers.asym_ids,
     auth_asym_ids                      : plm                  .rcsb_polymer_entity_container_identifiers.auth_asym_ids,
@@ -304,6 +299,8 @@ const reshape_PolyEntity_to_RibosomalProtein = (plm:Polymer_Entity):RibosomalPro
     pfam_accessions                    : pfam_accessions,
     pfam_comments                      : pfam_comments,
     pfam_descriptions                  : pfam_descriptions,
+
+    ligand_like: is_ligand_like(plm),
 
     host_organism_ids   :host_organism_ids   ,
     host_organism_names :host_organism_names ,
@@ -327,18 +324,20 @@ export const processPDBRecord = async (
   return await axios.get(query_template(pdbid))
   .then(response => {
 
+    
     var pdbRecord: PDBGQLResponse = response.data.data                                                                                       ;
-    console.log(pdbRecord);
+
     var            proteins       = pdbRecord.entry.polymer_entities   .filter(poly => poly.entity_poly.rcsb_entity_polymer_type === "Protein");
     var            rnas           = pdbRecord.entry.polymer_entities   .filter(poly => poly.entity_poly.rcsb_entity_polymer_type === "RNA")    ;
     var            ligands        = pdbRecord.entry.nonpolymer_entities                                                                        ;
 
-    var reshaped_proteins : RibosomalProtein []        = proteins.map(protein => reshape_PolyEntity_to_RibosomalProtein (protein ));
+
+
+    var reshaped_proteins : RibosomalProtein []        = proteins                         .map(protein => reshape_PolyEntity_to_RibosomalProtein (protein ));
     var reshaped_rrnas    : rRNA             []        = rnas                             .map(rna     => reshape_PolyEntity_to_rRNA             (rna     ));
     var reshaped_ligands  : Ligand           [] | null = ligands  == null ? null : ligands.map(r       => reshape_ToLigand                       (r       ));
 
-    var organisms =       inferOrganismsFromPolymers(reshaped_proteins)
-
+    var organisms    = inferOrganismsFromPolymers(reshaped_proteins)
     var externalRefs = extractRefs(pdbRecord.entry.rcsb_external_references);
     var pub          = pdbRecord.entry.citation[0];
 
@@ -367,9 +366,9 @@ export const processPDBRecord = async (
 
       pdbx_keywords_text: kwords_text,
       pdbx_keywords     : kwords,
-      proteins: reshaped_proteins,
-      rnas    : reshaped_rrnas,
-      ligands : reshaped_ligands,
+      proteins          : reshaped_proteins,
+      rnas              : reshaped_rrnas,
+      ligands           : reshaped_ligands,
     };
 
     return reshaped;

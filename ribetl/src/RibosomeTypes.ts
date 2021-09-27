@@ -29,6 +29,12 @@ export interface RibosomeStructure {
   ligands  : Ligand          [] | null;
 
 }
+
+
+
+
+
+
 export interface rRNA { 
 
 
@@ -48,6 +54,9 @@ export interface rRNA {
   entity_poly_seq_length             : number;
   entity_poly_polymer_type           : string;
   entity_poly_entity_type            : string;
+
+  // whether this is an elongation factor,etc 
+  ligand_like:boolean
  }
 
 
@@ -65,6 +74,8 @@ export interface RibosomalProtein {
   src_organism_ids   : number[],
   host_organism_ids  : number[],
 
+  // whether this is an elongation factor, etc.
+  ligand_like:boolean
 
   uniprot_accession                  : string[]
 
@@ -111,6 +122,8 @@ export interface PFAMFamily {
 export interface NomenclatureClass {
   class_id: BanClass;
 }
+
+
 
 export type RNAClass = 
 "5SrRNA"|

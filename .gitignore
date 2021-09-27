@@ -18,5 +18,6 @@ rxzvenv/
 **/*.part
 **/*.pem
 **/*.json
+**/downloads2021sept/**
 
 **/settings.py
