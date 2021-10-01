@@ -11,7 +11,6 @@ dotenv.config({ path: '/home/rxz/dev/riboxyzbackend/rxz_backend/.env' });
 export const writeupdateStruct = (r:RibosomeStructure) =>{
 
     var   rcsb_id         = r.rcsb_id
-    const catalogue       = process.env.CATALOGUE as string
     var   target_filename = path.join(process.env.STATIC_ROOT as string, rcsb_id.toUpperCase(),rcsb_id.toUpperCase() +'.json')
 
     if (!fs.existsSync(path.dirname(target_filename))){
@@ -24,8 +23,7 @@ export const writeupdateStruct = (r:RibosomeStructure) =>{
 }
 
 export const updateCatalogueWStruct = async (
-  new_entry:CatalogueEntry,
-  mode?  : 'write' | 'update') =>{
+  new_entry:CatalogueEntry) =>{
 
     if (fs.existsSync(process.env.CATALOGUE as string)){
 
@@ -34,7 +32,6 @@ export const updateCatalogueWStruct = async (
       fs.writeFileSync(process.env.CATALOGUE as string,JSON.stringify({}))
     }
         var catalogue = JSON.parse(fs.readFileSync(process.env.CATALOGUE as string, 'utf-8'))
-
         var rcsb_id:string = Object.keys(new_entry)[0]
         if ( Object.keys(catalogue).includes(rcsb_id ) ){
           catalogue[rcsb_id] = new_entry

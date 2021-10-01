@@ -8,8 +8,8 @@ import {
   RNAClass,
   rRNA,
 } from "./RibosomeTypes";
-import { small_subunit_map } from "./../resources/small-subunit-map";
-import { large_subunit_map } from './../resources/large-subunit-map';
+import { small_subunit_map } from "./../ontologies/resources/small-subunit-map";
+import { large_subunit_map } from './../ontologies/resources/large-subunit-map';
 import {
   Nonpolymer_Entity,
   PDBGQLResponse,
@@ -227,6 +227,7 @@ const reshape_ToLigand = (nonpoly: Nonpolymer_Entity): Ligand => {
 const is_ligand_like = (plm:Polymer_Entity) =>{
   // ? Look for enzymes, factors and antibiotics
   var reg =  /(\w*(?<!(cha|pro\w*))in\b)|(\b\w*zyme\b)|(factor)/gi;
+
   if (plm.rcsb_polymer_entity.pdbx_description.match(reg)!== null){
     return true
   }
@@ -280,11 +281,6 @@ const reshape_PolyEntity_to_RibosomalProtein = (plm:Polymer_Entity):RibosomalPro
         var pfam_descriptions: string[] = [];
         var pfam_accessions  : string[] = [];
       }
-
-    // plm.src_organism_names  ? src_organism_names .push(...protein.src_organism_names  ) : null;
-    // plm.src_organism_ids    ? src_organism_ids   .push(...protein.src_organism_ids    ) : null;
-    // plm.host_organism_names ? src_organism_names .push(...protein.host_organism_names ) : null;
-    // plm.host_organism_ids   ? src_organism_ids   .push(...protein.host_organism_ids   ) : null;
 
       var src_organism_ids    : number []= uniq(plm.rcsb_entity_source_organism.map(org => org.ncbi_taxonomy_id ));
       var src_organism_names  : string []= uniq(plm.rcsb_entity_source_organism.map(org => org.scientific_name  ));
