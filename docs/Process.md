@@ -3,6 +3,7 @@
 
 # Database Template
 
+Refer to [ `neo4j-steps.md` ](./neo4j-steps.mdj) for database creation.
 
 The data that constitute the backbone of the database are found in `/ribetl/resources/cumulativeData`. This should be present in the neo4j's import folder when creating the database. Typically `/var/lib/neo4j/import`
 
@@ -10,7 +11,6 @@ Create the base-types, constraints of the database with scripts contained in [ t
 
 
 # ETL
-
 
 process the download in bulk by applying driver.ts in parallel to all the pdbidi in the download file: eliminate the commas with ```sed -i "s/\,/\\n/g" rcsb_pdb_ids_20210926175604.txt```
 
@@ -67,6 +67,5 @@ Actual RCSB structures are stored in [ `batch_download` ](../ribetl/batch_downlo
 
 
 ```zsh
-
 find . -name "*.json" | xargs grep 'rcsb_pdbx_description'  | awk -F  ':' ' $3 !~ /protein |RNA|rRNA|PROTEIN|Protein|mS|uL|UL|eL|bL|bS|BS|uS|eS|bS|mL|EL|rna|protein|ul|ml|RACK1/  {print $3}'
 ```
