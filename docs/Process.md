@@ -12,6 +12,9 @@ Create the base-types, constraints of the database with scripts contained in [ t
 
 # ETL
 
+
+	When performing operations inside the neo4j directories, ex. import, act as neo4j the user to avoid permissions issues: sudo su neo4j
+
 process the download in bulk by applying driver.ts in parallel to all the pdbidi in the download file: eliminate the commas with ```sed -i "s/\,/\\n/g" rcsb_pdb_ids_20210926175604.txt```
 
 ## Graph Profiles 

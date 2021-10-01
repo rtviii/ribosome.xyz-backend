@@ -50,7 +50,7 @@ with                                                       value.rcsb_id as pdbi
                                                            value.expMethod as exp,
                                                            value.resolution as reso,
 
-                                                           value.rcsb_external_ref_id as ref_id,
+                                                           value.rcsb_external_ref_id   as ref_id  ,
                                                            value.rcsb_external_ref_type as ref_type,
                                                            value.rcsb_external_ref_link as ref_link,
 
@@ -62,8 +62,13 @@ with                                                       value.rcsb_id as pdbi
                                                            value.pdbx_keywords_text as kwordstext,
                                                            value.pdbx_keywords as kwords, 
 
-                                                           value._organismId as orgid,
-                                                           value._organismName as orgname,
+                                                           value.src_organism_ids   as src_organism_ids  ,
+                                                           value.src_organism_names as src_organism_names,
+
+                                                           value.host_organism_ids     as host_organism_ids    ,
+                                                           value.host_organism_names   as host_organism_names  ,
+
+
                                                            value
 
 merge                 ( struct                                 :RibosomeStructure{
@@ -78,8 +83,11 @@ merge                 ( struct                                 :RibosomeStructur
         pdbx_keywords     : kwords     ,
         pdbx_keywords_text: kwordstext,
 
-        _organismId           : orgid                                  ,
-        _organismName         : orgname                                
+        src_organism_ids           : src_organism_ids                                  ,
+        src_organism_names         : src_organism_names                                ,
+
+        host_organism_ids           : host_organism_ids                                  ,
+        host_organism_names         : host_organism_names                                
         
         })
 
@@ -87,7 +95,6 @@ merge                 ( struct                                 :RibosomeStructur
         struct .  rcsb_external_ref_id                    = CASE WHEN ref_id                = null then "null" else ref_id END,
         struct .  rcsb_external_ref_type                  = CASE WHEN ref_type              = null then "null" else ref_type END,
         struct .  rcsb_external_ref_link                  = CASE WHEN ref_link              = null then "null" else ref_link END
-with struct
 
 
 call apoc.load.json("file:///static/$structid/$file") yield value
@@ -107,8 +114,13 @@ with protein                            ,
      pfam_descriptions                   : protein.pfam_descriptions,
      pfam_accessions                     : protein.pfam_accessions,
 
-     rcsb_source_organism_description    : protein.rcsb_source_organism_description,
-     rcsb_source_organism_id             : protein.rcsb_source_organism_id,
+     src_organism_ids  :protein.src_organism_ids,
+     src_organism_names:protein.src_organism_names,
+     host_organism_ids    :protein.host_organism_ids  ,
+     host_organism_names  :protein.host_organism_names,
+     
+     ligand_like:protein.ligand_like,
+
      uniprot_accession                   : protein.uniprot_accession,
 
      rcsb_pdbx_description              : protein.rcsb_pdbx_description,
@@ -135,7 +147,6 @@ with rp,struct,value
 with rp,struct,value,pf
      merge  (rp    )-[:Belogns_To     ]->(pf)
 
-
 // CONNECT NOMENCLATURE
 match (n:RibosomalProtein) where n.nomenclature[0] is not null
 merge (nc:RPClass{class_id:n.nomenclature[0]})
@@ -146,24 +157,31 @@ merge (n)-[:BelongsTo]-(nc)
 // Connect RNAS
 
 
-call apoc.load.json("file:///static/7OF4/7OF4.json") yield value
+call apoc.load.json("file:///static/$structid/$file") yield value
 with value 
      unwind                                 value .rnas as rna
      Merge                               (  newrna:rRNA {
      asym_ids                         : rna.asym_ids,
      auth_asym_ids                    : rna.auth_asym_ids,
-     parent_rcsb_id                      :  rna   .parent_rcsb_id,
 
-     rcsb_source_organism_description    :  rna   .rcsb_source_organism_description,
-     rcsb_source_organism_id             :  rna   .rcsb_source_organism_id,
-     nomenclature                        :  rna.nomenclature,
+     parent_rcsb_id:  rna.parent_rcsb_id,
 
-     entity_poly_strand_id               :  rna   .entity_poly_strand_id,
-     entity_poly_seq_one_letter_code     :  rna   .entity_poly_seq_one_letter_code,
-     entity_poly_seq_one_letter_code_can:   rna   .entity_poly_seq_one_letter_code_can,
-     entity_poly_seq_length              :  rna   .entity_poly_seq_length,
-     entity_poly_polymer_type            :  rna   .entity_poly_polymer_type,
-     entity_poly_entity_type             :  rna   .entity_poly_entity_type
+     nomenclature:  rna.nomenclature,
+     
+     ligand_like: rna.ligand_like,
+
+     src_organism_ids  :rna.src_organism_ids,
+     src_organism_names:rna.src_organism_names,
+     host_organism_ids    :rna.host_organism_ids  ,
+     host_organism_names  :rna.host_organism_names,
+
+
+     entity_poly_strand_id               :  rna.entity_poly_strand_id,
+     entity_poly_seq_one_letter_code     :  rna.entity_poly_seq_one_letter_code,
+     entity_poly_seq_one_letter_code_can :  rna.entity_poly_seq_one_letter_code_can,
+     entity_poly_seq_length              :  rna.entity_poly_seq_length,
+     entity_poly_polymer_type            :  rna.entity_poly_polymer_type,
+     entity_poly_entity_type             :  rna.entity_poly_entity_type
 })on create set newrna.rcsb_pdbx_description = CASE WHEN rna.rcsb_pdbx_description = null then "null" else rna.rcsb_pdbx_description END
 with newrna, value
 match(s:RibosomeStructure {rcsb_id: value.rcsb_id})
@@ -177,20 +195,19 @@ merge (n)-[:BelongsTo]-(nc)
 
 
 // connect Ligands
-call apoc.load.json("file:///static/7OF4/7OF4.json") yield value
+call apoc.load.json("file:///static/$structid/$file") yield value
        unwind           value.ligands as lig
        merge            (l:Ligand {
-       chemicalId      : lig.chemicalId,
-       chemicalName    : lig.chemicalName,
-       formula_weight  : lig.formula_weight,
-       pdbx_description: lig.pdbx_description})
-
+       chemicalId          : lig.chemicalId         ,
+       chemicalName        : lig.chemicalName       ,
+       formula_weight      : lig.formula_weight     ,
+       pdbx_description    : lig.pdbx_description   ,
+       number_of_instances : lig.number_of_instances
+       })
 with l, value
 match(s:RibosomeStructure {rcsb_id: value.rcsb_id})
 create            (l)<-[:ContainsLigand]-(s)
 return struct;
-
-// ---------------------------------------------
 
 
 

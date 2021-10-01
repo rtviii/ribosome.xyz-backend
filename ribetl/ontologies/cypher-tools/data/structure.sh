@@ -1,22 +1,28 @@
 #!/usr/bin/bash
 
-NEOIMPORT='/var/lib/neo4j/import'
+
+if [ $# -lt $((1))  ];
+then 
+        echo "Not enough arguments!"
+        exit $((1))
+fi
 
 filepath=$1
 if [ -f $filepath ];
 then
-	file=$(basename $filepath)
-	extension=${file: -4}
+	file=$(basename -- $filepath)
+	extension=${file##*.}
 	if [ $extension != "json" ];
 	then
 		echo "The profile file must be a .json. Exiting."
-		exit 2
+		exit $((2))
 	fi
 	structid=${file::4}
 	structid=${structid^^}
+        echo "Processing $structid"
 else
 	echo "$filepath is not an acceptable file"
-	exit -1
+	exit $((1))
 fi
 
 
@@ -25,7 +31,7 @@ with                                                       value.rcsb_id as pdbi
                                                            value.expMethod as exp,
                                                            value.resolution as reso,
 
-                                                           value.rcsb_external_ref_id as ref_id,
+                                                           value.rcsb_external_ref_id   as ref_id  ,
                                                            value.rcsb_external_ref_type as ref_type,
                                                            value.rcsb_external_ref_link as ref_link,
 
@@ -37,8 +43,13 @@ with                                                       value.rcsb_id as pdbi
                                                            value.pdbx_keywords_text as kwordstext,
                                                            value.pdbx_keywords as kwords, 
 
-                                                           value._organismId as orgid,
-                                                           value._organismName as orgname,
+                                                           value.src_organism_ids   as src_organism_ids  ,
+                                                           value.src_organism_names as src_organism_names,
+
+                                                           value.host_organism_ids     as host_organism_ids    ,
+                                                           value.host_organism_names   as host_organism_names  ,
+
+
                                                            value
 
 merge                 ( struct                                 :RibosomeStructure{
@@ -53,12 +64,15 @@ merge                 ( struct                                 :RibosomeStructur
         pdbx_keywords     : kwords     ,
         pdbx_keywords_text: kwordstext,
 
-        _organismId           : orgid                                  ,
-        _organismName         : orgname                                
+        src_organism_ids           : src_organism_ids                                  ,
+        src_organism_names         : src_organism_names                                ,
+
+        host_organism_ids           : host_organism_ids                                  ,
+        host_organism_names         : host_organism_names                                
         
         })
 
         on                      create                                  set
-        struct.rcsb_external_ref_id                    = CASE WHEN ref_id                = null then \"null\" else ref_id END,
-        struct.rcsb_external_ref_type                  = CASE WHEN ref_type              = null then \"null\" else ref_type END,
-        struct.rcsb_external_ref_link                  = CASE WHEN ref_link              = null then \"null\" else ref_link END" | cypher-shell 
+        struct .  rcsb_external_ref_id                    = CASE WHEN ref_id                = null then \"null\" else ref_id END,
+        struct .  rcsb_external_ref_type                  = CASE WHEN ref_type              = null then \"null\" else ref_type END,
+        struct .  rcsb_external_ref_link                  = CASE WHEN ref_link              = null then \"null\" else ref_link END" | cypher-shell 

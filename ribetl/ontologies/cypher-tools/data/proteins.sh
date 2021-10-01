@@ -1,26 +1,33 @@
 #!/usr/bin/bash
 
-NEOIMPORT='/var/lib/neo4j/import'
+if [ $# -lt $((1))  ];
+then 
+        echo "Not enough arguments!"
+        exit $((1))
+fi
 
 filepath=$1
 if [ -f $filepath ];
 then
-	file=$(basename $filepath)
-	extension=${file: -4}
+	file=$(basename -- $filepath)
+	extension=${file##*.}
 	if [ $extension != "json" ];
 	then
 		echo "The profile file must be a .json. Exiting."
-		exit 2
+		exit $((2))
 	fi
 	structid=${file::4}
 	structid=${structid^^}
+     echo "Processing $structid"
 else
 	echo "$filepath is not an acceptable file"
-	exit -1
+	exit $((1))
 fi
 
+
 echo "call apoc.load.json(\"file:///static/$structid/$file\") yield value
-with value                              , struct
+
+with value, value.rcsb_id as struct
      unwind                              value.proteins as protein
 with protein                            ,
      value                              ,
@@ -35,8 +42,13 @@ with protein                            ,
      pfam_descriptions                   : protein.pfam_descriptions,
      pfam_accessions                     : protein.pfam_accessions,
 
-     rcsb_source_organism_description    : protein.rcsb_source_organism_description,
-     rcsb_source_organism_id             : protein.rcsb_source_organism_id,
+     src_organism_ids  :protein.src_organism_ids,
+     src_organism_names:protein.src_organism_names,
+     host_organism_ids    :protein.host_organism_ids  ,
+     host_organism_names  :protein.host_organism_names,
+     
+     ligand_like:protein.ligand_like,
+
      uniprot_accession                   : protein.uniprot_accession,
 
      rcsb_pdbx_description              : protein.rcsb_pdbx_description,
@@ -52,7 +64,11 @@ with protein                            ,
 })
 on create                set
 rp.rcsb_pdbx_description = CASE WHEN protein.rcsb_pdbx_description = null then \"null\" else protein.rcsb_pdbx_description END
-with rp, value
+
+
+
+
+with rp, value, struct
 match(s:RibosomeStructure {rcsb_id: value.rcsb_id})
 create (protein)-[:RibosomalProtein_of]->(s)
 
@@ -60,8 +76,7 @@ with rp,struct,value
      unwind  rp    .   pfam_accessions as pfamils
      match  (pf    :   PFAMFamily      {family_id:pfamils})
 with rp,struct,value,pf
-     merge  (rp    )-[:Belogns_To     ]->(pf)
-
+     merge  (rp    )-[:Belogns_To     ]->(pf);
 
 match (n:RibosomalProtein) where n.nomenclature[0] is not null
 merge (nc:RPClass{class_id:n.nomenclature[0]})
