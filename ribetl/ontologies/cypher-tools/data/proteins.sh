@@ -32,7 +32,7 @@ with value, value.rcsb_id as struct
 with protein                            ,
      value                              ,
      struct
-     merge                               (rp:RibosomalProtein {
+     merge                               (rp:Protein {
      asym_ids:      protein.asym_ids,
      auth_asym_ids:protein.auth_asym_ids,
         
@@ -65,19 +65,17 @@ with protein                            ,
 on create                set
 rp.rcsb_pdbx_description = CASE WHEN protein.rcsb_pdbx_description = null then \"null\" else protein.rcsb_pdbx_description END
 
-
-
-
 with rp, value, struct
-match(s:RibosomeStructure {rcsb_id: value.rcsb_id})
-create (protein)-[:RibosomalProtein_of]->(s)
 
+match(s:RibosomeStructure {rcsb_id: value.rcsb_id})
+create (rp)-[:protein_of]->(s)
 with rp,struct,value
      unwind  rp    .   pfam_accessions as pfamils
      match  (pf    :   PFAMFamily      {family_id:pfamils})
-with rp,struct,value,pf
-     merge  (rp    )-[:Belogns_To     ]->(pf);
 
-match (n:RibosomalProtein) where n.nomenclature[0] is not null
-merge (nc:RPClass{class_id:n.nomenclature[0]})
-merge (n)-[:BelongsTo]-(nc)" | cypher-shell
+with rp,struct,value,pf
+     merge  (rp    )-[:belongs_to     ]->(pf);
+
+match (n:Protein) where n.nomenclature[0] is not null
+merge (nc:ProteinClass {class_id:n.nomenclature[0]})
+merge (n)-[:member_of]->(nc)" | cypher-shell

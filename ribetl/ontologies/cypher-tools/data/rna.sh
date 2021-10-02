@@ -1,6 +1,5 @@
 #!/usr/bin/bash
 
-NEOIMPORT='/var/lib/neo4j/import'
 
 filepath=$1
 if [ -f $filepath ];
@@ -23,7 +22,8 @@ fi
 echo "call apoc.load.json(\"file:///static/$structid/$file\") yield value
 with value 
      unwind                                 value .rnas as rna
-     Merge                               (  newrna:rRNA {
+     merge                               (  newrna:RNA {
+
      asym_ids                         : rna.asym_ids,
      auth_asym_ids                    : rna.auth_asym_ids,
 
@@ -46,9 +46,11 @@ with value
      entity_poly_polymer_type            :  rna.entity_poly_polymer_type,
      entity_poly_entity_type             :  rna.entity_poly_entity_type
 }) on create set newrna.rcsb_pdbx_description = CASE WHEN rna.rcsb_pdbx_description = null then \"null\" else rna.rcsb_pdbx_description END
+
 with newrna, value
 match(s:RibosomeStructure {rcsb_id: value.rcsb_id})
-create (newrna)-[:rRNA_of                            ]->(s)
-match (n:rRNA) where n.nomenclature[0] is not null
+create (newrna)-[:rna_of]->(s);
+
+match (n:RNA) where n.nomenclature[0] is not null
 merge (nc:RNAClass{class_id:n.nomenclature[0]})
-merge (n)-[:BelongsTo]-(nc)" | cypher-shell 
+merge (n)-[:belongs_to]-(nc)" | cypher-shell 

@@ -1,12 +1,12 @@
 import axios from "axios";
 import { uniq } from "lodash";
 import {
-  BanClass,
-  Ligand,
-  RibosomalProtein,
+  ProteinClass     ,
+  Ligand           ,
+  Protein          ,
   RibosomeStructure,
-  RNAClass,
-  rRNA,
+  RNAClass         ,
+  RNA              ,
 } from "./RibosomeTypes";
 import { small_subunit_map } from "./../ontologies/resources/small-subunit-map";
 import { large_subunit_map } from './../ontologies/resources/large-subunit-map';
@@ -108,14 +108,14 @@ const query_template = (pdbid: string) => {
 
 const matchRPNomenclature = (
   polymer: Polymer_Entity
-): BanClass[] => {
+): ProteinClass[] => {
 
   var banregex = /([ueb][ls]\d{1,2})/gi
   // * check authors's annotations. if classes are present --> use that.
   var finds = banregex.exec(polymer.rcsb_polymer_entity.pdbx_description)
   if (finds !== null) {
     var firstcap = finds[0]
-    var name = (firstcap[0].toLowerCase() + firstcap[1].toUpperCase() + firstcap.slice(2)) as BanClass
+    var name = (firstcap[0].toLowerCase() + firstcap[1].toUpperCase() + firstcap.slice(2)) as ProteinClass
     return [name]
   }
   // * then resort to pfams
@@ -126,14 +126,14 @@ const matchRPNomenclature = (
       acc.push(item.rcsb_pfam_accession);
       return acc;
     }, []);
-    var nomenclature: BanClass[] = [];
+    var nomenclature: ProteinClass[] = [];
     pfamIds!.map(id => {
       Object.entries(large_subunit_map).map(entry => {
-        if (entry[1].pfamDomainAccession.includes(id)) { nomenclature.push(entry[0] as BanClass); }
+        if (entry[1].pfamDomainAccession.includes(id)) { nomenclature.push(entry[0] as ProteinClass); }
       });
       Object.entries(small_subunit_map).map(entry => {
         if (entry[1].pfamDomainAccession.includes(id)) {
-          nomenclature.push(entry[0] as BanClass);
+          nomenclature.push(entry[0] as ProteinClass);
         }
       });
     });
@@ -177,7 +177,7 @@ interface Organisms {
  host_organism_names :string[]
   
 }
-const inferOrganismsFromPolymers= ( proteins:RibosomalProtein[] ):Organisms => {
+const inferOrganismsFromPolymers= ( proteins:Protein[] ):Organisms => {
 
   var host_organism_names : string[] = [];
   var src_organism_names  : string[] = [];
@@ -235,23 +235,26 @@ const is_ligand_like = (plm:Polymer_Entity) =>{
 
 }
 
-const reshape_PolyEntity_to_rRNA =(plm:Polymer_Entity):rRNA =>{
-      var organism_ids          : number[] ;
-      var organism_descriptions : string[] ;
-  if (plm.rcsb_entity_source_organism) {
-      organism_ids = plm.rcsb_entity_source_organism.map(org => org.ncbi_taxonomy_id);
-      organism_descriptions = plm.rcsb_entity_source_organism.map(org => org.scientific_name)
-  } else{
-    organism_ids = []; organism_descriptions = [] 
-  }
+const reshape_PolyEntity_to_rRNA =(plm:Polymer_Entity):RNA =>{
+
+      var src_organism_ids    : number []= uniq(plm.rcsb_entity_source_organism.map(org => org.ncbi_taxonomy_id ));
+      var src_organism_names  : string []= uniq(plm.rcsb_entity_source_organism.map(org => org.scientific_name  ));
+
+      var host_organism_ids   : number []= plm.rcsb_entity_host_organism ? uniq(plm.rcsb_entity_host_organism.map(org => org.ncbi_taxonomy_id )) : [];
+      var host_organism_names : string []= plm.rcsb_entity_host_organism ? uniq( plm.rcsb_entity_host_organism.map(org => org.scientific_name  ) ) : [];
+
   return {
     ligand_like                      : is_ligand_like(plm),
     nomenclature                       : matchRNANomenclature(plm),
     asym_ids                           : plm                  .rcsb_polymer_entity_container_identifiers.asym_ids,
     auth_asym_ids                      : plm                  .rcsb_polymer_entity_container_identifiers.auth_asym_ids,
     parent_rcsb_id                     : plm                  .entry.rcsb_id,
-    rcsb_source_organism_id            : organism_ids,
-    rcsb_source_organism_description   : organism_descriptions,
+
+    host_organism_ids   :host_organism_ids   ,
+    host_organism_names :host_organism_names ,
+    src_organism_ids    :src_organism_ids    ,
+    src_organism_names  :src_organism_names  ,
+
     rcsb_pdbx_description              : plm                  .rcsb_polymer_entity.pdbx_description,
     entity_poly_strand_id              : plm                  .entity_poly.pdbx_strand_id,
     entity_poly_seq_one_letter_code    : plm                  .entity_poly.pdbx_seq_one_letter_code,
@@ -261,7 +264,7 @@ const reshape_PolyEntity_to_rRNA =(plm:Polymer_Entity):rRNA =>{
     entity_poly_polymer_type           : plm                  .entity_poly.rcsb_entity_polymer_type
   }
 }
-const reshape_PolyEntity_to_RibosomalProtein = (plm:Polymer_Entity):RibosomalProtein =>{
+const reshape_PolyEntity_to_RibosomalProtein = (plm:Polymer_Entity):Protein =>{
 
       if (plm.pfams) {
 
@@ -284,6 +287,7 @@ const reshape_PolyEntity_to_RibosomalProtein = (plm:Polymer_Entity):RibosomalPro
 
       var src_organism_ids    : number []= uniq(plm.rcsb_entity_source_organism.map(org => org.ncbi_taxonomy_id ));
       var src_organism_names  : string []= uniq(plm.rcsb_entity_source_organism.map(org => org.scientific_name  ));
+
       var host_organism_ids   : number []= plm.rcsb_entity_host_organism ? uniq(plm.rcsb_entity_host_organism.map(org => org.ncbi_taxonomy_id )) : [];
       var host_organism_names : string []= plm.rcsb_entity_host_organism ? uniq( plm.rcsb_entity_host_organism.map(org => org.scientific_name  ) ) : [];
 
@@ -329,8 +333,8 @@ export const processPDBRecord = async (
 
 
 
-    var reshaped_proteins : RibosomalProtein []        = proteins                         .map(protein => reshape_PolyEntity_to_RibosomalProtein (protein ));
-    var reshaped_rrnas    : rRNA             []        = rnas                             .map(rna     => reshape_PolyEntity_to_rRNA             (rna     ));
+    var reshaped_proteins : Protein []        = proteins                         .map(protein => reshape_PolyEntity_to_RibosomalProtein (protein ));
+    var reshaped_rrnas    : RNA             []        = rnas                             .map(rna     => reshape_PolyEntity_to_rRNA             (rna     ));
     var reshaped_ligands  : Ligand           [] | null = ligands  == null ? null : ligands.map(r       => reshape_ToLigand                       (r       ));
 
     var organisms    = inferOrganismsFromPolymers(reshaped_proteins)

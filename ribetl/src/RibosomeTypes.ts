@@ -24,8 +24,8 @@ export interface RibosomeStructure {
   host_organism_ids   : number[];
   host_organism_names : string[];
 
-  proteins : RibosomalProtein[]       ;
-  rnas     : rRNA            [] | null;
+  proteins : Protein[]       ;
+  rnas     : RNA            [] | null;
   ligands  : Ligand          [] | null;
 
 }
@@ -35,7 +35,7 @@ export interface RibosomeStructure {
 
 
 
-export interface rRNA { 
+export interface RNA { 
 
 
   asym_ids                        : string[],
@@ -44,8 +44,13 @@ export interface rRNA {
   nomenclature                    : RNAClass[]
 
   parent_rcsb_id                  : string       ;
-  rcsb_source_organism_id         : number[]     ;
-  rcsb_source_organism_description: string[]     ;
+
+  src_organism_names : string[],
+  host_organism_names: string[],
+  src_organism_ids   : number[],
+  host_organism_ids  : number[],
+
+
   rcsb_pdbx_description           : string | null;
   // entity_polymer
   entity_poly_strand_id              : string;
@@ -60,7 +65,7 @@ export interface rRNA {
  }
 
 
-export interface RibosomalProtein {
+export interface Protein {
   asym_ids     : string[],
   auth_asym_ids: string[],
 
@@ -88,7 +93,7 @@ export interface RibosomalProtein {
   entity_poly_polymer_type           : string;
   entity_poly_entity_type            : string;
 
-  nomenclature                       : BanClass[];
+  nomenclature                       : ProteinClass[];
 }
 
 export interface Ligand {
@@ -120,7 +125,7 @@ export interface PFAMFamily {
 }
 
 export interface NomenclatureClass {
-  class_id: BanClass;
+  class_id: ProteinClass;
 }
 
 
@@ -138,7 +143,7 @@ export type RNAClass =
 "mRNA"|
 "tRNA"
 
-export type BanClass =
+export type ProteinClass =
   | "eL39"
   | "eL38"
   | "eL37"

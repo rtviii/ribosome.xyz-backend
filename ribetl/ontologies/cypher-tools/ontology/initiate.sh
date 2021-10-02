@@ -7,10 +7,14 @@
 echo '
 CREATE CONSTRAINT IF NOT EXISTS ON (ipro:InterProFamily   ) ASSERT ipro.family_id  IS UNIQUE;
 CREATE CONSTRAINT IF NOT EXISTS ON (go  :GOClass          ) ASSERT go.class_id   IS UNIQUE;
-CREATE CONSTRAINT IF NOT EXISTS ON (q   :RibosomeStructure) Assert q.rcsb_id    IS UNIQUE;
 CREATE CONSTRAINT IF NOT EXISTS ON (pf  :PFAMFamily       ) assert pf.family_id  is unique;
-CREATE CONSTRAINT IF NOT EXISTS ON (lig :Ligand           ) assert lig.chemicalId is unique;
-CREATE CONSTRAINT IF NOT EXISTS ON (nc  :NomenclatureClass) assert nc.class_id   is unique;
+
+CREATE CONSTRAINT IF NOT EXISTS ON (q   :RibosomeStructure) Assert q.rcsb_id    IS UNIQUE;
+
+CREATE CONSTRAINT IF NOT EXISTS ON (pc  :ProteinClass ) assert pc.class_id   is unique;
+CREATE CONSTRAINT IF NOT EXISTS ON (rc  :RNAClass     ) assert rc.class_id   is unique;
+CREATE CONSTRAINT IF NOT EXISTS ON (lig :Ligand       ) assert lig.chemicalId is unique;
+
 ' | cypher-shell;
 
 
@@ -27,7 +31,7 @@ do
 	merge (inode:InterProFamily{family_id:go.InterPro})
 	merge (gonode:GOClass{go_class:go.GO})
 	on create set gonode.annotation = go.GO_annotation
-	merge (inode)-[:mp_InterPro_GO{annotation:go.interpro_class}]-(gonode)" | cypher-shell;
+	merge (inode)-[:interpro_go{annotation:go.interpro_class}]-(gonode)" | cypher-shell;
 done
 
 
@@ -39,21 +43,20 @@ do
 	with datum where datum.integrated is not null
 	merge (inode:InterProFamily{family_id: datum.integrated})
 	merge (pnode:PFAMFamily{family_id: datum.accession, family_type:datum.type})
-	merge (inode)-[:mp_InterPro_PFAM]-(pnode);" | cypher-shell;
+	merge (inode)-[:interpro_pfam]-(pnode);" | cypher-shell;
 done
 
 
 # Small Subunit nomenclature map
 echo "call apoc.load.json(\"file:///resources/SSUMap.json\") yield value
 unwind(keys(value)) as key
-merge (nc:NomenclatureClass {class_id:key});" | cypher-shell;
-
+merge (pc:ProteinClass {class_id:key});" | cypher-shell;
 
 # Large Subunit nomenclature map
 echo "\
 call apoc.load.json(\"file:///resources/LSUMap.json\") yield value
 unwind(keys(value)) as key
-merge (nc:NomenclatureClass {class_id:key})" | cypher-shell;
+merge (pc:ProteinClass {class_id:key})" | cypher-shell;
 
 # RNA nomenclature classes
 echo 'UNWIND [ 
@@ -68,4 +71,4 @@ echo 'UNWIND [
   "35SrRNA" ,
   "mRNA"    ,
   "tRNA"    ]  as rnaclass
-  merge (n:NomenclatureClass {class_id:rnaclass})' | cypher-shell;
+  merge (n:RNAClass {class_id:rnaclass})' | cypher-shell;

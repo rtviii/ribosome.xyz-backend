@@ -155,8 +155,6 @@ merge (n)-[:BelongsTo]-(nc)
 
 
 // Connect RNAS
-
-
 call apoc.load.json("file:///static/$structid/$file") yield value
 with value 
      unwind                                 value .rnas as rna
