@@ -1,4 +1,6 @@
+import pdb
 from pprint import pprint
+from turtle import update
 from Bio.PDB.Entity import Entity
 from Bio.PDB.Structure import Structure
 from Bio.PDB.MMCIFParser import FastMMCIFParser, MMCIFParser
@@ -6,10 +8,38 @@ from Bio.PDB.Chain import Chain
 from Bio.PDB.Model import Model
 from Bio.PDB.mmcifio import MMCIFIO
 import os, sys
+import json
 from asyncio import run
-from neo4jreq import get_classes, get_rna
 from typing import TypedDict
 
+import dotenv
+
+
+
+
+pdbid       = sys.argv[1].upper()
+
+
+dotenv.load_dotenv(dotenv_path='./../../../rxz_backend/.env')
+STATIC_ROOT = os.environ.get('STATIC_ROOT')
+
+jsonprofile = os.path.join(STATIC_ROOT,pdbid,f'{pdbid.upper()}.json')
+cifprofile  = os.path.join(STATIC_ROOT,pdbid,f'{pdbid.upper()}.cif')
+
+
+
+# Grab the json profile, iterate throuhg rnas and proteins extracting chain_ids and their nomenclature
+def chain_nomenclature_dict(path:str):
+	with open(path,'r') as infile:
+		profile = json.load(infile)
+	chain_nom_dict = {}
+	
+	for rp in profile['proteins']:
+		chain_nom_dict.update({rp['entity_poly_strand_id']:rp['nomenclature']})
+
+	for rna in profile['rnas']:
+		chain_nom_dict.update({rna['entity_poly_strand_id']:rna['nomenclature']})
+	return chain_nom_dict
 
 def flatten(x):
     if isinstance(x, list):
@@ -17,50 +47,29 @@ def flatten(x):
     else:
         return [x]
 
-pdbid         = str( sys.argv[1] ).upper()
-chain_classes = dict([ *map(lambda x: [x[1],x[0]],get_classes(pdbid)) ])
-rnas          = flatten( get_rna(pdbid) )
-
-pprint(chain_classes)
-
-pprint(rnas)
-
-
-
-# @d rcsb_description to regex through
-def rna_class(d:str)->str:
-	x = d.lower()
-	...
-
-	#! TODO: Conditions for each class right now <<<<<< hacky
-	#? Incorporate RNA Nomenclature into the schema
-	...
-	return 'other'
-
-class Rna(TypedDict):
-	pdbx_description:str
-	strand_id       :str
-
-# for x in rnas:
-# 	x:Rna
-# 	print(x)
-# 	sort_rna_description(x['pdbx_description'])
 
 
 parser          = FastMMCIFParser              (QUIET=True                )
 io              = MMCIFIO                      (                          )
-pdbid           = pdbid           .upper       (                          )
-struct:Structure= parser         .get_structure(f'{pdbid}', f'{pdbid}.cif')
-
+struct:Structure= parser         .get_structure(pdbid, cifprofile)
+CEND = f'\033[93m got sturct {pdbid}\033[0m'
+nomdict = chain_nomenclature_dict(jsonprofile)
+# Keep track of whether certain names have already appeared in the structure to avoid collisions
+nomenclature_count = {}
 for chain in struct[0].child_list:
-
 	chain:Chain
-
 	id = chain.get_id()
-	if id in chain_classes:
-		struct[0][id].id = f"{chain_classes[id]}"
+	if id in nomdict:
+		if len(nomdict[id] ) >0:
+			nom_class = nomdict[id][0] 
+			if nom_class in nomenclature_count:
+				assigned= f'{nom_class}_{nomenclature_count[nom_class]}'
+				nomenclature_count[nom_class]+=1
+			else:
+				assigned= f'{nom_class}'
+				nomenclature_count.update({nom_class:1})
+			struct[0][id].id = assigned
 
 io.set_structure(struct)
-result_name = f'{pdbid}_renamed.cif'
-io.save(result_name)
-print(f"Saved renamed structure to {result_name}")
+io.save(cifprofile)
+print(f"Saved renamed structure to {cifprofile}")

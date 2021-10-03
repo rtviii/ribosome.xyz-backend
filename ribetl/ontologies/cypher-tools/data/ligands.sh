@@ -21,7 +21,6 @@ fi
 
 echo "call apoc.load.json(\"file:///static/$structid/$file\") yield value
 with value.rcsb_id as struct, value
-
        unwind           value.ligands as lig
        merge            (l:Ligand {
        chemicalId          : lig.chemicalId         ,

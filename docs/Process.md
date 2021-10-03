@@ -51,15 +51,35 @@ Template query is in [ template_query ](../ribetl/src/requestGQLProfile.ts). The
 There is some ambiguity right now as to what to consider a Ligand. Some elongation factors land in the RP category because of their classification as a polypeptide.
 
 
+----
+
+Driver.ts can be applied to all structures in static like so: 
+```bash
+parallel 'ts-node driver.ts -s {1}' ::: $(find ~/dev/riboxyzbackend/ribetl/static/ -type d    | awk -F '\/' '{print $8}' )
+```
+
+
+
 ## Structural Files
 
 Actual RCSB structures are stored in [ `batch_download` ](../ribetl/batch_download/) folder (update on each cycle).  Query is of the form: [all ribosome structures, of resolution smaller than 4 angstrom deposited 2014.](https://www.rcsb.org/search?request=%7B%22query%22%3A%7B%22type%22%3A%22group%22%2C%22logical_operator%22%3A%22and%22%2C%22nodes%22%3A%5B%7B%22type%22%3A%22group%22%2C%22logical_operator%22%3A%22and%22%2C%22nodes%22%3A%5B%7B%22type%22%3A%22group%22%2C%22nodes%22%3A%5B%7B%22type%22%3A%22terminal%22%2C%22service%22%3A%22text%22%2C%22parameters%22%3A%7B%22attribute%22%3A%22struct_keywords.pdbx_keywords%22%2C%22operator%22%3A%22contains_phrase%22%2C%22negation%22%3Afalse%2C%22value%22%3A%22RIBOSOME%22%7D%7D%5D%2C%22logical_operator%22%3A%22and%22%7D%2C%7B%22type%22%3A%22group%22%2C%22nodes%22%3A%5B%7B%22type%22%3A%22terminal%22%2C%22service%22%3A%22text%22%2C%22parameters%22%3A%7B%22attribute%22%3A%22rcsb_entry_info.resolution_combined%22%2C%22operator%22%3A%22less_or_equal%22%2C%22negation%22%3Afalse%2C%22value%22%3A4%7D%7D%5D%2C%22logical_operator%22%3A%22and%22%7D%2C%7B%22type%22%3A%22group%22%2C%22nodes%22%3A%5B%7B%22type%22%3A%22terminal%22%2C%22service%22%3A%22text%22%2C%22parameters%22%3A%7B%22attribute%22%3A%22rcsb_accession_info.initial_release_date%22%2C%22operator%22%3A%22greater%22%2C%22negation%22%3Afalse%2C%22value%22%3A%222014-01-01T00%3A00%3A00Z%22%7D%7D%5D%2C%22logical_operator%22%3A%22and%22%7D%5D%2C%22label%22%3A%22text%22%7D%5D%7D%2C%22return_type%22%3A%22entry%22%2C%22request_info%22%3A%7B%22query_id%22%3A%220a8b586b4227c759d60304b8272bb0d3%22%7D%2C%22request_options%22%3A%7B%22pager%22%3A%7B%22start%22%3A0%2C%22rows%22%3A25%7D%2C%22scoring_strategy%22%3A%22combined%22%2C%22sort%22%3A%5B%7B%22sort_by%22%3A%22score%22%2C%22direction%22%3A%22desc%22%7D%5D%7D%7D)
 
 1. Each one has to have its chains renamed according to the new Ban nomenclature (assigned during graph profile generation). [ Scripts here ](../ribetl/ciftools/renaming_structs/). To be deposited at `/static/$RCSBID/$RCSBID.cif`
 
+
+rename.py can be applied to all structures in static like so: 
+```bash
+parallel 'python3 rename.py {1}' :::  $(find ~/dev/riboxyzbackend/ribetl/static/ -type d   | awk -F '\/' '{print $8}')
+```
+
+
 2. Process the binding sites of ligands, elongation factors etc.  (including whatever else gets included). [ Scripts ](../ribetl/ciftools/binding_site.py). To be deposited at `/static/$RCSBID/LIGAND_$LIGANDID*.json`
 
+
 3. Split the structure into individual protien and rna to be deposited at `/static/$RCSBID/CHAINS/$RCSBID_STRAND_$STRANID*.cif`.
+
+
+
 
 
 # Todos

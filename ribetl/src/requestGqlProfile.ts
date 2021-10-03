@@ -227,8 +227,12 @@ const reshape_ToLigand = (nonpoly: Nonpolymer_Entity): Ligand => {
 const is_ligand_like = (plm:Polymer_Entity) =>{
   // ? Look for enzymes, factors and antibiotics
   var reg =  /(\w*(?<!(cha|pro\w*))in\b)|(\b\w*zyme\b)|(factor)/gi;
-
-  if (plm.rcsb_polymer_entity.pdbx_description.match(reg)!== null){
+  const matches=  plm.rcsb_polymer_entity.pdbx_description.match(reg)
+  if (matches!== null && 
+    !(matches.map(_=>_.toLowerCase()).includes('protein')) && 
+    !(plm.rcsb_polymer_entity.pdbx_description.toLowerCase().includes('protein'))&&
+    !(plm.rcsb_polymer_entity.pdbx_description.toLowerCase().includes('rrna'))
+    ){
     return true
   }
   return false
