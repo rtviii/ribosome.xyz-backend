@@ -160,10 +160,7 @@ def get_ligand_nbhd(request):
 
     filename   = "LIGAND_{}.json".format(chemid)
     filehandle = os.path.join(STATIC_ROOT, struct, filename)
-    print(">>>>>>>>>>>>>>>>>>>\033[93m Attempting to open \033[0m", filehandle)
 
-
-    print("got params", filehandle)
     try:
         with open(filehandle) as infile:
 
