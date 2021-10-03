@@ -16,7 +16,6 @@ archaea   .json
 Most filters on the site rely on these files for situating individual tax ids. 
 Hence, these files should be generated anew when new structures are added to the database or extended with tax ids of the new structures.
 
-
 match (r:RibosomeStructure) 
 unwind r._organismId as orgs
 return  collect(distinct orgs);

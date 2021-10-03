@@ -19,6 +19,13 @@ else
 	exit -1
 fi
 
+
+# For               every structure, point the script to a json profile. Induct its elements sequentially:
+# RibosomeStructure node
+# Protein           nodes
+# RNA               nodes
+# Ligand            nodes
+
 #Throwing struct into cypher-shell
 echo "call apoc.load.json(\"file:///static/$structid/$file\") yield value
 with                                                       value.rcsb_id as pdbid,
