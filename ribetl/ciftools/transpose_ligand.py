@@ -2,7 +2,6 @@ from ctypes import alignment
 import dataclasses
 import operator
 import json
-from pprint import pprint
 import re
 import struct
 import os
@@ -19,7 +18,7 @@ import itertools
 from asyncio import run
 import itertools
 import numpy as np
-import ribetl.ciftools.binding_site as bsite
+import ribetl.ciftools.binding_site_ligand as bsite
 flatten = itertools.chain.from_iterable
 n1      = np.array
 

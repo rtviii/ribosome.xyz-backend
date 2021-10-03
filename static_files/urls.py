@@ -11,7 +11,6 @@ urlpatterns = [
     path('cif_chain_by_class/'  , cif_chain_by_class  ) ,
     path('tunnel/'              , tunnel              ) ,
     path('align_3d/'            , align_3d            ) ,
-    path('get_static_catalogue/', get_static_catalogue) ,
     path('downloadArchive/'     , downloadArchive     ) ,
 ]
 

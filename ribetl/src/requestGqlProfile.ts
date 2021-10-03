@@ -203,14 +203,17 @@ const inferOrganismsFromPolymers= ( proteins:Protein[] ):Organisms => {
 const extractRefs = (
   external_refs: { link: string; type: string; id: string }[]
 ) => {
-  var externalRefIds  : string[] = [];
-  var externalRefTypes: string[] = [];
-  var externalRefLinks: string[] = [];
-  external_refs.map(ref => {
+
+    var externalRefIds  : string[] = [];
+    var externalRefTypes: string[] = [];
+    var externalRefLinks: string[] = [];
+
+  external_refs === null ? (()=>{})  : external_refs.map(ref => {
     externalRefIds.push(ref.id);
     externalRefTypes.push(ref.type);
     externalRefLinks.push(ref.link);
   });
+
   return [externalRefIds, externalRefTypes, externalRefLinks];
 };
 
@@ -236,16 +239,15 @@ const is_ligand_like = (plm:Polymer_Entity) =>{
     return true
   }
   return false
-
 }
 
 const reshape_PolyEntity_to_rRNA =(plm:Polymer_Entity):RNA =>{
 
-      var src_organism_ids    : number []= uniq(plm.rcsb_entity_source_organism.map(org => org.ncbi_taxonomy_id ));
-      var src_organism_names  : string []= uniq(plm.rcsb_entity_source_organism.map(org => org.scientific_name  ));
+    var src_organism_ids    : number []= plm.rcsb_entity_source_organism ? uniq(plm.rcsb_entity_source_organism.map(org => org.ncbi_taxonomy_id )) :[];
+    var src_organism_names  : string []= plm.rcsb_entity_source_organism ? uniq(plm.rcsb_entity_source_organism.map(org => org.scientific_name  )) : [];
 
-      var host_organism_ids   : number []= plm.rcsb_entity_host_organism ? uniq(plm.rcsb_entity_host_organism.map(org => org.ncbi_taxonomy_id )) : [];
-      var host_organism_names : string []= plm.rcsb_entity_host_organism ? uniq( plm.rcsb_entity_host_organism.map(org => org.scientific_name  ) ) : [];
+    var host_organism_ids   : number []= plm.rcsb_entity_host_organism ? uniq(plm.rcsb_entity_host_organism.map(org => org.ncbi_taxonomy_id )) : [];
+    var host_organism_names : string []= plm.rcsb_entity_host_organism ? uniq( plm.rcsb_entity_host_organism.map(org => org.scientific_name  ) ) : [];
 
   return {
     ligand_like                      : is_ligand_like(plm),
