@@ -37,19 +37,19 @@ def get_all_ligands(request):
         match (l:Ligand)-[]-(r:RibosomeStructure) 
         return {{
             polymer    : false,
-            chemid     : l.chemicalId,
+            chemicalId : l.chemicalId,
             description: l.chemicalName,
 
-            presentIn  : collect({{
-                src_organism_ids   : r.src_organism_ids   ,
-                citation_titel     : r.citation_title     ,
-                expMethod          : r.expMethod          ,
-                rcsb_id            : r.rcsb_id            ,
-                number_of_instances: l.number_of_instances,
-                resolution         : r.resolution
+            presentIn  :  collect( distinct{{
+                src_organism_ids    : r.src_organism_ids    ,
+                citation_title      : r.citation_title      ,
+                expMethod           : r.expMethod           ,
+                rcsb_id             : r.rcsb_id             ,
+                number_of_instances : l.number_of_instances,
+                resolution          : r.resolution
             }})
         }}
-    """
+    """.format()
 
     return Response(_neoget(CYPHER_STRING))
 
@@ -64,16 +64,17 @@ def get_all_ligandlike(request):
         return {{
             polymer    : true,
             description: l.rcsb_pdbx_description,
-            presentIn  : collect({{
-                src_organism_ids:r.src_organism_ids,
-                citation_title:r.citation_title,
-                expMethod:r.expMethod,
-                rcsb_id: r.rcsb_id,
+
+            presentIn  :  collect(distinct {{
+                src_organism_ids     : r.src_organism_ids     ,
+                citation_title       : r.citation_title       ,
+                expMethod            : r.expMethod            ,
+                rcsb_id              : r.rcsb_id              ,
                 entity_poly_strand_id: l.entity_poly_strand_id,
-                resolution: r.resolution
+                resolution           : r.resolution
             }})
         }}
-    """
+    """.format()
     return Response(_neoget(CYPHER_STRING))
 
 #? ---------------------------STRUCTS
