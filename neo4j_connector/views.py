@@ -34,23 +34,47 @@ def get_individual_ligand(request):
 @api_view(['GET', 'POST'])
 def get_all_ligands(request):
     CYPHER_STRING="""
-        match (l:Ligand)-[]-(r:RibosomeStructure)
+        match (l:Ligand)-[]-(r:RibosomeStructure) 
         return {{
-            ligand: l, 
-         presentIn:collect({{
-            src_organism_ids     : r.src_organism_ids,                 
-            rcsb_id              : r.rcsb_id,                 
-            expMethod            : r.expMethod,                 
-            resolution           : r.resolution,                 
-            citation_title       : r.citation_title
-            }})      
-            }}
-         
-    """.format_map({})
+            polymer    : false,
+            chemid     : l.chemicalId,
+            description: l.chemicalName,
 
-    print("GOT ALL LIGAMDS", len(_neoget(CYPHER_STRING)))
+            presentIn  : collect({{
+                src_organism_ids   : r.src_organism_ids   ,
+                citation_titel     : r.citation_title     ,
+                expMethod          : r.expMethod          ,
+                rcsb_id            : r.rcsb_id            ,
+                number_of_instances: l.number_of_instances,
+                resolution         : r.resolution
+            }})
+        }}
+    """
+
     return Response(_neoget(CYPHER_STRING))
 
+
+
+
+
+@api_view(['GET', 'POST'])
+def get_all_ligandlike(request):
+    CYPHER_STRING = """
+        match (l {{ligand_like:true}})-[]-(r:RibosomeStructure) 
+        return {{
+            polymer    : true,
+            description: l.rcsb_pdbx_description,
+            presentIn  : collect({{
+                src_organism_ids:r.src_organism_ids,
+                citation_title:r.citation_title,
+                expMethod:r.expMethod,
+                rcsb_id: r.rcsb_id,
+                entity_poly_strand_id: l.entity_poly_strand_id,
+                resolution: r.resolution
+            }})
+        }}
+    """
+    return Response(_neoget(CYPHER_STRING))
 
 #? ---------------------------STRUCTS
 
