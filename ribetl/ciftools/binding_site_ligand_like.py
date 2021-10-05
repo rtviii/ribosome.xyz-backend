@@ -29,7 +29,7 @@ import itertools
 import numpy as np
 
 flatten = itertools.chain.from_iterable
-n1      = np.array
+
 
 
 load_dotenv(dotenv_path='/home/rxz/dev/riboxyzbackend/rxz_backend/.env')
@@ -106,6 +106,7 @@ class BindingSiteChain:
       asym_ids        : List[str]
       residues        : List[ResidueLite]
 
+
 class BindingSite:
     def __init__(self,data:Dict[str,BindingSiteChain]) -> None:
         self.data : Dict[str,BindingSiteChain] = data
@@ -127,15 +128,7 @@ class BindingSite:
         ]
 
         serialized = dict.fromkeys(k,[])
-        pprint(serialized)
 
-def getLigandResIds(ligchemid:str, struct: Structure)->List[Residue]:
-    """Returns a list of dictionaries specifying each _ligand_ of type @ligchemid as a biopython-residue inside a given @struct."""
-    """*ligchemids are of type https://www.rcsb.org/ligand/IDS"""
-
-    ligandResidues: List[Residue] = list(filter(lambda x: x.get_resname() == ligchemid, list( struct.get_residues() )))
-
-    return ligandResidues
 
 async def matchStrandToClass(pdbid:str, strand_id:str)->List[str]:
     """Request Ban nomenclature classes from the db given a protein's entity_poly_strand_id."""
@@ -162,23 +155,16 @@ def get_liglike_ids(pdbid:str)->List[str]:
             liglike_strand_ids.append(p['entity_poly_strand_id'])
     return liglike_strand_ids
 
-def get_liglike_nbrs(
-      polymer: dict,
-      ligand_residues: List[Residue],
-      struct         : Structure,
-    )-> BindingSite  : 
+def get_poly_nbrs(
+        asym_id      : str,
+        residues     : List[Residue],
+        struct       : Structure,
+      )-> BindingSite: 
 
     """KDTree search the neighbors of a given list of residues(which constitue a ligand) 
     and return unique having tagged them with a ban identifier proteins within 5 angstrom of these residues. """
 
-    
-    pdbid = struct.get_id().upper()
-
-    with open(struct_path(pdbid,'json'),'r') as strfile:
-        profile       = json.load(strfile)
-        poly_entities = [*profile['proteins'], *profile['rnas']]
-
-    print(f"Parsing ligand-like polymer.")
+    pdbid        = struct.get_id().upper()
 
     ns           = NeighborSearch(list(struct.get_atoms()))
     nbr_residues = []
@@ -186,8 +172,8 @@ def get_liglike_nbrs(
     # print(f"Ligand has len(ligand_residues) residue(s).")
     #? Searching Phase
     # a ligand consists of residues
-    for lig_res in ligand_residues:
-        for atom in lig_res.child_list:
+    for poly_res in residues:
+        for atom in poly_res.child_list:
                 nbr_residues.extend(ns.search(atom.get_coord(), 10,level='R'))
 
     #? Filtering phase
@@ -195,9 +181,16 @@ def get_liglike_nbrs(
     nbr_residues = list(set([* map(ResidueLite.res2reslite, nbr_residues) ]))
 
     #Filter the ligand itself, water and other special residues 
-    nbr_residues = list(filter(lambda resl:resl.residue_name  in [*AMINO_ACIDS.keys(),  *NUCLEOTIDES], nbr_residues))
+    #i.e. "check that each residue is either an amino-acid or a nucleotide. Everything else is an edge case.
+    # nbr_residues = list(filter(lambda res: res.residue_name  in [*AMINO_ACIDS.keys(), *NUCLEOTIDES], nbr_residues))
+    nbr_residues = list(filter(lambda res: res.parent_strand_id != asym_id and res.residue_name  in [*AMINO_ACIDS.keys(), *NUCLEOTIDES], nbr_residues))
+
     nbr_dict     = {}
     chain_names  = list(set(map(lambda _:  _.parent_strand_id, nbr_residues)))
+
+    with open(struct_path(pdbid,'json'),'rb') as strfile:
+        profile       = json.load(strfile)
+        poly_entities = [*profile['proteins'], *profile['rnas']]
 
     for c in chain_names:
 
@@ -214,42 +207,36 @@ def get_liglike_nbrs(
                     asymid       = poly_entity['asym_ids'                       ]
                     seq          = poly_entity['entity_poly_seq_one_letter_code']
 
-        # #!RESP may arrive as a single 3-tuple of strand, asymid and sequence or might be an array of 3-tuples of chains whose strand ids contained the queried name. Then filter.
-        # cypher=f"""match (n:RibosomeStructure{{rcsb_id:"{struct.get_id().upper()}"}})-[]-(x) where x.entity_poly_strand_id contains "{c}"
-        #     return x.entity_poly_strand_id, x.asym_ids,x.entity_poly_seq_one_letter_code"""
-        # resp = _neoget(cypher)
-        # nomenclature  = list(flatten(run(matchStrandToClass(pdbid,c))))
-
         nbr_dict[c]= BindingSiteChain(
             seq,
             nomenclature,
             asymid ,
             sorted([residue for residue in nbr_residues if residue.parent_strand_id == c], key=operator.attrgetter('residue_id')))
 
-    vpprint(nbr_dict)
     return BindingSite(nbr_dict)
 
-def dropions(s:str): return False if "ion" in s[1].lower() else  True
-
-def parse_and_save_ligand(ligid:str, rcsbid:str):
-
-    print(rcsbid.upper())
-    print(ligid)
-    STATIC_ROOT = os.environ.get('STATIC_ROOT')
-    print(STATIC_ROOT)
-
-    outfile_json = os.path.join(STATIC_ROOT,rcsbid.upper(), f'LIGAND_{ligid}.json')
 
 
-    print("\033[92m GOT PATH {} \033[0m".format(outfile_json))
+def get_polymer_residues(rcsb_id:str, auth_asym_id:str, struct: Structure)->List[Residue]:
+    c:Chain = structure[0][auth_asym_id]
+    return [*c.get_residues()]
 
-    struct                   = openStructutre  (rcsbid                   )
-    residues : List[Residue] = getLigandResIds (ligid  , struct          )
-    bs:BindingSite           = get_ligand_nbrs (ligid ,residues , struct )
+@dataclass(unsafe_hash=True, order=True)
+class PolymerRefs              : 
+    parent_rcsb_id          : str = field( hash=True ,compare=False)
+    auth_asym_ids           : List[str] = field( hash=True ,compare=True )
+    rcsb_pdbx_description   : str = field( hash=True ,compare=False)
+    entity_poly_seq_length  : int = field( hash=True ,compare=False)
+    entity_poly_polymer_type: str = field( hash=True ,compare=False)
 
-    bs.to_json(outfile_json)
+def parse_polymer_nbhd(poly:PolymerRefs, structure:Structure):
 
-
+    STATIC_ROOT  = os.environ.get('STATIC_ROOT')
+    for asym_id in poly.auth_asym_ids:
+        outfile_json = os.path.join(STATIC_ROOT,poly.parent_rcsb_id.upper(), f'LIGAND_LIKE_{asym_id}.json')
+        residues : List[Residue] = get_polymer_residues(poly.parent_rcsb_id, asym_id, structure)
+        bs:BindingSite           = get_poly_nbrs(asym_id,residues , structure )
+        bs.to_json(outfile_json)
 
 
 # ! some data classes are due. Nope. don't complicate it.
@@ -257,23 +244,30 @@ def parse_and_save_ligand(ligid:str, rcsbid:str):
 
 
 
+def get_liglike_polymers(struct:str)->List[PolymerRefs]:
+    """Given an rcsb id, open the profile for the corresponding structure 
+    and return references to all polymers marked ligand-like"""
 
-
-def get_liglike_polymers(struct:str):
     with open(struct_path(struct,'json'),'r') as infile:
         profile = json.load(infile)
     liglike = []
     for i in [*profile['rnas'], *profile['proteins']]:
         if i['ligand_like'] == True:
-            # print("found" ,i)
-            liglike = [*liglike, i]
+            liglike = [*liglike, 
+            PolymerRefs(
+                i['parent_rcsb_id'],
+                i['auth_asym_ids'],
+                i['rcsb_pdbx_description'],
+                i['entity_poly_seq_length'],
+                i['entity_poly_polymer_type'],
+            )]
+
     return liglike
 
-
-
+      
 if __name__ =="__main__" :
     
-    def root_self(rootname:str='')->str:
+    def root_self(rootname:str=''):
         """Returns the rootpath for the project if it's unique in the current folder tree."""
         root=os.path.abspath(__file__)[:os.path.abspath(__file__).find(rootname)+len(rootname)]
         sys.path.append(root)
@@ -281,29 +275,17 @@ if __name__ =="__main__" :
 
     from ciftools.neoget import _neoget
     parser      = argparse.ArgumentParser(                                             )
-    parser .add_argument ('-l','--ligand'    , type  = str                )
     parser .add_argument ('-s','--structure' , type  = str ,required =True)
-    parser .add_argument ('-V','--verbose'   , action='store_true'        )
-    parser .add_argument ('-f','--force'     , action='store_true'        )
     args = parser.parse_args()
-
-    VERBOSE     = args.verbose
     PDBID       = args.structure.upper()
-    LIGID       = args.ligand
 
-    print("\t\t\t\033[92m * \033[0m")
+    print("\t\t\t\033[92m * ")
+    structure     = open_structure      (PDBID)
+    liglike_polys = get_liglike_polymers(PDBID) 
+    print(f"\tParsing ligand-like polymers for structure {PDBID}: ")
+    if len( liglike_polys ) < 1: print("None found. Exited."); exit(1)
+    for polyref in liglike_polys:
+        parse_polymer_nbhd(polyref, structure)
 
-    if LIGID == None:
-        print("looking for ligand-like polymers in struct", PDBID)
-        struct_ligands = n1([ *filter(dropions, get_liglike_polymers(PDBID) ) ],dtype=object)
-        print(f"\tParsing ligands for structure {PDBID}: ")
-        print("Found:",end="")
-        pprint(struct_ligands)
-        if len( struct_ligands ) < 1: print("None found. Exited."); exit(1)
-        for l in struct_ligands:
-            parse_and_save_ligand(l[0].upper(), PDBID)
-    else:
-        parse_and_save_ligand(LIGID.upper(),PDBID)
-
-    print("\t\t\t\033[92m - \033[0m")
+    print("\t\t\t * \033[0m")
 

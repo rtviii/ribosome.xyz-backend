@@ -16,6 +16,7 @@ import {
   Polymer_Entity,
 } from "./rcsb.gql.response-shape";
 import {gql, useQuery} from '@apollo/client'
+import _ from "lodash";
 
 
 // Renamed, added so far:  host organisms, host ids, srcids srcnames
@@ -110,15 +111,21 @@ const matchRPNomenclature = (
   polymer: Polymer_Entity
 ): ProteinClass[] => {
 
-  var banregex = /([ueb][ls]\d{1,2})/gi
+  var banregex = /\b([ueb][ls]\d{1,2})\b/gi
+
   // * check authors's annotations. if classes are present --> use that.
   var finds = banregex.exec(polymer.rcsb_polymer_entity.pdbx_description)
   if (finds !== null) {
     var firstcap = finds[0]
-    var name = (firstcap[0].toLowerCase() + firstcap[1].toUpperCase() + firstcap.slice(2)) as ProteinClass
+    var name     = (
+      firstcap[0].toLowerCase() 
+    + firstcap[1].toUpperCase() 
+    + firstcap.slice(2)
+    ) as ProteinClass
+
     return [name]
   }
-  // * then resort to pfams
+  // * otherwise resort to pfams
   if (!polymer.pfams) {
     return []
   } else {
@@ -138,7 +145,7 @@ const matchRPNomenclature = (
       });
     });
 
-    return uniq(nomenclature)
+    return _.uniq(nomenclature)
   }
 };
 
