@@ -54,9 +54,6 @@ def get_all_ligands(request):
     return Response(_neoget(CYPHER_STRING))
 
 
-
-
-
 @api_view(['GET', 'POST'])
 def get_all_ligandlike(request):
     CYPHER_STRING = """

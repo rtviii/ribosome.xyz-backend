@@ -159,7 +159,7 @@ def get_ligand_nbhd(request):
     chemid = params['chemid'][0].upper()
 
     filename   = "LIGAND_{}.json".format(chemid)
-    filehandle = os.path.join(STATIC_ROOT, struct, filename)
+    filehandle = os.path.join(os.environ.get("STATIC_ROOT"), struct, filename)
 
     try:
         with open(filehandle) as infile:
