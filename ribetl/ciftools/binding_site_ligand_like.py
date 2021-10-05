@@ -1,11 +1,11 @@
 from ast import expr_context
 import builtins
 from cmath import log
+from pathlib import Path
 import pdb
 from pydoc import resolve
 import struct
-from neo4j_connector.views import get_struct
-from ribetl.ciftools.neoget import _neoget
+# from ribetl.ciftools.neoget import _neoget
 import dataclasses
 import json
 from pprint import pprint
@@ -27,6 +27,7 @@ from dataclasses import dataclass,field
 from asyncio import run
 import itertools
 import numpy as np
+
 flatten = itertools.chain.from_iterable
 n1      = np.array
 
@@ -249,8 +250,36 @@ def parse_and_save_ligand(ligid:str, rcsbid:str):
     bs.to_json(outfile_json)
 
 
-if __name__ =="__main__" :
 
+
+# ! some data classes are due. Nope. don't complicate it.
+# Grab chain ---> residues ---> apply neighbor search on  sparsely. done.
+
+
+
+
+
+def get_liglike_polymers(struct:str):
+    with open(struct_path(struct,'json'),'r') as infile:
+        profile = json.load(infile)
+    liglike = []
+    for i in [*profile['rnas'], *profile['proteins']]:
+        if i['ligand_like'] == True:
+            # print("found" ,i)
+            liglike = [*liglike, i]
+    return liglike
+
+
+
+if __name__ =="__main__" :
+    
+    def root_self(rootname:str='')->str:
+        """Returns the rootpath for the project if it's unique in the current folder tree."""
+        root=os.path.abspath(__file__)[:os.path.abspath(__file__).find(rootname)+len(rootname)]
+        sys.path.append(root)
+    root_self('ribetl')
+
+    from ciftools.neoget import _neoget
     parser      = argparse.ArgumentParser(                                             )
     parser .add_argument ('-l','--ligand'    , type  = str                )
     parser .add_argument ('-s','--structure' , type  = str ,required =True)
@@ -265,8 +294,8 @@ if __name__ =="__main__" :
     print("\t\t\t\033[92m * \033[0m")
 
     if LIGID == None:
-        struct_ligands = n1([ *filter(dropions, get_lig_ids_struct(PDBID) ) ],dtype=object)
-
+        print("looking for ligand-like polymers in struct", PDBID)
+        struct_ligands = n1([ *filter(dropions, get_liglike_polymers(PDBID) ) ],dtype=object)
         print(f"\tParsing ligands for structure {PDBID}: ")
         print("Found:",end="")
         pprint(struct_ligands)
