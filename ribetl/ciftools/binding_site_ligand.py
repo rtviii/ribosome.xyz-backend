@@ -1,4 +1,4 @@
-from ribetl.ciftools.neoget import _neoget
+import sys# from ribetl.ciftools.neoget import _neoget
 import dataclasses
 import json
 from pprint import pprint
@@ -19,6 +19,14 @@ import numpy as np
 
 flatten = itertools.chain.from_iterable
 n1      = np.array
+def struct_path(pdbid:str, pftype: str ):
+
+    if pftype == 'cif':
+        return os.path.join(STATIC_ROOT, pdbid.upper(),f"{pdbid.upper()}.cif")
+
+    if pftype == 'json':
+        return os.path.join(STATIC_ROOT, pdbid.upper(),f"{pdbid.upper()}.json")
+
 
 load_dotenv(dotenv_path='/home/rxz/dev/riboxyzbackend/rxz_backend/.env'      )
 STATIC_ROOT = os.environ.get('STATIC_ROOT')
@@ -62,15 +70,6 @@ NUCLEOTIDES = ['A','T','C','G','U']
 
 #? KIR:
 # 5afi, 4v8q, 4v5s,4v5g, 
-
-
-def vprint(*args, **kwargs):
-    if VERBOSE:print(*args,**kwargs) 
-    else:...
-def vpprint(*args, **kwargs):
-    if VERBOSE:pprint(*args,**kwargs) 
-    else:...
-
 
 
 @dataclass(unsafe_hash=True, order=True)
@@ -125,22 +124,6 @@ def getLigandResIds(ligchemid:str, struct: Structure)->List[Residue]:
     ligandResidues: List[Residue] = list(filter(lambda x: x.get_resname() == ligchemid, list( struct.get_residues() )))
     return ligandResidues
 
-async def matchStrandToClass(pdbid:str, strand_id:str)->List[str]:
-    """Request Ban nomenclature classes from the db given a protein's entity_poly_strand_id."""
-
-    RPCYPHER="""
-    match (r:RibosomeStructure{{rcsb_id: "{}"}})-[]-(rp{{entity_poly_strand_id:"{}"}})-[]-(n:ProteinClass)
-    return n.class_id""".format(pdbid.upper(), strand_id)
-
-    RNACYPHER="""
-    match (r:RibosomeStructure{{rcsb_id: "{}"}})-[]-(rp{{entity_poly_strand_id:"{}"}})-[]-(n:RNAClass)
-    return n.class_id""".format(pdbid.upper(), strand_id)
-
-    rpresp  = _neoget(RPCYPHER)
-    rnaresp = _neoget(RNACYPHER)
-    resp    = [*rpresp,*rnaresp]
-    return resp
-
 def openStructutre(pdbid:str, cifpath: str = None)->Structure:
     pdbid = pdbid.upper()
     if cifpath == None: cifpath = os.path.join(STATIC_ROOT, pdbid, f'{pdbid}.cif')
@@ -155,12 +138,12 @@ def openLigand(pdbid:str, ligid:str, ligpath: str = None):
             data = json.load(infile)
     return  data
 
-def get_lig_ids_struct(pdbid:str)->List[str]:
-    pdbid=pdbid.upper() 
-    db_response     = _neoget("""
-    match (l:Ligand)-[]-(r:RibosomeStructure{{rcsb_id:"{pdbid}"}}) 
-    return l.chemicalId, l.chemicalName """.format_map({ "pdbid":pdbid }))
-    return db_response
+def get_lig_ids_struct(pdbid:str)->List[tuple]:
+    pdbid       = pdbid.upper()
+    with open(struct_path(pdbid,'json'),'r') as infile:
+        profile = json.load(infile)
+
+    return [* map(lambda x: ( x['chemicalId'],x['chemicalName'] ), profile['ligands'])]
 
 
 def get_ligand_nbrs(
@@ -179,7 +162,6 @@ def get_ligand_nbrs(
         profile       = json.load(strfile)
         poly_entities = [*profile['proteins'], *profile['rnas']]
 
-    vprint(f"Parsing ligand {lig_chemid}...")
 
     pdbid = struct.get_id()
     ns           = NeighborSearch(list(struct.get_atoms()))
@@ -216,11 +198,6 @@ def get_ligand_nbrs(
                     asymid       = poly_entity['asym_ids'                       ]
                     seq          = poly_entity['entity_poly_seq_one_letter_code']
 
-        # #!RESP may arrive as a single 3-tuple of strand, asymid and sequence or might be an array of 3-tuples of chains whose strand ids contained the queried name. Then filter.
-        # cypher=f"""match (n:RibosomeStructure{{rcsb_id:"{struct.get_id().upper()}"}})-[]-(x) where x.entity_poly_strand_id contains "{c}"
-        #     return x.entity_poly_strand_id, x.asym_ids,x.entity_poly_seq_one_letter_code"""
-        # resp = _neoget(cypher)
-        # nomenclature  = list(flatten(run(matchStrandToClass(pdbid,c))))
 
         nbr_dict[c]= BindingSiteChain(
             seq,
@@ -228,7 +205,7 @@ def get_ligand_nbrs(
             asymid ,
             sorted([residue for residue in nbr_residues if residue.parent_strand_id == c], key=operator.attrgetter('residue_id')))
 
-    vpprint(nbr_dict)
+    print(nbr_dict)
     return BindingSite(nbr_dict)
 
 def dropions(s:str): return False if "ion" in s[1].lower() else  True
@@ -253,30 +230,22 @@ def parse_and_save_ligand(ligid:str, rcsbid:str):
 
 
 if __name__ =="__main__" :
+    def root_self(rootname:str=''):
+        """Returns the rootpath for the project if it's unique in the current folder tree."""
+        """"Sure, it's a hack. Python modules suc """
+        root=os.path.abspath(__file__)[:os.path.abspath(__file__).find(rootname)+len(rootname)]
+        sys.path.append(root)
 
+    root_self('ribetl')
     parser      = argparse.ArgumentParser(                                             )
-    parser .add_argument ('-l','--ligand'    , type  = str                )
     parser .add_argument ('-s','--structure' , type  = str ,required =True)
-    parser .add_argument ('-V','--verbose'   , action='store_true'        )
-    parser .add_argument ('-f','--force'     , action='store_true'        )
-    args = parser.parse_args()
+    args  = parser.parse_args()
+    PDBID = args.structure.upper()
 
-    VERBOSE     = args.verbose
-    PDBID       = args.structure.upper()
-    LIGID       = args.ligand
-
-    print("\t\t\t\033[92m * \033[0m")
-
-    if LIGID == None:
-        struct_ligands = n1([ *filter(dropions, get_lig_ids_struct(PDBID) ) ],dtype=object)
-        print(f"\tParsing ligands for structure {PDBID}: ")
-        print("Found:",end="")
-        pprint(struct_ligands)
-        if len( struct_ligands )<1: print("None found. Exited."); exit(1)
-        for l in struct_ligands:
-            parse_and_save_ligand(l[0].upper(), PDBID)
-    else:
-        parse_and_save_ligand(LIGID.upper(),PDBID)
+    struct_ligands = n1([ *filter(lambda x: "ion" not in x[1].lower() , get_lig_ids_struct(PDBID) ) ],dtype=object)
+    if len( struct_ligands )<1: print("None found. Exited."); exit(1)
+    for l in struct_ligands:
+        parse_and_save_ligand(l[0].upper(), PDBID)
 
     print("\t\t\t\033[92m - \033[0m")
 

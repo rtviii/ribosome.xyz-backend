@@ -1,14 +1,22 @@
+from ast import expr_context
+import builtins
+from cmath import log
+from pathlib import Path
+import pdb
+from pydoc import resolve
+import struct
 # from ribetl.ciftools.neoget import _neoget
 import dataclasses
 import json
 from pprint import pprint
+from neo4j import GraphDatabase, Result
 from dotenv import load_dotenv
 import os
-from typing import Dict, List
+from typing import Dict, List, Tuple, TypedDict, Union, Callable
 import operator
 import sys
 import pandas as pd
-from Bio.PDB.MMCIFParser import FastMMCIFParser
+from Bio.PDB.MMCIFParser import FastMMCIFParser, MMCIFParser
 from Bio.PDB.NeighborSearch import NeighborSearch
 from Bio.PDB.Residue import Residue
 from Bio.PDB.Structure import Structure
@@ -16,11 +24,11 @@ from Bio.PDB.Chain import Chain
 import argparse
 import itertools
 from dataclasses import dataclass,field
+from asyncio import run
 import itertools
 import numpy as np
 
 flatten = itertools.chain.from_iterable
-
 
 
 load_dotenv(dotenv_path='/home/rxz/dev/riboxyzbackend/rxz_backend/.env')
@@ -95,7 +103,6 @@ class BindingSiteChain:
       sequence        : str
       nomenclature    : List[str]
       asym_ids        : List[str]
-      auth_asym_ids   : List[str]
       residues        : List[ResidueLite]
 
 class BindingSite:
@@ -110,15 +117,15 @@ class BindingSite:
             print(f"\033[91mSaved  {pathtofile} successfuly.\033[0m")
 
     def to_csv(self,pathtofile:str)->None:
-        ...
-        # k = [
-        #     "chainname",
-        #     "nomenclature",
-        #     "residue_id",
-        #     "residue_name"
-        # ]
 
-        # serialized = dict.fromkeys(k,[])
+        k = [
+        "chainname",
+        "nomenclature",
+        "residue_id",
+        "residue_name"
+        ]
+
+        serialized = dict.fromkeys(k,[])
 
 def get_poly_nbrs(
         asym_id      : str,
@@ -227,7 +234,19 @@ def get_liglike_polymers(struct:str)->List[PolymerRefs]:
 
     return liglike
 
-      
+
+async def matchStrandToClass(pdbid:str, strand_id:str)->List[str]:
+    """Request Ban nomenclature classes from the db given a protein's entity_poly_strand_id."""
+    with open(struct_path(pdbid, 'json'),'r') as infile:
+        profile=  json.load(infile)
+    for p in profile['proteins']:
+        if p['entity_poly_strand_id'] == strand_id:
+            return p['nomenclature']
+    for r in profile['rnas']:
+        if r['entity_poly_strand_id'] == strand_id:
+            return r['nomenclature']
+    return []
+
 if __name__ =="__main__" :
     
     def root_self(rootname:str=''):
