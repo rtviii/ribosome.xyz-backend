@@ -17,6 +17,8 @@ from dataclasses import dataclass,field
 import itertools
 import numpy as np
 
+from ribetl.ciftools.binding_site_ligand_like import open_structure
+
 flatten = itertools.chain.from_iterable
 n1      = np.array
 def struct_path(pdbid:str, pftype: str ):
@@ -118,9 +120,6 @@ class BindingSite:
         pprint(serialized)
 
 def getLigandResIds(ligchemid:str, struct: Structure)->List[Residue]:
-    """Returns a list of dictionaries specifying each _ligand_ of type @ligchemid as a biopython-residue inside a given @struct."""
-    """*ligchemids are of type https://www.rcsb.org/ligand/IDS"""
-
     ligandResidues: List[Residue] = list(filter(lambda x: x.get_resname() == ligchemid, list( struct.get_residues() )))
     return ligandResidues
 
@@ -210,22 +209,12 @@ def get_ligand_nbrs(
 
 def dropions(s:str): return False if "ion" in s[1].lower() else  True
 
-def parse_and_save_ligand(ligid:str, rcsbid:str):
+def parse_and_save_ligand(ligid:str, rcsbid:str, structure:Structure):
 
-    print(rcsbid.upper())
-    print(ligid)
     STATIC_ROOT = os.environ.get('STATIC_ROOT')
-    print(STATIC_ROOT)
-
     outfile_json = os.path.join(STATIC_ROOT,rcsbid.upper(), f'LIGAND_{ligid}.json')
-
-
-    print("\033[92m GOT PATH {} \033[0m".format(outfile_json))
-
-    struct                   = openStructutre  (rcsbid                   )
-    residues : List[Residue] = getLigandResIds (ligid  , struct          )
-    bs:BindingSite           = get_ligand_nbrs (ligid ,residues , struct )
-
+    residues : List[Residue] = getLigandResIds (ligid  , structure          )
+    bs:BindingSite           = get_ligand_nbrs (ligid ,residues , structure )
     bs.to_json(outfile_json)
 
 
@@ -242,10 +231,11 @@ if __name__ =="__main__" :
     args  = parser.parse_args()
     PDBID = args.structure.upper()
 
+    _struct = open_structure(PDBID)
     struct_ligands = n1([ *filter(lambda x: "ion" not in x[1].lower() , get_lig_ids_struct(PDBID) ) ],dtype=object)
     if len( struct_ligands )<1: print("None found. Exited."); exit(1)
     for l in struct_ligands:
-        parse_and_save_ligand(l[0].upper(), PDBID)
+        parse_and_save_ligand(l[0].upper(), PDBID, _struct)
 
     print("\t\t\t\033[92m - \033[0m")
 

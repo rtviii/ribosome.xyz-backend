@@ -1,3 +1,4 @@
+import argparse
 from ctypes import alignment
 import dataclasses
 import operator
@@ -17,15 +18,21 @@ from Bio import pairwise2
 import itertools
 from asyncio import run
 import itertools
+
+from dotenv import load_dotenv
+from bsite_mixed import BindingSite, open_structure
 import numpy as np
-import ribetl.ciftools.binding_site_ligand as bsite
 flatten = itertools.chain.from_iterable
 n1      = np.array
 
 
+
 class SeqMatch:
 
-	def __init__(self,sourceseq:str,targetseq:str, source_residues:List[int]) -> None:
+	def __init__(self,
+		sourceseq:str,
+		targetseq:str, 
+		source_residues:List[int]) -> None:
 		"""A container for origin and target sequences when matching the resiudes of a ligand binding site
 		to another protein's sequence through BioSeq's Align
 		 """
@@ -136,12 +143,33 @@ class SeqMatch:
 # target_struct = str(sys.argv[2] ).upper()
 # ligand        = str(sys.argv[3]).upper()
 
-def init_transpose_ligand(source_struct,target_struct, ligand):
+def open_bsite(
+	  poly_lig_flag    : str,
+	  rcsb_id          : str,
+	  auth_asym_id     : Union[str, bool]=False,
+	  ligand_chemicalId: Union[str, bool]=False
+	)->BindingSite or FileNotFoundError     : 
 
-	with open(os.path.join(os.getenv('STATIC_ROOT' ),source_struct,f'LIGAND_{ligand}.json'), 'rb') as infile:
-		data = json.load(infile)
-	bs = bsite.BindingSite(data)
+	if poly_lig_flag == 'polymer':
+		with open(os.path.join(os.getenv('STATIC_ROOT' ),rcsb_id,f'POLYMER_{auth_asym_id}.json'), 'rb') as infile:
+			data = json.load(infile)
+		return BindingSite(data)
 
+	else:
+		assert(poly_lig_flag=='ligand')
+		with open(os.path.join(os.getenv('STATIC_ROOT' ),rcsb_id,f'LIGAND_{ligand_chemicalId}.json'), 'rb') as infile:
+			data = json.load(infile)
+		return BindingSite(data)
+	
+
+
+
+def init_transpose_ligand(
+	source_struct: str,
+	target_struct: str,
+	target_json_handle:dict,
+	binding_site : BindingSite
+	)->dict            : 
 
 	origin_chains = {
 	}
@@ -151,43 +179,49 @@ def init_transpose_ligand(source_struct,target_struct, ligand):
 
 
 	#* For every chain in a ligand file, if it has nomenclature, append its residues, strand and sequence
-	for chain in bs.data:
-		if len(bs.data[chain]['nomenclature'] ) <1:
+	for chain in binding_site.data:
+		print(binding_site[chain])
+		if len(binding_site[chain]['residues'] ) <1:
 			continue
 		else:
 			resids :List[int] = [
-				resid for  resid in [*map(lambda x : x['residue_id'], bs.data[chain]['residues'])]
+				resid for  resid in [*map(lambda x : x['residue_id'], binding_site[chain]['residues'])]
 			]
-			origin_chains[bs.data[chain]['nomenclature'][0]] = {
-				'strand': chain,
-				'seq'   : bs.data[chain]['sequence'],
-				'ids'   : resids
+			origin_chains[binding_site.data[chain]['nomenclature'][0]] = {
+				'strand'       : chain,
+				'seq'          : binding_site.data[chain]['sequence'],
+				'auth_asym_ids': binding_site.data[chain][ 'auth_asym_ids' ],
+				'ids'          : resids
 			}
 
+	target_polymers = [*target_json_handle['rnas'],*target_json_handle['proteins']]
 	for nom in origin_chains:
+		print("Got chain name,", nom)
+		print("attempting to match")
 		name_matches = []
-		cypher       = f"""match (n:RibosomeStructure {{rcsb_id:"{target_struct}"}})-[]-(c)-[]-(r {{class_id:"{nom}"}}) return c.entity_poly_seq_one_letter_code, c.entity_poly_strand_id, c.asym_ids"""
-		response     = bsite._neoget(cypher)
-		if len( response )  < 1:
-			print(f"No chain-class matches for {nom} in {target_struct} in the database.")
-			continue
-		else:
-			match = response[0]
 
-		seq                 = match[0]
-		strand              = match[1]
-		asymid              = match[2][0]
+		#* goal is to look up the chain in the targe struct __by nomenclature__
+
+		matches =  [*filter(lambda tgt_poly: nom in tgt_poly['nomenclature'], target_polymers)]
+		if len( matches )  < 1:
+			continue
+
+		
+
+		seq           = matches[0]['entity_poly_seq_one_letter_code'] #----------------------------------------> [ Major handwaving with respect to duplicate auth_asym_ids by always grabbing the first of (possibly) multiple matches]
+		strand        = matches[0]['entity_poly_strand_id']
+		asymid        = matches[0]['asym_ids']
+		auth_asym_ids = matches[0]['auth_asym_ids']
 
 		target_chains[nom] ={
-			'seq'   : seq,
-			'strand': strand,
-			'asymid': asymid,
+			'seq'          : seq,
+			'strand'       : strand,
+			'asymid'       : asymid,
+			'auth_asym_ids': auth_asym_ids
 		}
-	#! """Only the chains with nomenclature matches in source and origin make their way into the prediction file """
+
 
 	prediction ={}
-
-
 	for name in origin_chains:
 		if name not in target_chains:
 			continue
@@ -201,7 +235,6 @@ def init_transpose_ligand(source_struct,target_struct, ligand):
 		tgt_aln = sq.tgt_aln
 
 		aln_ids = sq.aligned_ids
-
 		tgt_ids = sq.tgt_ids
 
 		prediction[name] = {
@@ -222,20 +255,69 @@ def init_transpose_ligand(source_struct,target_struct, ligand):
 			},
 		}
 
-		print(f"Chain {name}")
-		print("Source length:", len(sq.src))
-		print("Target length:", len(sq.tgt))
+		# print(f"Chain {name}")
+		# print("Source length:", len(sq.src))
+		# print("Target length:", len(sq.tgt))
 		# print("Aligned ids" , src_ids)
 		# print("To ------->" , sq        .aligned_ids  )
 		# print("To targets :", sq        .tgt_ids      )
 
 
-		print("ORG   : \t",SeqMatch.hl_ixs(sq.src    , sq.src_ids    ),"\n")
+		# print("ORG   : \t",SeqMatch.hl_ixs(sq.src    , sq.src_ids    ),"\n")
 		# print("ORG AL: \t",SeqMatch.hl_ixs(sq.src_aln, sq.aligned_ids),"\n")
 		# print("TGT AL: \t",SeqMatch.hl_ixs(sq.tgt_aln, sq.aligned_ids),"\n")
-		print("TGT   : \t",SeqMatch.hl_ixs(sq.tgt    , sq.tgt_ids    ),"\n")
+		# print("TGT   : \t",SeqMatch.hl_ixs(sq.tgt    , sq.tgt_ids    ),"\n")
 
-	fname = f'PREDICTION_{ligand}_{source_struct}_{target_struct}.json'
-	with open(os.path.join(os.getenv('STATIC_ROOT' ),target_struct,fname), 'w') as outfile:
+	return prediction
+
+
+if __name__ =="__main__":
+
+
+	load_dotenv(dotenv_path='/home/rxz/dev/riboxyzbackend/rxz_backend/.env')
+	STATIC_ROOT = os.environ.get('STATIC_ROOT')
+	def root_self(rootname: str = ''):
+		"""Returns the rootpath for the project if it's unique in the current folder tree."""
+		root = os.path.abspath(__file__)[:os.path.abspath(
+		__file__).find(rootname)+len(rootname)]
+		sys.path.append(root)
+
+	root_self('ribetl')
+
+	prs = argparse.ArgumentParser()
+
+	prs.add_argument('-src', '--source_structure', type=str, required=True)
+	prs.add_argument('-tgt', '--target_structure', type=str, required=True)
+	prs.add_argument('-poly', '--polymer', type=str)
+	prs.add_argument('-lig' , '--ligand' , type=str)
+
+	args = prs.parse_args()
+
+
+
+
+	SRC_STRUCT = args.source_structure.upper()
+	TGT_STRUCT = args.target_structure.upper()
+
+	LIG   = args.ligand if args.ligand is not None else False
+	POLY  = args.polymer if args.polymer is not None else False
+	if LIG:
+		bsite_path = os.path.join(STATIC_ROOT, SRC_STRUCT, f"LIGAND_{LIG}.json")
+	elif POLY:
+		bsite_path = os.path.join(STATIC_ROOT, SRC_STRUCT, f"POLYMER_{POLY}.json")
+	else:
+		raise argparse.ArgumentTypeError("Provide either a ligand chem. id or a ligand-like polymer's auth_asym_id.")
+
+	_target_handle_json = open_structure(TGT_STRUCT,'json')
+	bsite      = open_bsite(
+		"ligand" if LIG else "polymer",
+		SRC_STRUCT,
+		auth_asym_id      = POLY,
+		ligand_chemicalId = LIG)
+
+	prediction = init_transpose_ligand(SRC_STRUCT,TGT_STRUCT,_target_handle_json,bsite)
+
+	fname = f'PREDICTION_{LIG if LIG else POLY}_{SRC_STRUCT}_{TGT_STRUCT}.json'
+	with open(os.path.join(os.getenv('STATIC_ROOT' ),TGT_STRUCT,fname), 'w') as outfile:
 		json.dump(prediction,outfile)
-		print("Sucessfully saved prediction {}".format(fname))
+		print("\033[093mSucessfully saved prediction {}\033[0m".format(fname))

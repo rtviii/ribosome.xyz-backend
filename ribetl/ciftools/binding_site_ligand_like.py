@@ -57,11 +57,11 @@ def struct_path(pdbid:str, pftype: str ):
 
     if pftype == 'cif':
         return os.path.join(STATIC_ROOT, pdbid.upper(),f"{pdbid.upper()}.cif")
-
     if pftype == 'json':
         return os.path.join(STATIC_ROOT, pdbid.upper(),f"{pdbid.upper()}.json")
 
 def open_structure(pdbid:str, cifpath: str = None)->Structure:
+
     pdbid = pdbid.upper()
     if cifpath == None: cifpath = os.path.join(STATIC_ROOT, pdbid, f'{pdbid}.cif')
     return FastMMCIFParser(QUIET=True).get_structure(pdbid,cifpath)
@@ -133,9 +133,6 @@ def get_poly_nbrs(
     ns           = NeighborSearch(list(struct.get_atoms()))
     nbr_residues = []
 
-    # print(f"Ligand has len(ligand_residues) residue(s).")
-    #? Searching Phase
-    # a ligand consists of residues
     for poly_res in residues:
         for atom in poly_res.child_list:
                 nbr_residues.extend(ns.search(atom.get_coord(), 10,level='R'))
@@ -201,13 +198,11 @@ def parse_polymer_nbhd(poly:PolymerRefs, structure:Structure):
         bs:BindingSite           = get_poly_nbrs(asym_id,residues , structure )
         bs.to_json(outfile_json)
 
-
 # ! some data classes are due. Nope. don't complicate it.
 # Grab chain ---> residues ---> apply neighbor search on  sparsely. done.
 
-
-
 def get_liglike_polymers(struct:str)->List[PolymerRefs]:
+
     """Given an rcsb id, open the profile for the corresponding structure 
     and return references to all polymers marked ligand-like"""
 
