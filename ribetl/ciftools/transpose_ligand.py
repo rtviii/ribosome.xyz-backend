@@ -196,8 +196,6 @@ def init_transpose_ligand(
 
 	target_polymers = [*target_json_handle['rnas'],*target_json_handle['proteins']]
 	for nom in origin_chains:
-		print("Got chain name,", nom)
-		print("attempting to match")
 		name_matches = []
 
 		#* goal is to look up the chain in the targe struct __by nomenclature__
