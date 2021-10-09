@@ -276,6 +276,7 @@ def get_ligand_nbrs(
                     asymid = poly_entity['asym_ids']
                     auth_asymids = poly_entity['auth_asym_ids']
                     seq = poly_entity['entity_poly_seq_one_letter_code']
+
             elif c == poly_entity['entity_poly_strand_id']:
                 nomenclature = poly_entity['nomenclature']
                 strands = poly_entity['entity_poly_strand_id']

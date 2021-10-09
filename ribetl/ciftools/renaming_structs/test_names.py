@@ -5,6 +5,27 @@ from Bio.PDB.Chain import Chain
 from Bio.PDB.Model import Model
 from Bio.PDB.mmcifio import MMCIFIO
 import os, sys
+import ribetl.ciftools.dict_ops as dict_ops
+import ribetl.ciftools.bsite_mixed as bsite
+import os, sys
+import json
+import dotenv
+
+PDBID       = sys.argv[1].upper()
+dotenv.load_dotenv(dotenv_path='/home/rxz/dev/riboxyzbackend/rxz_backend/.env')
+STATIC_ROOT = os.environ.get('STATIC_ROOT')
+
+structprofile           = bsite.open_structure(PDBID, 'json')
+struct_cif   :Structure = bsite.open_structure(PDBID, 'cif' )
+
+def make_nom_dict(profile):
+	nomdict = {}
+	for i in [*profile['rnas'], *profile['proteins']]:
+		for aa in  i['auth_asym_ids']:
+			nomdict[aa]  = i['nomenclature']
+
+	return nomdict
+
 
 
 
@@ -12,7 +33,6 @@ pdbid           = str(sys.argv[1]).upper()
 struct_filename = str(sys.argv[2])
 parser          = FastMMCIFParser              (QUIET=True                )
 io              = MMCIFIO                      (                          )
-# struct:Structure= parser         .get_structure(pdbid, struct_filename)
 struct= parser.get_structure('somestruct', '4UG0_STRAND_Lh.cif')
 
 print (struct[0].child_dict['Lh'])
