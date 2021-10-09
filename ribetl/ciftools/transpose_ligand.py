@@ -18,9 +18,8 @@ from Bio import pairwise2
 import itertools
 from asyncio import run
 import itertools
-
 from dotenv import load_dotenv
-from bsite_mixed import BindingSite, open_structure
+from ribetl.ciftools.bsite_mixed import BindingSite, open_structure
 import numpy as np
 flatten = itertools.chain.from_iterable
 n1      = np.array
@@ -53,16 +52,10 @@ class SeqMatch:
 		for src_resid in self.src_ids:
 			self.aligned_ids.append(self.forwards_match(self.src_aln,src_resid))
 
-
 		self.aligned_ids = list(filter(lambda x: x != None, self.aligned_ids ))
 
 		for aln_resid in self.aligned_ids:
-			print(len(self.tgt_aln))
-			print(self.tgt_aln)
-			print(self.aligned_ids)
-			print("looking for res", aln_resid)
 			if self.tgt_aln[aln_resid] == '-':
-				print("Omitting aligned residue ", aln_resid)
 				continue
 			self.tgt_ids.append(self.backwards_match(self.tgt_aln,aln_resid))
 
@@ -161,9 +154,6 @@ def open_bsite(
 			data = json.load(infile)
 		return BindingSite(data)
 	
-
-
-
 def init_transpose_ligand(
 	source_struct: str,
 	target_struct: str,
@@ -180,8 +170,8 @@ def init_transpose_ligand(
 
 	#* For every chain in a ligand file, if it has nomenclature, append its residues, strand and sequence
 	for chain in binding_site.data:
-		print(binding_site[chain])
-		if len(binding_site[chain]['residues'] ) <1:
+		# print(binding_site[chain])
+		if len(binding_site[chain]['nomenclature'] ) <1:
 			continue
 		else:
 			resids :List[int] = [
@@ -262,8 +252,8 @@ def init_transpose_ligand(
 
 
 		# print("ORG   : \t",SeqMatch.hl_ixs(sq.src    , sq.src_ids    ),"\n")
-		# print("ORG AL: \t",SeqMatch.hl_ixs(sq.src_aln, sq.aligned_ids),"\n")
-		# print("TGT AL: \t",SeqMatch.hl_ixs(sq.tgt_aln, sq.aligned_ids),"\n")
+		print("ORG AL: \t",SeqMatch.hl_ixs(sq.src_aln, sq.aligned_ids),"\n")
+		print("TGT AL: \t",SeqMatch.hl_ixs(sq.tgt_aln, sq.aligned_ids),"\n")
 		# print("TGT   : \t",SeqMatch.hl_ixs(sq.tgt    , sq.tgt_ids    ),"\n")
 
 	return prediction
