@@ -78,4 +78,4 @@ with rp,struct,value,pf
 
 match (n:Protein) where n.nomenclature[0] is not null
 merge (nc:ProteinClass {class_id:n.nomenclature[0]})
-merge (n)-[:member_of]->(nc)" | cypher-shell
+merge (n)-[:member_of]->(nc)" | cypher-shell --database riboxyz
