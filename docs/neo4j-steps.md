@@ -9,6 +9,7 @@ neologin="sudo -u neo4j /bin/cypher-shell -u neo4j -p 55288"
 ```
 
 
+CERTS: https://stackoverflow.com/a/58127788/10697358
 
 
 - get apoc : [ `https://github.com/neo4j-contrib/neo4j-apoc-procedures/releases` ](https://github.com/neo4j-contrib/neo4j-apoc-procedures/releases) <--from here. `wget` the "all" `.jar` into `/var/lib/neo4j/plugins`. Restart the database.

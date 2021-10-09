@@ -18,6 +18,8 @@ rxzvenv/
 **/*.part
 **/*.pem
 **/*.json
-**/downloads2021sept/**
+!LSUMap.json
+!SSUMap.json
 
+**/downloads2021sept/**
 **/settings.py
