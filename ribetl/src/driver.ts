@@ -93,8 +93,6 @@ export const updateCatalogueWStruct = async (
 })()
 
 
-
-
 type CatalogueEntry = {
   [rcsb_id: string]: {
     status            : boolean,

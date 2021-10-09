@@ -5,12 +5,11 @@ def _neoget(CYPHER_STRING:str):
 
     print("PASSSWORD IS ", os.getenv("NEO4J_PASSWORD"))
     driver = GraphDatabase.driver(
-    #     os.getenv( 'NEO4J_URI' ),
-    #     auth=(
-    #     os.getenv( 'NEO4J_USER' ),
-    #     os.getenv( 'NEO4J_PASSWORD')
-    # )
-    'bolt://ribosome.xyz/7687',auth=('rt','rrr')
+        os.getenv( 'NEO4J_URI' ),
+        auth=(
+        os.getenv( 'NEO4J_USER' ),
+        os.getenv( 'NEO4J_PASSWORD')
+    )
     )
 
     def parametrized_query(tx, **kwargs):
@@ -36,5 +35,4 @@ def get_nom_cmap(rcsb_id:str)->dict:
                 continue
         else:
             cmap[resp_chain[0]] = resp_chain[1]
-
     return cmap

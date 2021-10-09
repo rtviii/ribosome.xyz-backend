@@ -91,14 +91,6 @@ def fetch_strand(structid:str,strandid:str)->FileWrapper:
     return doc
 
 
-@api_view(['GET','POST'])
-def get_static_catalogue(request):
-    file_handle = os.path.join(os.getenv('STATIC_ROOT'),'static_files_catalogue.json')
-    with open(file_handle) as infile:
-        catalogue = json.load(infile)
-        print(catalogue)
-    return Response(catalogue)
-
 
 @api_view(['GET','POST'])
 def get_chain(request):
@@ -167,11 +159,8 @@ def get_ligand_nbhd(request):
     chemid = params['chemid'][0].upper()
 
     filename   = "LIGAND_{}.json".format(chemid)
-    filehandle = os.path.join(STATIC_ROOT, struct, filename)
-    print(">>>>>>>>>>>>>>>>>>>\033[93m Attempting to open \033[0m", filehandle)
+    filehandle = os.path.join(os.environ.get("STATIC_ROOT"), struct, filename)
 
-
-    print("got params", filehandle)
     try:
         with open(filehandle) as infile:
 

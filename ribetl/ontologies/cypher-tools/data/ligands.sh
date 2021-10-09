@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 
-
 filepath=$1
+
 if [ -f $filepath ];
 then
 	file=$(basename $filepath)
@@ -16,20 +16,22 @@ then
 else
 	echo "$filepath is not an acceptable file"
 	exit -1
-fi
+fi 
 
 
+echo "Looking at structure $structid"
 echo "call apoc.load.json(\"file:///static/$structid/$file\") yield value
 with value.rcsb_id as struct, value
        unwind           value.ligands as lig
-       merge            (l:Ligand {
-       chemicalId          : lig.chemicalId         ,
-       chemicalName        : lig.chemicalName       ,
-       formula_weight      : lig.formula_weight     ,
-       pdbx_description    : lig.pdbx_description   ,
-       number_of_instances : lig.number_of_instances
+       merge            (newligand:Ligand {
+	chemicalId          : lig.chemicalId         ,
+	chemicalName        : lig.chemicalName       ,
+	formula_weight      : lig.formula_weight     ,
+	pdbx_description    : lig.pdbx_description   ,
+	number_of_instances : lig.number_of_instances
        })
-with l, value,struct
-match(s:RibosomeStructure {rcsb_id: value.rcsb_id})
-create            (l)<-[:contains_ligand]-(s)
-return l.chemicalId, s.rcsb_id;" | cypher-shell 
+
+  with newligand, value
+  match (s:RibosomeStructure {rcsb_id: value.rcsb_id})
+  merge            (newligand)<-[:contains_ligand]-(s)
+  return s.rcsb_id, newligand.chemicalId " | cypher-shell

@@ -16,6 +16,7 @@ import {
   Polymer_Entity,
 } from "./rcsb.gql.response-shape";
 import {gql, useQuery} from '@apollo/client'
+import _ from "lodash";
 
 
 // Renamed, added so far:  host organisms, host ids, srcids srcnames
@@ -110,15 +111,21 @@ const matchRPNomenclature = (
   polymer: Polymer_Entity
 ): ProteinClass[] => {
 
-  var banregex = /([ueb][ls]\d{1,2})/gi
+  var banregex = /\b([ueb][ls]\d{1,2})\b/gi
+
   // * check authors's annotations. if classes are present --> use that.
   var finds = banregex.exec(polymer.rcsb_polymer_entity.pdbx_description)
   if (finds !== null) {
     var firstcap = finds[0]
-    var name = (firstcap[0].toLowerCase() + firstcap[1].toUpperCase() + firstcap.slice(2)) as ProteinClass
+    var name     = (
+      firstcap[0].toLowerCase() 
+    + firstcap[1].toUpperCase() 
+    + firstcap.slice(2)
+    ) as ProteinClass
+
     return [name]
   }
-  // * then resort to pfams
+  // * otherwise resort to pfams
   if (!polymer.pfams) {
     return []
   } else {
@@ -138,7 +145,7 @@ const matchRPNomenclature = (
       });
     });
 
-    return uniq(nomenclature)
+    return _.uniq(nomenclature)
   }
 };
 
@@ -203,14 +210,17 @@ const inferOrganismsFromPolymers= ( proteins:Protein[] ):Organisms => {
 const extractRefs = (
   external_refs: { link: string; type: string; id: string }[]
 ) => {
-  var externalRefIds  : string[] = [];
-  var externalRefTypes: string[] = [];
-  var externalRefLinks: string[] = [];
-  external_refs.map(ref => {
+
+    var externalRefIds  : string[] = [];
+    var externalRefTypes: string[] = [];
+    var externalRefLinks: string[] = [];
+
+  external_refs === null ? (()=>{})  : external_refs.map(ref => {
     externalRefIds.push(ref.id);
     externalRefTypes.push(ref.type);
     externalRefLinks.push(ref.link);
   });
+
   return [externalRefIds, externalRefTypes, externalRefLinks];
 };
 
@@ -226,7 +236,7 @@ const reshape_ToLigand = (nonpoly: Nonpolymer_Entity): Ligand => {
 
 const is_ligand_like = (plm:Polymer_Entity) =>{
   // ? Look for enzymes, factors and antibiotics
-  var reg =  /(\w*(?<!(cha|pro\w*))in\b)|(\b\w*zyme\b)|(factor)/gi;
+  var reg =  /(\w*(?<!(cha|pro|dom|stra|pl\w*))in\b)|(\b\w*zyme\b)|(factor)/gi;
   const matches=  plm.rcsb_polymer_entity.pdbx_description.match(reg)
   if (matches!== null && 
     !(matches.map(_=>_.toLowerCase()).includes('protein')) && 
@@ -236,16 +246,15 @@ const is_ligand_like = (plm:Polymer_Entity) =>{
     return true
   }
   return false
-
 }
 
 const reshape_PolyEntity_to_rRNA =(plm:Polymer_Entity):RNA =>{
 
-      var src_organism_ids    : number []= uniq(plm.rcsb_entity_source_organism.map(org => org.ncbi_taxonomy_id ));
-      var src_organism_names  : string []= uniq(plm.rcsb_entity_source_organism.map(org => org.scientific_name  ));
+    var src_organism_ids    : number []= plm.rcsb_entity_source_organism ? uniq(plm.rcsb_entity_source_organism.map(org => org.ncbi_taxonomy_id )) :[];
+    var src_organism_names  : string []= plm.rcsb_entity_source_organism ? uniq(plm.rcsb_entity_source_organism.map(org => org.scientific_name  )) : [];
 
-      var host_organism_ids   : number []= plm.rcsb_entity_host_organism ? uniq(plm.rcsb_entity_host_organism.map(org => org.ncbi_taxonomy_id )) : [];
-      var host_organism_names : string []= plm.rcsb_entity_host_organism ? uniq( plm.rcsb_entity_host_organism.map(org => org.scientific_name  ) ) : [];
+    var host_organism_ids   : number []= plm.rcsb_entity_host_organism ? uniq(plm.rcsb_entity_host_organism.map(org => org.ncbi_taxonomy_id )) : [];
+    var host_organism_names : string []= plm.rcsb_entity_host_organism ? uniq( plm.rcsb_entity_host_organism.map(org => org.scientific_name  ) ) : [];
 
   return {
     ligand_like                      : is_ligand_like(plm),
@@ -259,7 +268,7 @@ const reshape_PolyEntity_to_rRNA =(plm:Polymer_Entity):RNA =>{
     src_organism_ids    :src_organism_ids    ,
     src_organism_names  :src_organism_names  ,
 
-    rcsb_pdbx_description              : plm                  .rcsb_polymer_entity.pdbx_description,
+    rcsb_pdbx_description              : plm                  .rcsb_polymer_entity.pdbx_description === null ? "":plm.rcsb_polymer_entity.pdbx_description,
     entity_poly_strand_id              : plm                  .entity_poly.pdbx_strand_id,
     entity_poly_seq_one_letter_code    : plm                  .entity_poly.pdbx_seq_one_letter_code,
     entity_poly_seq_one_letter_code_can: plm                  .entity_poly.pdbx_seq_one_letter_code_can,

@@ -56,10 +56,8 @@ merge                 ( struct                                 :RibosomeStructur
         rcsb_id               : pdbid                                  ,
         expMethod             : exp                                    ,
         resolution            : reso                                   ,
-        citation_year         : cit_year                               ,
         citation_rcsb_authors : cit_authors                            ,
         citation_title        : cit_title                              ,
-        citation_pdbx_doi     : cit_doi                                ,
 
         pdbx_keywords     : kwords     ,
         pdbx_keywords_text: kwordstext,
@@ -73,6 +71,8 @@ merge                 ( struct                                 :RibosomeStructur
         })
 
         on                      create                                  set
-        struct .  rcsb_external_ref_id                    = CASE WHEN ref_id                = null then \"null\" else ref_id END,
-        struct .  rcsb_external_ref_type                  = CASE WHEN ref_type              = null then \"null\" else ref_type END,
-        struct .  rcsb_external_ref_link                  = CASE WHEN ref_link              = null then \"null\" else ref_link END" | cypher-shell 
+        struct.rcsb_external_ref_id                    = CASE WHEN ref_id                = null then \"null\" else ref_id END,
+        struct.rcsb_external_ref_type                  = CASE WHEN ref_type              = null then \"null\" else ref_type END,
+        struct.rcsb_external_ref_link                  = CASE WHEN ref_link              = null then \"null\" else ref_link END,
+        struct.citation_pdbx_doi                       = CASE WHEN cit_doi              = null then \"null\" else ref_link END,
+        struct.citation_year                          = CASE WHEN cit_year              = null then \"null\" else cit_year END" | cypher-shell 

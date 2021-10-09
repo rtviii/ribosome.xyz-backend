@@ -149,7 +149,7 @@ with rp,struct,value,pf
 
 // CONNECT NOMENCLATURE
 match (n:RibosomalProtein) where n.nomenclature[0] is not null
-merge (nc:RPClass{class_id:n.nomenclature[0]})
+merge (nc:ProteinClass{class_id:n.nomenclature[0]})
 merge (n)-[:BelongsTo]-(nc)
 
 
