@@ -53,4 +53,4 @@ create (newrna)-[:rna_of]->(s);
 
 match (n:RNA) where n.nomenclature[0] is not null
 merge (nc:RNAClass{class_id:n.nomenclature[0]})
-merge (n)-[:belongs_to]-(nc)" | cypher-shell 
+merge (n)-[:belongs_to]-(nc)" | cypher-shell  --database riboxyz

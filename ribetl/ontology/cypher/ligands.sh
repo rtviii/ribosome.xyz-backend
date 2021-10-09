@@ -34,4 +34,4 @@ with value.rcsb_id as struct, value
   with newligand, value
   match (s:RibosomeStructure {rcsb_id: value.rcsb_id})
   merge            (newligand)<-[:contains_ligand]-(s)
-  return s.rcsb_id, newligand.chemicalId " | cypher-shell
+  return s.rcsb_id, newligand.chemicalId " | cypher-shell --database riboxyz
