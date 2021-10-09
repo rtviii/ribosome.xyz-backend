@@ -1,23 +1,12 @@
 from aifc import Error
-from ast import expr_context
-import builtins
-from cmath import log
-from pathlib import Path
-import pdb
-from pydoc import resolve
-import struct
-# from ribetl.ciftools.neoget import _neoget
 import dataclasses
 import json
-from unittest import result
-from neo4j import GraphDatabase, Result
 from dotenv import load_dotenv
 import os
-from typing import Dict, List, Tuple, TypedDict, Union, Callable
+from typing import Dict, List
 import operator
 import sys
-import pandas as pd
-from Bio.PDB.MMCIFParser import FastMMCIFParser, MMCIFParser
+from Bio.PDB.MMCIFParser import FastMMCIFParser
 from Bio.PDB.NeighborSearch import NeighborSearch
 from Bio.PDB.Residue import Residue
 from Bio.PDB.Structure import Structure
@@ -28,14 +17,10 @@ from dataclasses import dataclass, field
 from asyncio import run
 import itertools
 import numpy as np
-
+from ribetl.ciftools.neoget import _neoget
 flatten = itertools.chain.from_iterable
 
 
-# load_dotenv(dotenv_path='/home/rxz/dev/riboxyzbackend/rxz_backend/.env')
-# STATIC_ROOT = os.environ.get('STATIC_ROOT')
-
-# ? By electrostatic charge
 AMINO_ACIDS = {
     "ALA": 0,
     'ARG': 1,
@@ -89,8 +74,7 @@ def open_ligand(pdbid: str, ligid: str, ligpath: str = None):
     ligid = ligid.upper()
 
     if ligpath == None:
-        ligpath = os.path.join(
-            os.environ.get("STATIC_ROOT"), pdbid, f'LIGAND_{ligid}.json')
+        ligpath = os.path.join(os.environ.get("STATIC_ROOT"), pdbid, f'LIGAND_{ligid}.json')
     with open(ligpath, 'rb') as infile:
         data = json.load(infile)
     return data
@@ -336,12 +320,10 @@ if __name__ == "__main__":
         sys.path.append(root)
     root_self('ribetl')
 
-    from ciftools.neoget import _neoget
     parser = argparse.ArgumentParser()
     parser .add_argument('-s', '--structure', type=str, required=True)
     args  = parser.parse_args()
     PDBID = args.structure.upper()
-
 
     _structure_cif_handle :Structure = open_structure(PDBID,'cif')
     _structure_json_handle:dict      = open_structure(PDBID,'json')
@@ -354,3 +336,5 @@ if __name__ == "__main__":
 
     for l in ligands:
         parse_and_save_ligand(l[0].upper(), PDBID, _structure_cif_handle)
+
+
