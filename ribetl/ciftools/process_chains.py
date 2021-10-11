@@ -17,7 +17,6 @@ n1      = np.array
 
 def get_dict(path:str,)->dict:
 	return MMCIF2Dict.MMCIF2Dict(path)
-
 def make_nom_dict(profile):
 	nomdict = {}
 	for i in [*profile['rnas'], *profile['proteins']]:
