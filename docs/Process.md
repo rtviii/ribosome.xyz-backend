@@ -38,7 +38,6 @@ Template query is in [ template_query ](../ribetl/src/requestGQLProfile.ts). The
 3. The resultant `.json` profile is used to initiate nodes and links in the database. For a given structure, the script creates individual components in sequence. Refer to [ cypher ](../ribetl/resources/cypher-tools/current.modular.cypher).
 
 	Currently and roughly:
-
 		1. (Merge)Create the structure node if one doesn't exist
 		2. Find this struct, for each  contained protein -- create its node and connect to struct
 		3. Connect proteins to PFAM Families

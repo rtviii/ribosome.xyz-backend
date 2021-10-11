@@ -18,11 +18,13 @@ import zipfile
 from neo4j import  Result, GraphDatabase
 import subprocess
 from ribetl.ciftools import transpose_ligand
+from ribetl.ciftools.bsite_mixed import BindingSite
 
 
 uri         =  os.environ.get( 'NEO4J_URI' )
 authglobal  =  (os.environ.get( 'NEO4J_USER' ),os.environ.get( 'NEO4J_PASSWORD' ))
 current_db  =  os.environ.get( 'NEO4J_CURRENTDB' )
+STATIC_ROOT =os.environ.get("STATIC_ROOT")
 #-⋯⋯⋅⋱⋰⋆⋅⋅⋄⋅⋅∶⋅⋅⋄▫▪▭┈┅✕⋅⋅⋄⋅⋅✕∶⋅⋅⋄⋱⋰⋯⋯⋯⋯⋅⋱⋰⋆⋅⋅⋄⋅⋅∶⋅⋅⋄▫▪▭┈┅✕⋅⋅⋄⋅⋅✕∶⋅⋅⋄⋱⋰⋯⋯⋯⋅⋱⋰⋆⋅⋅⋄⋅⋅∶⋅⋅⋄▫▪▭┈┅✕⋅⋅⋄⋅⋅✕∶⋅⋅⋄⋱⋰⋯⋯⋯
 
 def _neoget(CYPHER_STRING:str):
@@ -82,13 +84,12 @@ def align_3d(request):
 
     return response
 
-def fetch_strand(structid:str,strandid:str)->FileWrapper:
-    filename   = "{}_STRAND_{}.cif".format(structid.upper(),strandid)
-    filehandle = os.path.join(STATIC_ROOT, structid.upper(),'CHAINS', filename)
-
-    # try: 
-    doc = open(filehandle)
-    return doc
+# def fetch_strand(structid:str,strandid:str)->FileWrapper:
+#     filename   = "{}_STRAND_{}.cif".format(structid.upper(),strandid)
+#     filehandle = os.path.join(STATIC_ROOT, structid.upper(),'CHAINS', filename)
+#     # try: 
+#     doc = open(filehandle)
+#     return doc
 
 
 
@@ -129,41 +130,46 @@ def download_ligand_nbhd(request):
 
 @api_view(['GET','POST'])
 def ligand_prediction(request):
-    params = dict(request.GET)
-    src_struct = params['src_struct' ][0].upper()
-    chemid     = params['chemid'     ][0].upper()
-    tgt_struct = params['tgt_struct' ][0].upper()
 
-    print("Attempting to render ligand {} from {}(orig) in {}.".format(chemid,src_struct,tgt_struct))
-    prediction_filename = "PREDICTION_{}_{}_{}.json".format     (chemid     ,src_struct ,tgt_struct          )
-    filehandle          = os                        .path  .join(STATIC_ROOT, tgt_struct, prediction_filename)
+    params     = dict(request.GET)
 
+    # it is either a chemical id (if is_polymer == False) 
+    # or a entity_poly_strand_id in the case of a ligand-like polymer (is_polymer  ==True)
+    ligandlike_id = params['ligandlike_id'][0]
+    src_struct    = params['src_struct' ][0].upper()
+    tgt_struct    = params['tgt_struct' ][0].upper()
+    is_polymer    = bool( params['is_polymer' ][0] )
+    print("Attempting to render  {} from {}(orig) in {}.".format(ligandlike_id,src_struct,tgt_struct))
+    prediction_filename = "PREDICTION_{}_{}_{}.json".format     (ligandlike_id,src_struct ,tgt_struct          )
+    filehandle          = os.path  .join(STATIC_ROOT, tgt_struct, prediction_filename)
+
+    orig_binding_site_handle = os.path.join(STATIC_ROOT, src_struct, "{}_{}.json".format("POLYMER" if is_polymer else "LIGAND", ligandlike_id))
+    target_json_handle       = os.path.join(STATIC_ROOT, tgt_struct, "{}.json".format(tgt_struct))
+    with open(orig_binding_site_handle, 'rb') as infile:
+        bsite = BindingSite(json.load(infile))
+
+    with open(target_json_handle, 'rb') as target_handle:
+        target_handle   = json.load(target_handle)
 
     #* Transpose Ligand Script
-
-    transpose_ligand.init_transpose_ligand(src_struct,tgt_struct,chemid)
-
-
-    try:
-        with open(filehandle) as infile:
-            data = json.load(infile)
-            return Response(data)
-    except error: 
-        return Response(-1)
+    prediction = transpose_ligand.init_transpose_ligand(src_struct,tgt_struct, target_handle, bsite)
+    return Response(prediction)
 
 
 @api_view(['GET','POST'])
 def get_ligand_nbhd(request):
-    params = dict(request.GET)
-    struct = params['struct'][0].upper()
-    chemid = params['chemid'][0].upper()
+    params        = dict(request.GET)
+    print("----------------PARAMS ")
+    print(params)
+    src_struct    = params['src_struct'][0].upper()
+    ligandlike_id = params['ligandlike_id'][0]
+    is_polymer    = bool(params['is_polymer'][0])
 
-    filename   = "LIGAND_{}.json".format(chemid)
-    filehandle = os.path.join(os.environ.get("STATIC_ROOT"), struct, filename)
+    filehandle = os.path .join(STATIC_ROOT, src_struct, "{}_{}.json".format("POLYMER" if is_polymer == False else "LIGAND", ligandlike_id))
+    print("FILENAME", filehandle)
 
     try:
-        with open(filehandle) as infile:
-
+        with open(filehandle, 'rb') as infile:
             data = json.load(infile)
             return Response(data)
     except error: 

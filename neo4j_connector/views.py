@@ -33,45 +33,61 @@ def get_individual_ligand(request):
 
 @api_view(['GET', 'POST'])
 def get_all_ligands(request):
-    CYPHER_STRING="""
-        match (l:Ligand)-[]-(r:RibosomeStructure) 
-        return {{
-            polymer    : false,
-            chemicalId : l.chemicalId,
-            description: l.chemicalName,
 
-            presentIn  :  collect( distinct{{
-                src_organism_ids    : r.src_organism_ids    ,
-                citation_title      : r.citation_title      ,
-                expMethod           : r.expMethod           ,
-                rcsb_id             : r.rcsb_id             ,
-                number_of_instances : l.number_of_instances,
-                resolution          : r.resolution
+    CYPHER_STRING="""
+        match (l:Ligand)-[]-(r:RibosomeStructure)  where not l.chemicalName  contains "ION"
+        return {{  
+        polymer    : false,
+        description: l.chemicalName,
+
+        chemicalId : l.chemicalId,
+
+        presentIn  : collect( distinct {{
+                src_organism_ids     : r.src_organism_ids     ,
+                citation_title       : r.citation_title       ,
+                expMethod            : r.expMethod            ,
+                rcsb_id              : r.rcsb_id              ,
+                resolution           : r.resolution
             }})
         }}
     """.format()
-
     return Response(_neoget(CYPHER_STRING))
 
 
 @api_view(['GET', 'POST'])
 def get_all_ligandlike(request):
+        # match (l {{ligand_like:true}})-[]-(r:RibosomeStructure) 
+        # return {{
+        #     polymer              : true,
+        #     description          : l.rcsb_pdbx_description,
+        #     entity_poly_strand_id: l.entity_poly_strand_id,
+
+        #     presentIn  :  collect(distinct {{
+        #         src_organism_ids     : r.src_organism_ids     ,
+        #         citation_title       : r.citation_title       ,
+        #         expMethod            : r.expMethod            ,
+        #         rcsb_id              : r.rcsb_id              ,
+        #         resolution           : r.resolution
+        #     }})
+        # }}
     CYPHER_STRING = """
-        match (l {{ligand_like:true}})-[]-(r:RibosomeStructure) 
+        match (l {{ligand_like:true}})-[]-(r:RibosomeStructure) where l.entity_poly_strand_id contains ','
+        unwind l.auth_asym_ids as asymid
+        with asymid, l , r
         return {{
             polymer    : true,
             description: l.rcsb_pdbx_description,
 
-            presentIn  :  collect(distinct {{
+            asymid: asymid,
+
+            presentIn  : collect(distinct  {{
                 src_organism_ids     : r.src_organism_ids     ,
                 citation_title       : r.citation_title       ,
                 expMethod            : r.expMethod            ,
                 rcsb_id              : r.rcsb_id              ,
-                entity_poly_strand_id: l.entity_poly_strand_id,
                 resolution           : r.resolution
             }})
-        }}
-    """.format()
+        }}""".format()
     return Response(_neoget(CYPHER_STRING))
 
 #? ---------------------------STRUCTS

@@ -39,10 +39,9 @@ export interface RNA {
 
 
   asym_ids                        : string[],
-  auth_asym_ids                   : string[],
 
+  auth_asym_id                   : string,
   nomenclature                    : RNAClass[]
-
   parent_rcsb_id                  : string       ;
 
   src_organism_names : string[],
@@ -67,8 +66,8 @@ export interface RNA {
 
 export interface Protein {
 
-  asym_ids     : string[],
-  auth_asym_ids: string[],
+  asym_ids    : string[],
+  auth_asym_id: string,
 
   parent_rcsb_id    : string;
   pfam_accessions   : string[]

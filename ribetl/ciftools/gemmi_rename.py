@@ -4,14 +4,11 @@ import sys
 import dotenv
 from gemmi import cif
 import gemmi
-import ribetl.ciftools.dict_ops as dict_ops
 import ribetl.ciftools.bsite_mixed as bsite
-
 
 PDBID       = sys.argv[1].upper()
 dotenv.load_dotenv(dotenv_path='/home/rxz/dev/riboxyzbackend/rxz_backend/.env')
 STATIC_ROOT = os.environ.get('STATIC_ROOT')
-
 
 cifpath     = os.path.join(STATIC_ROOT,PDBID, PDBID+".cif")
 cifmodified = os.path.join(STATIC_ROOT,PDBID, PDBID+"_modified.cif")
@@ -23,7 +20,6 @@ def make_nom_dict(profile)->dict:
 	for i in [*profile['rnas'], *profile['proteins']]:
 		for aa in  i['auth_asym_ids']:
 			nomdict[aa]  = i['nomenclature']
-
 	return nomdict
 
 doc   = cif.read_file(cifpath)
@@ -32,8 +28,9 @@ loop  = block.init_loop('_ribosome_nomenclature.', ['entity_poly.pdbx_strand_id'
 for i in make_nom_dict(structprofile).items():
 	print(i)
 	loop.add_row([i[0], cif.quote("unclassified" if len( i[1] )==0 else i[1][0])])
-doc.write_file(cifmodified)
 
+doc.write_file(cifmodified)
+print("\033[91m Wrote {} \033[0m".format(cifmodified))
 
 # strand_id = "0"
 # nom = "uL22"

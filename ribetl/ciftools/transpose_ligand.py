@@ -157,26 +157,26 @@ def open_bsite(
 def init_transpose_ligand(
 	source_struct: str,
 	target_struct: str,
-	target_json_handle:dict,
+	target_profile:dict,
 	binding_site : BindingSite
 	)->dict            : 
-
 	origin_chains = {
 	}
-
 	target_chains = {
 	}
 
-
 	#* For every chain in a ligand file, if it has nomenclature, append its residues, strand and sequence
 	for chain in binding_site.data:
-		# print(binding_site[chain])
+
 		if len(binding_site[chain]['nomenclature'] ) <1:
 			continue
+
 		else:
+
 			resids :List[int] = [
 				resid for  resid in [*map(lambda x : x['residue_id'], binding_site[chain]['residues'])]
 			]
+
 			origin_chains[binding_site.data[chain]['nomenclature'][0]] = {
 				'strand'       : chain,
 				'seq'          : binding_site.data[chain]['sequence'],
@@ -184,12 +184,10 @@ def init_transpose_ligand(
 				'ids'          : resids
 			}
 
-	target_polymers = [*target_json_handle['rnas'],*target_json_handle['proteins']]
+	target_polymers = [*target_profile['rnas'],*target_profile['proteins']]
 	for nom in origin_chains:
 		name_matches = []
-
 		#* goal is to look up the chain in the targe struct __by nomenclature__
-
 		matches =  [*filter(lambda tgt_poly: nom in tgt_poly['nomenclature'], target_polymers)]
 		if len( matches )  < 1:
 			continue

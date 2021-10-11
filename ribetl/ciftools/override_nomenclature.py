@@ -2,7 +2,6 @@ from Bio.PDB.Structure import Structure
 from Bio.PDB.MMCIFParser import FastMMCIFParser, MMCIFParser
 from Bio.PDB.Chain import Chain
 from Bio.PDB.mmcifio import MMCIFIO
-import ribetl.ciftools.dict_ops as dict_ops
 import ribetl.ciftools.bsite_mixed as bsite
 import os, sys
 import dotenv
@@ -21,8 +20,6 @@ def make_nom_dict(profile):
 			nomdict[aa]  = i['nomenclature']
 
 	return nomdict
-
-# Grab the json profile, iterate throuhg rnas and proteins extracting chain_ids and their nomenclature
 
 def flatten(x):
     if isinstance(x, list):
@@ -53,6 +50,7 @@ for chain in struct_cif[0].child_list:
 				assigned= f'{nom_class}'
 				nomenclature_count.update({nom_class:1})
 			struct_cif[0][id].id = assigned
+
 io.set_structure(struct_cif)
 io.save(cifpath)
 print(f"Saved renamed structure to {cifpath}")
