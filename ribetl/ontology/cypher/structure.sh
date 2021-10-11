@@ -1,6 +1,8 @@
 #!/usr/bin/bash
 
 
+DB_NAME='riboxyz'
+
 if [ $# -lt $((1))  ];
 then 
         echo "Not enough arguments!"
@@ -75,4 +77,4 @@ merge                 ( struct                                 :RibosomeStructur
         struct.rcsb_external_ref_type                  = CASE WHEN ref_type              = null then \"null\" else ref_type END,
         struct.rcsb_external_ref_link                  = CASE WHEN ref_link              = null then \"null\" else ref_link END,
         struct.citation_pdbx_doi                       = CASE WHEN cit_doi              = null then \"null\" else ref_link END,
-        struct.citation_year                          = CASE WHEN cit_year              = null then \"null\" else cit_year END" | cypher-shell  --database ribolocal
+        struct.citation_year                          = CASE WHEN cit_year              = null then \"null\" else cit_year END" | cypher-shell  --database $DB_NAME

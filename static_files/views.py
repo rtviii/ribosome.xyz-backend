@@ -138,7 +138,7 @@ def ligand_prediction(request):
     ligandlike_id = params['ligandlike_id'][0]
     src_struct    = params['src_struct' ][0].upper()
     tgt_struct    = params['tgt_struct' ][0].upper()
-    is_polymer    = bool( params['is_polymer' ][0] )
+    is_polymer    = params['is_polymer'][0] 
     print("Attempting to render  {} from {}(orig) in {}.".format(ligandlike_id,src_struct,tgt_struct))
     prediction_filename = "PREDICTION_{}_{}_{}.json".format     (ligandlike_id,src_struct ,tgt_struct          )
     filehandle          = os.path  .join(STATIC_ROOT, tgt_struct, prediction_filename)
@@ -163,9 +163,10 @@ def get_ligand_nbhd(request):
     print(params)
     src_struct    = params['src_struct'][0].upper()
     ligandlike_id = params['ligandlike_id'][0]
-    is_polymer    = bool(params['is_polymer'][0])
+    is_polymer    = params['is_polymer'][0]
 
-    filehandle = os.path .join(STATIC_ROOT, src_struct, "{}_{}.json".format("POLYMER" if is_polymer == True else "LIGAND", ligandlike_id))
+
+    filehandle = os.path .join(STATIC_ROOT, src_struct, "{}_{}.json".format("POLYMER" if is_polymer.lower() == 'true' else "LIGAND", ligandlike_id))
     print("FILENAME", filehandle)
 
     try:

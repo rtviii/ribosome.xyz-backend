@@ -2,7 +2,7 @@
 
 
 
-DB_NAME='ribolocal'
+DB_NAME='riboxyz'
 if [ $# -lt $((1))  ];
 then 
         echo "Not enough arguments!"
