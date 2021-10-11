@@ -2,7 +2,7 @@ import path from 'path'
 import fs from 'fs'
 import yargs from 'yargs';
 import shell from 'shelljs'
-import {processPDBRecord} from './requestGqlProfile'
+import { processPDBRecord } from './requestGqlProfile'
 import { RibosomeStructure } from './RibosomeTypes';
 import * as dotenv from "dotenv";
 
@@ -40,7 +40,7 @@ export const updateCatalogueWStruct = async (
         catalogue = {...catalogue, ...new_entry}
         }
         fs.writeFileSync(process.env.CATALOGUE as string, JSON.stringify(catalogue, null, 4))
-    }
+}
 
 (async () =>{
 
@@ -92,7 +92,6 @@ export const updateCatalogueWStruct = async (
   }
 })()
 
-
 type CatalogueEntry = {
   [rcsb_id: string]: {
     status            : boolean,
@@ -102,4 +101,3 @@ type CatalogueEntry = {
     error: string | null
   }
 }
-

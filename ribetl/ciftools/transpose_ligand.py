@@ -180,7 +180,7 @@ def init_transpose_ligand(
 			origin_chains[binding_site.data[chain]['nomenclature'][0]] = {
 				'strand'       : chain,
 				'seq'          : binding_site.data[chain]['sequence'],
-				'auth_asym_ids': binding_site.data[chain][ 'auth_asym_ids' ],
+				'auth_asym_id': binding_site.data[chain][ 'auth_asym_id' ],
 				'ids'          : resids
 			}
 
@@ -192,18 +192,14 @@ def init_transpose_ligand(
 		if len( matches )  < 1:
 			continue
 
-		
-
-		seq           = matches[0]['entity_poly_seq_one_letter_code'] #----------------------------------------> [ Major handwaving with respect to duplicate auth_asym_ids by always grabbing the first of (possibly) multiple matches]
-		strand        = matches[0]['entity_poly_strand_id']
-		asymid        = matches[0]['asym_ids']
-		auth_asym_ids = matches[0]['auth_asym_ids']
+		seq          = matches[0]['entity_poly_seq_one_letter_code'] #----------------------------------------> [ Major handwaving with respect to duplicate auth_asym_ids by always grabbing the first of (possibly) multiple matches]
+		strand       = matches[0]['entity_poly_strand_id']
+		auth_asym_id = matches[0]['auth_asym_id']
 
 		target_chains[nom] ={
 			'seq'          : seq,
 			'strand'       : strand,
-			'asymid'       : asymid,
-			'auth_asym_ids': auth_asym_ids
+			'auth_asym_id': auth_asym_id
 		}
 
 

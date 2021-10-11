@@ -3,7 +3,8 @@
 # Make sure to set database.files.import variable in neo4j.conf correctly. that's what 'file:///' reads from by default
 # (that's where file:// reads from by default : /var/lib/neo4j/import)
 
-DB_NAME='riboxyz';
+
+DB_NAME='ribolocal';
 
 # Create constraints
 echo '

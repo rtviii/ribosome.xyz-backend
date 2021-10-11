@@ -2,6 +2,8 @@
 
 filepath=$1
 
+DB_NAME='ribolocal'
+
 if [ -f $filepath ];
 then
 	file=$(basename $filepath)
@@ -34,4 +36,4 @@ with value.rcsb_id as struct, value
   with newligand, value
   match (s:RibosomeStructure {rcsb_id: value.rcsb_id})
   merge            (newligand)<-[:contains_ligand]-(s)
-  return s.rcsb_id, newligand.chemicalId " | cypher-shell --database riboxyz
+  return s.rcsb_id, newligand.chemicalId " | cypher-shell --database $DB_NAME

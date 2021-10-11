@@ -143,7 +143,7 @@ def ligand_prediction(request):
     prediction_filename = "PREDICTION_{}_{}_{}.json".format     (ligandlike_id,src_struct ,tgt_struct          )
     filehandle          = os.path  .join(STATIC_ROOT, tgt_struct, prediction_filename)
 
-    orig_binding_site_handle = os.path.join(STATIC_ROOT, src_struct, "{}_{}.json".format("POLYMER" if is_polymer else "LIGAND", ligandlike_id))
+    orig_binding_site_handle = os.path.join(STATIC_ROOT, src_struct, "{}_{}.json".format("POLYMER" if is_polymer == True else "LIGAND", ligandlike_id))
     target_json_handle       = os.path.join(STATIC_ROOT, tgt_struct, "{}.json".format(tgt_struct))
     with open(orig_binding_site_handle, 'rb') as infile:
         bsite = BindingSite(json.load(infile))
@@ -165,7 +165,7 @@ def get_ligand_nbhd(request):
     ligandlike_id = params['ligandlike_id'][0]
     is_polymer    = bool(params['is_polymer'][0])
 
-    filehandle = os.path .join(STATIC_ROOT, src_struct, "{}_{}.json".format("POLYMER" if is_polymer == False else "LIGAND", ligandlike_id))
+    filehandle = os.path .join(STATIC_ROOT, src_struct, "{}_{}.json".format("POLYMER" if is_polymer == True else "LIGAND", ligandlike_id))
     print("FILENAME", filehandle)
 
     try:
@@ -274,11 +274,6 @@ def tunnel(request):
         response['Content-Disposition'] = 'attachment; filename="{}"'.format(f"{struct}_tunnel_centerline.csv")
 
         return response
-
-
-
-
-
 
 @api_view(['GET', 'POST'])
 def downloadArchive(request):

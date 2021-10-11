@@ -1,5 +1,6 @@
 #!/usr/bin/bash
 
+DB_NAME='ribolocal'
 
 filepath=$1
 if [ -f $filepath ];
@@ -25,7 +26,7 @@ with value
      merge                               (  newrna:RNA {
 
      asym_ids                         : rna.asym_ids,
-     auth_asym_ids                    : rna.auth_asym_ids,
+     auth_asym_id                    : rna.auth_asym_id,
 
      parent_rcsb_id:  rna.parent_rcsb_id,
 
@@ -53,4 +54,4 @@ create (newrna)-[:rna_of]->(s);
 
 match (n:RNA) where n.nomenclature[0] is not null
 merge (nc:RNAClass{class_id:n.nomenclature[0]})
-merge (n)-[:belongs_to]-(nc)" | cypher-shell  --database riboxyz
+merge (n)-[:belongs_to]-(nc)" | cypher-shell  --database $DB_NAME

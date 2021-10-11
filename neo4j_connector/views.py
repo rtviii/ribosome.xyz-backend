@@ -56,30 +56,12 @@ def get_all_ligands(request):
 
 @api_view(['GET', 'POST'])
 def get_all_ligandlike(request):
-        # match (l {{ligand_like:true}})-[]-(r:RibosomeStructure) 
-        # return {{
-        #     polymer              : true,
-        #     description          : l.rcsb_pdbx_description,
-        #     entity_poly_strand_id: l.entity_poly_strand_id,
-
-        #     presentIn  :  collect(distinct {{
-        #         src_organism_ids     : r.src_organism_ids     ,
-        #         citation_title       : r.citation_title       ,
-        #         expMethod            : r.expMethod            ,
-        #         rcsb_id              : r.rcsb_id              ,
-        #         resolution           : r.resolution
-        #     }})
-        # }}
     CYPHER_STRING = """
-        match (l {{ligand_like:true}})-[]-(r:RibosomeStructure) where l.entity_poly_strand_id contains ','
-        unwind l.auth_asym_ids as asymid
-        with asymid, l , r
+        match (l {{ligand_like:true}})-[]-(r:RibosomeStructure) 
         return {{
-            polymer    : true,
-            description: l.rcsb_pdbx_description,
-
-            asymid: asymid,
-
+            polymer     : true,
+            description : l.rcsb_pdbx_description,
+            auth_asym_id: l.auth_asym_id,
             presentIn  : collect(distinct  {{
                 src_organism_ids     : r.src_organism_ids     ,
                 citation_title       : r.citation_title       ,

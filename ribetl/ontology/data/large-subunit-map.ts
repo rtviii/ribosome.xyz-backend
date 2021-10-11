@@ -83,6 +83,7 @@ export const large_subunit_map = {
     y: null,
     h: null
   },
+
   uL13: {
     taxRange: ["B", "A", "E"],
     pfamDomainAccession: ["PF00572"],
@@ -90,6 +91,7 @@ export const large_subunit_map = {
     y: "L16",
     h: "L13A"
   },
+
   eL13: {
     taxRange: ["A", "E"],
     pfamDomainAccession: ["PF01294"],
@@ -132,6 +134,7 @@ export const large_subunit_map = {
     y: "L10",
     h: "L10"
   },
+
   bL17: {
     taxRange: ["B"],
     pfamDomainAccession: ["PF01196"],

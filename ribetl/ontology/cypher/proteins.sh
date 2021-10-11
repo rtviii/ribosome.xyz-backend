@@ -1,5 +1,8 @@
 #!/usr/bin/bash
 
+
+
+DB_NAME='ribolocal'
 if [ $# -lt $((1))  ];
 then 
         echo "Not enough arguments!"
@@ -34,7 +37,7 @@ with protein                            ,
      struct
      merge                               (rp:Protein {
      asym_ids:      protein.asym_ids,
-     auth_asym_ids:protein.auth_asym_ids,
+     auth_asym_id:protein.auth_asym_id,
         
      parent_rcsb_id                      : protein.parent_rcsb_id,
 
@@ -78,4 +81,4 @@ with rp,struct,value,pf
 
 match (n:Protein) where n.nomenclature[0] is not null
 merge (nc:ProteinClass {class_id:n.nomenclature[0]})
-merge (n)-[:member_of]->(nc)" | cypher-shell --database riboxyz
+merge (n)-[:member_of]->(nc)" | cypher-shell --database $DB_NAME
