@@ -1,7 +1,10 @@
 from cgi import parse_multipart
+from ctypes import Union
 from genericpath import isfile
 from multiprocessing import ProcessError
 from os import error
+from pathlib import Path
+from typing import Union
 import sys
 from django.template import response
 from dotenv import load_dotenv
@@ -19,6 +22,7 @@ from neo4j import  Result, GraphDatabase
 import subprocess
 from ribetl.ciftools import transpose_ligand
 from ribetl.ciftools.bsite_mixed import BindingSite
+from os.path import join as opj
 
 
 uri         =  os.environ.get( 'NEO4J_URI' )
@@ -38,32 +42,58 @@ def _neoget(CYPHER_STRING:str):
 
 
 
+def get_chain_auth_asym_id(struct:str, auth_asym_id:str)->Union[None,Path]:
+
+    struct            = struct.upper()
+    struct_chains_dir = Path(opj(STATIC_ROOT, struct, "CHAINS"))
+    matches           = [* struct_chains_dir.glob("{}_STRAND_{}_*.cif".format(struct, auth_asym_id)) ]
+
+    if len(matches) < 1:
+        return None
+    return matches[0]
+
+
+
+
 @api_view(['GET','POST'])
 def align_3d(request):
     params = dict(request.GET)
 
+    print("GOT PARAMS", params)
     print("-------------------+------------------")
-    struct1 = params['struct1'][0].upper()
-    struct2 = params['struct2'][0].upper()
+    struct1       = params['struct1'][0].upper()
+    struct2       = params['struct2'][0].upper()
 
-    strand1 = params['strand1'][0]
-    strand2 = params['strand2'][0]
+    auth_asym_id1 = params['auth_asym_id1'][0]
+    auth_asym_id2 = params['auth_asym_id2'][0]
 
-    name1   = "{}_STRAND_{}.cif".format(struct1,strand1)
-    name2   = "{}_STRAND_{}.cif".format(struct2,strand2)
+    name1   = "{}_STRAND_{}.cif".format(struct1,auth_asym_id1)
+    name2   = "{}_STRAND_{}.cif".format(struct2,auth_asym_id2)
 
-    print(f"Attempting to align \033[95m {name1}\033[0m with \033[95m{name2}\033[0m.")
-    handle1 = os.path.join(STATIC_ROOT, struct1, "CHAINS", name1)
-    handle2 = os.path.join(STATIC_ROOT, struct2, "CHAINS", name2)
+
+
+    handle1,handle2 = [
+        get_chain_auth_asym_id(struct1, auth_asym_id1),
+        get_chain_auth_asym_id(struct2, auth_asym_id2)
+    ]
+
+    if None in [handle1,handle2]:
+        return Response(-1)
 
     for x in [handle1,handle2]:
-        if not os.path.isfile(x):
+        if  not x.is_file():
             raise FileNotFoundError(f"File {x} is not found in {STATIC_ROOT}")
     
     protein_alignment_script = os.getenv('PROTEIN_ALIGNMENT_SCRIPT')
-    # subprocess.call(f'{protein_alignment_script} {handle1} {handle2} {struct1+"_"+struct2} {struct2+"_"+strand2}')
     try:
-        subprocess.call([protein_alignment_script, handle1 ,handle2 ,struct1+"_"+strand1, struct2+"_"+strand2])
+        subprocess.call([
+            protein_alignment_script,
+            handle1,
+            handle2,
+            struct1+"_"+auth_asym_id1,
+            struct2+"_"+auth_asym_id2
+         ])
+
     except:
         raise ProcessError
 
@@ -80,17 +110,9 @@ def align_3d(request):
 
     response = HttpResponse(FileWrapper(doc), content_type='chemical/x-mmcif')
     response['Content-Disposition'] = 'attachment; filename="{}-{}_{}-{}.cif"'.format(
-    struct1,strand1,struct2,strand2)
+    struct1,auth_asym_id1,struct2,auth_asym_id2)
 
     return response
-
-# def fetch_strand(structid:str,strandid:str)->FileWrapper:
-#     filename   = "{}_STRAND_{}.cif".format(structid.upper(),strandid)
-#     filehandle = os.path.join(STATIC_ROOT, structid.upper(),'CHAINS', filename)
-#     # try: 
-#     doc = open(filehandle)
-#     return doc
-
 
 
 @api_view(['GET','POST'])
@@ -163,10 +185,8 @@ def get_ligand_nbhd(request):
     print(params)
     src_struct    = params['src_struct'][0].upper()
     ligandlike_id = params['ligandlike_id'][0]
-    is_polymer    = bool(params['is_polymer'][0])
-
-    filehandle = os.path .join(STATIC_ROOT, src_struct, "{}_{}.json".format("POLYMER" if is_polymer == True else "LIGAND", ligandlike_id))
-    print("FILENAME", filehandle)
+    is_polymer    = params['is_polymer'][0]
+    filehandle = os.path .join(STATIC_ROOT, src_struct, "{}_{}.json".format("POLYMER" if is_polymer.lower() == 'true' else "LIGAND", ligandlike_id))
 
     try:
         with open(filehandle, 'rb') as infile:
@@ -219,20 +239,17 @@ def cif_chain_by_class(request):
     struct     = params['struct'][0].upper()
 
 
-    CYPHER = """match (n:RibosomeStructure)-[]-(r:RibosomalProtein)-[]-(b:NomenclatureClass)
+    CYPHER = """match (n:RibosomeStructure)-[]-(r:Protein)-[]-(b:ProteinClass)
     where n.rcsb_id ="{}" and b.class_id = "{}"
-    return {{ struct: n.rcsb_id, strand: r.entity_poly_strand_id }}""".format(struct,classid)
-    print("C----->" ,CYPHER)
+    return {{ struct: n.rcsb_id, auth_asym_id: r.auth_asym_id }}""".format(struct,classid)
+
     chains = _neoget(CYPHER)
-    
     if len( chains ) < 1 :
-        return Response(NotFoundErr)
-    strand = chains[0]['strand']
-    filename   = "{}_STRAND_{}.cif".format(struct,strand)
-    filehandle = os.path.join(STATIC_ROOT, struct,'CHAINS', filename)
+        return Response("Not found")
+    auth_asym_id     = chains[0]['auth_asym_id']
+    filename   = "{}_STRAND_{}.cif".format(struct,auth_asym_id)
+    filehandle = get_chain_auth_asym_id(struct,auth_asym_id)
 
-
-    print(filehandle)
     try:
         doc = open(filehandle, 'rb')
     except: 

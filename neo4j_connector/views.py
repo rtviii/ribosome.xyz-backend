@@ -125,9 +125,9 @@ def get_all_structs(request):
         optional match (l:Ligand)-[]-(rb)
         with collect(l.chemicalId) as ligs, rb
         optional match (rps:Protein)-[]-(rb)
-        with ligs, rb, collect({{strands:rps.entity_poly_strand_id, noms:rps.nomenclature}}) as rps
+        with ligs, rb, collect({{auth_asym_id:rps.auth_asym_id, nomenclature:rps.nomenclature}}) as rps
         optional match (rnas:RNA)-[]-(rb)
-        with ligs, rb, rps, collect({{strands: rnas.entity_poly_strand_id, noms: rnas.nomenclature }}) as struct_rnas
+        with ligs, rb, rps, collect({{auth_asym_id: rnas.auth_asym_id, nomenclature: rnas.nomenclature }}) as struct_rnas
         return {{
             struct : rb         ,
             ligands: ligs       ,
