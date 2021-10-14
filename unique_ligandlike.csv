@@ -1,0 +1,486 @@
+,ligand_description,classified_as
+51,A/A site tRNA,tRNA
+52,AA tRNA,tRNA
+53,ACETIC ACID,Mixed Ligands
+54,"Addiction module toxin, Txe/YoeB family",Antibiotics
+55,ADENOSINE-3'-5'-DIPHOSPHATE,Mixed Ligands
+56,ADENOSINE-5'-DIPHOSPHATE,Mixed Ligands
+57,ADENOSINE-5'-MONOPHOSPHATE,Mixed Ligands
+58,ADENOSINE-5'-TRIPHOSPHATE,Mixed Ligands
+59,ADENOSINE MONOPHOSPHATE,Mixed Ligands
+60,A/E-site tRNAs,tRNA
+61,Agelastatin A,Antibiotics
+62,ALANINE,Mixed Ligands
+63,Ala-tRNA (A/P-site),tRNA
+64,Ala-tRNA (P-site),tRNA
+65,Alternative ribosome-rescue factor A,Factors
+66,Alternative stalled-ribosome rescue factor B,Factors
+67,amicetin,Antibiotics
+68,Amicoumacin A,Antibiotics
+69,aminoacyl-tRNA fragment ACCPmn,tRNA
+70,ANISOMYCIN,Antibiotics
+71,ANY 5'-MONOPHOSPHATE NUCLEOTIDE,Mixed Ligands
+72,Apidaecin,Antibiotics
+73,ap/P-site tRNA,tRNA
+74,A/P-site tRNA,tRNA
+75,A/P-Site tRNA,tRNA
+76,A/P tRNA,tRNA
+77,A/P-tRNA,tRNA
+78,ARGININE,Mixed Ligands
+79,A-site and E-site tRNAs,tRNA
+80,A site ASL of tRNA-Proline CGG (unmodified),tRNA
+81,A-site Lysine tRNA Lysine,tRNA
+82,A-site Met-tRNA(Met),tRNA
+83,A-SITE PHE-TRNA PHE,tRNA
+84,A-site tRNA,tRNA
+85,A-SITE tRNA,tRNA
+86,A-SITE TRNA A9C TRP-TRNA TRP,tRNA
+87,A-site tRNAAla(GGC),tRNA
+88,A-site tRNAAla(GGC) U32-A38,tRNA
+89,A-SITE TRNA G24A TRP-TRNA TRP,tRNA
+90,A-SITE TRNA ILE2 AGMATIDINE,tRNA
+91,A-site tRNAPhe,tRNA
+92,A-site tRNA Thr,tRNA
+93,A-SITE TRNA THR,tRNA
+94,A-SITE TRNA TRP-TRNA TRP,tRNA
+95,A-site tRNA-val,tRNA
+96,A-site tRNA with aminoacylation,tRNA
+97,ASPARTIC ACID,Mixed Ligands
+98,A tRNA,tRNA
+99,A-tRNA,tRNA
+100,A-tRNA (Arg),tRNA
+101,AtRNA (Arg),tRNA
+102,atRNA synthetic Stop tRNA (76-MER),tRNA
+103,A/T-site Phe-tRNAPhe,tRNA
+104,A/T tRNA(Phe),tRNA
+105,Avilamycin,Antibiotics
+106,AZITHROMYCIN,Antibiotics
+107,Bacterial peptide chain release factor 2 (RF-2),Factors
+108,BACTERIAL TOXIN YOEB,Antibiotics
+109,Bactobolin A,Antibiotics
+110,BC-3205,Mixed Ligands
+111,BLASTICIDIN S,Antibiotics
+112,Bystin,Antibiotics
+113,Cadherin-1,Antibiotics
+114,Capreomycin,Antibiotics
+115,capreomycin IA,Antibiotics
+116,Cathelicidin-3,Antibiotics
+117,CCA 3' end of E-site tRNASec (low occupancy),tRNA
+118,CC-puromycin,Antibiotics
+119,CHLORAMPHENICOL,Mixed Ligands
+120,Chlorolissoclimide,Mixed Ligands
+121,Cisplatin,Antibiotics
+122,CLINDAMYCIN,Antibiotics
+123,COLICIN-E3,Antibiotics
+124,Contezolid,Mixed Ligands
+125,"CP tRNAPhe, mitochondrial",tRNA
+126,CYTIDINE-5'-MONOPHOSPHATE,Mixed Ligands
+127,Cytidine-Puromycin,Antibiotics
+128,Cytoplasmic 60S subunit biogenesis factor REH1,Factors
+129,Cytoplasmic 60S subunit biogenesis factor REI1,Factors
+130,CYTOPLASMIC 60S SUBUNIT BIOGENESIS FACTOR REI1,Factors
+131,DDB1- and CUL4-associated factor 13,Factors
+132,deacylated A/R-tRNA,tRNA
+133,Deacylated tRNAi(Met),tRNA
+134,DI(HYDROXYETHYL)ETHER,Mixed Ligands
+135,Dirithromycin,Antibiotics
+136,Dityromycin,Antibiotics
+137,domain 3 of PSIC IGR IRES RNA,Antibiotics
+138,E. coli tRNAfMet,tRNA
+139,E. coli tRNAPhe,tRNA
+140,EDEINE B,Mixed Ligands
+141,E/E-site-tRNA,tRNA
+142,"eIF3c,Eukaryotic translation initiation factor 3 subunit C",Factors
+143,Elongation factor 1-alpha 1,Factors
+144,Elongation factor 2,Factors
+145,Elongation factor 4,Factors
+146,elongation factor G,Factors
+147,Elongation factor G,Factors
+148,ELONGATION FACTOR G,Factors
+149,"Elongation factor G, mitochondrial",Factors
+150,Elongation factor P,Factors
+151,Elongation factor Tu,Factors
+152,ELONGATION FACTOR TU,Factors
+153,Elongation factor Tu 2,Factors
+154,ELONGATION FACTOR TU-A,Factors
+155,"Elongation factor Tu, mitochondrial",Factors
+156,emetine,Mixed Ligands
+157,Endothelial differentiation-related factor 1,Factors
+158,Eravacycline,Mixed Ligands
+159,ERYTHROMYCIN A,Antibiotics
+160,E-site and A-site tRNA (fMet),tRNA
+161,E-site and P-site tRNA (fMet),tRNA
+162,E-site or P-site tRNA fMet,tRNA
+163,E-SITE or P-SITE TRNA FMET,tRNA
+164,E site tRNA,tRNA
+165,E-site tRNA,tRNA
+166,E-SITE tRNA,tRNA
+167,E site tRNA (75-MER),tRNA
+168,E-site tRNA Acceptor Stem,tRNA
+169,E-site tRNAAla(GGC),tRNA
+170,E-site tRNA CHAIN,tRNA
+171,E-site tRNAfMet,tRNA
+172,E-SITE TRNA FMET OR P-SITE TRNA FMET (UNMODIFIED BASES EXCEPT FOR THYMINE 54),tRNA
+173,E-SITE TRNA ILE2 AGMATIDINE OR P-SITE TRNA ILE2 AGMATIDINE,tRNA
+174,E-site tRNA Phe,tRNA
+175,E-site tRNA(Phe),tRNA
+176,E-SITE TRNA PHE,tRNA
+177,E-Site tRNA Phe and A-site tRNA Phe,tRNA
+178,E-Site tRNA-Phe or A-Site tRNA-Phe,tRNA
+179,E-SITE TRNA PHE OR A-SITE tRNA Phe,tRNA
+180,E-SITE TRNA PHE OR A-SITE TRNA PHE (UNMODIFIED BASES),tRNA
+181,E-SITE TRNA PHE OR P-SITE TRNA PHE,tRNA
+182,E-site tRNA PHE OR P-site tRNA PHE (unmodified bases),tRNA
+183,E-SITE TRNA PHE OR P-SITE TRNA PHE (UNMODIFIED BASES),tRNA
+184,E-site tRNA-Pro,tRNA
+185,E-site tRNA Valine,tRNA
+186,E-site val tRNA (76-MER),tRNA
+187,ETHANOL,Mixed Ligands
+188,E-tRNA,tRNA
+189,E-TRNA,tRNA
+190,E-tRNAfMet,tRNA
+191,Eukaryotic elongation factor 2,Factors
+192,eukaryotic elongation factor 2 (eEF2),Factors
+193,Eukaryotic peptide chain release factor subunit 1,Factors
+194,Eukaryotic translation initiation factor 1,Factors
+195,Eukaryotic translation initiation factor 1A,Factors
+196,"Eukaryotic translation initiation factor 1A, X-chromosomal",Factors
+197,Eukaryotic translation initiation factor 2 subunit 1,Factors
+198,Eukaryotic translation initiation factor 2 subunit 2,Factors
+199,Eukaryotic translation initiation factor 2 subunit 3,Factors
+200,Eukaryotic translation initiation factor 2 subunit alpha,Factors
+201,Eukaryotic translation initiation factor 2 subunit beta,Factors
+202,Eukaryotic translation initiation factor 2 subunit gamma,Factors
+203,Eukaryotic translation initiation factor 3 subunit A,Factors
+204,Eukaryotic translation initiation factor 3 subunit B,Factors
+205,Eukaryotic translation initiation factor 3 subunit C,Factors
+206,"Eukaryotic translation initiation factor 3 subunit C,Eukaryotic translation initiation factor 3 subunit C,Eukaryotic translation initiation factor 3 subunit C",Factors
+207,Eukaryotic translation initiation factor 3 subunit D,Factors
+208,Eukaryotic translation initiation factor 3 subunit E,Factors
+209,Eukaryotic translation initiation factor 3 subunit F,Factors
+210,Eukaryotic translation initiation factor 3 subunit G,Factors
+211,Eukaryotic translation initiation factor 3 subunit H,Factors
+212,Eukaryotic translation initiation factor 3 subunit I,Factors
+213,Eukaryotic translation initiation factor 3 subunit J,Factors
+214,Eukaryotic translation initiation factor 3 subunit K,Factors
+215,Eukaryotic translation initiation factor 3 subunit L,Factors
+216,Eukaryotic translation initiation factor 3 subunit M,Factors
+217,Eukaryotic translation initiation factor 5,Factors
+218,Eukaryotic translation initiation factor 5A-1,Factors
+219,Eukaryotic translation initiation factor 6,Factors
+220,Evernimicin,Antibiotics
+221,FE2/S2 (INORGANIC) CLUSTER,Mixed Ligands
+222,Flopristin,Antibiotics
+223,fMet-NH-tRNA(fMet),tRNA
+224,fMet-Phe-tRNA(Phe),tRNA
+225,fMetSec-tRNASec,tRNA
+226,fMet-tRNA,tRNA
+227,fMet-tRNAfMet,tRNA
+228,fMet-tRNA (P- and E-site),tRNA
+229,FUSIDIC ACID,Mixed Ligands
+230,Gamma-crystallin B,Antibiotics
+231,GENETICIN,Antibiotics
+232,Gln-tRNA,tRNA
+233,GLYCEROL,Mixed Ligands
+234,glycine-tRNA,tRNA
+235,glycine-tRNA glyT,tRNA
+236,GUANINE,Mixed Ligands
+237,GUANOSINE-5'-DIPHOSPHATE,Mixed Ligands
+238,GUANOSINE-5'-MONOPHOSPHATE,Mixed Ligands
+239,GUANOSINE-5'-TRIPHOSPHATE,Mixed Ligands
+240,Haemanthamine,Mixed Ligands
+241,HIV1 frameshift stimulating sequence mRNA,mRNA
+242,HIV frameshift stimulating sequence mRNA,mRNA
+243,HUMAN INITIATOR MET-TRNA-I,tRNA
+244,Hygromycin A,Antibiotics
+245,HYGROMYCIN B,Antibiotics
+246,Initiator Methionine tRNA,tRNA
+247,initiator Met-tRNA fMet from E. coli (A1U72 variant),tRNA
+248,IRON/SULFUR CLUSTER,Mixed Ligands
+249,KIRROMYCIN,Antibiotics
+250,Klebsazolicin,Antibiotics
+251,Lefamulin,Antibiotics
+252,LEUCINE,Mixed Ligands
+253,LINCOMYCIN,Antibiotics
+254,Linopristin,Antibiotics
+255,Listerin,Antibiotics
+256,L-ornithine,Mixed Ligands
+257,LYSINE,Mixed Ligands
+258,Madumycin II,Antibiotics
+259,Mefloquine,Mixed Ligands
+260,messenger RNA,mRNA
+261,Messenger RNA,mRNA
+262,messenger RNA (5'-R(*AP*AP*UP*GP*UP*AP*G)-3'),mRNA
+263,"Messenger RNA, mRNA",mRNA
+264,Metalnikowin-1,Antibiotics
+265,Metalnikowin I,Antibiotics
+267,Met-tRNAi,tRNA
+268,Met-tRNA-iMet,tRNA
+269,Midasin,Antibiotics
+270,"Midasin,Midasin",Antibiotics
+271,Mitochondrial domain of uncharacterised function (DUF1713),Antibiotics
+272,Mitochondrial transcription rescue factor 1,Factors
+273,mitochondrial tRNA,tRNA
+274,mitochondrial tRNAVal,tRNA
+275,Mitochondrial tRNAVal,tRNA
+276,mitochondrial Val tRNA,tRNA
+277,MITORIBOSOMAL CP TRNA,tRNA
+278,mRNA,mRNA
+279,MRNA,mRNA
+280,mRNA (31-MER),mRNA
+281,mRNA 5'-AUG-3',mRNA
+282,MRNA 5'-R(*AP*AP*AP*AP*AP*AP*UP*GP*UP)-3',mRNA
+283,mRNA A-site fragment,mRNA
+284,mRNA containing SARS-CoV-2 sequence,mRNA
+285,mRNA fragment,mRNA
+286,mRNA (polyadenylated),mRNA
+287,mRNA (truncated),mRNA
+288,mRNA (UGA stop codon),mRNA
+289,mRNA with 12 nt long spacer,mRNA
+290,mRNA with 15 nt long spacer,mRNA
+291,mRNA with 18 nt long spacer,mRNA
+292,mRNA with 21 nt long spacer,mRNA
+293,mRNA with 24 nt long spacer,mRNA
+294,mRNA with 30 nt long spacer,mRNA
+295,"MT-CO3 mRNA, mitochondrial",mRNA
+296,mt-tRNA,tRNA
+297,mt-tRNAVal,tRNA
+298,MT-TRNAVAL,tRNA
+311,Nagilactone C,Mixed Ligands
+312,N-carboxy-L-threonine,Mixed Ligands
+313,NEGAMYCIN,Antibiotics
+314,NEOMYCIN,Antibiotics
+315,Neuroguidin,Antibiotics
+316,Nicalin,Antibiotics
+317,NICOTINAMIDE-ADENINE-DINUCLEOTIDE,Mixed Ligands
+318,nonstop mRNA,mRNA
+319,Oncocin,Antibiotics
+320,Oncocin 10wt,Antibiotics
+321,Oncocin d15-19,Antibiotics
+322,osmium (III) hexammine,Mixed Ligands
+323,OXYGEN ATOM,Mixed Ligands
+324,Pactamycin,Antibiotics
+325,P AND A-SITE PHE-TRNA PHE,tRNA
+326,P and E-site tRNA(fMet),tRNA
+327,P AND E-SITE TRNA(FMET),tRNA
+328,PAROMOMYCIN,Antibiotics
+329,pe/E-site-tRNA,tRNA
+330,PE HYBRID STATE TRNA FMET,tRNA
+331,PE hybrid state tRNA Phe,tRNA
+332,PENTAETHYLENE GLYCOL,Mixed Ligands
+333,Peptide chain release factor 1,Factors
+334,Peptide chain release factor 2,Factors
+335,PEPTIDE CHAIN RELEASE FACTOR 2,Factors
+336,Peptide chain release factor 3,Factors
+337,PEPTIDE CHAIN RELEASE FACTOR 3,Factors
+338,Peptide chain release factor RF1,Factors
+339,Peptide chain release factor RF2,Factors
+340,Peptide chain release factor RF3,Factors
+341,Peptidyl-tRNA analog ACCA-Leu-Phe,tRNA
+342,P/E site tRNA,tRNA
+343,P/E-site tRNA,tRNA
+344,P/E-Site tRNA,tRNA
+345,P/E-site tRNAPhe,tRNA
+346,P/E tRNA,tRNA
+347,P/E-tRNA,tRNA
+348,PE tRNA,tRNA
+349,phazolicin,Antibiotics
+350,PHENYLALANINE,Mixed Ligands
+351,phenylalanine specific transfer RNA,tRNA
+352,"Phenylalanine specific transfer RNA, tRNA-Phe",tRNA
+353,Phe-tRNA-Phe,tRNA
+354,Phe-tRNAPhe,tRNA
+355,PHE TRNA (UNMODIFIED BASES),tRNA
+356,PHOSPHOAMINOPHOSPHONIC ACID-ADENYLATE ESTER,Mixed Ligands
+357,PHOSPHOAMINOPHOSPHONIC ACID-GUANYLATE ESTER,Mixed Ligands
+358,PHOSPHOMETHYLPHOSPHONIC ACID GUANYLATE ESTER,Mixed Ligands
+359,PHOSPHOTHIOPHOSPHORIC ACID-ADENYLATE ESTER,Mixed Ligands
+360,polyA mRNA,mRNA
+361,P/P-site Phe-tRNA(Phe),tRNA
+362,P/P-site-tRNA,tRNA
+363,"Probable peptide chain release factor C12orf65, mitochondrial",Factors
+364,PROLINE,Mixed Ligands
+365,proline tRNA,tRNA
+366,Proline tRNA,tRNA
+367,P-SITE AND A-SITE TRNA,tRNA
+368,P-site and E-site tRNAs,tRNA
+369,P-site Arg-tRNA,tRNA
+370,P-site fMet-Phe-tRNA(Phe),tRNA
+371,P-site fMet-tRNA,tRNA
+372,P-site fMet-tRNA(fMet),tRNA
+373,P-site fMet-tRNAfMet,tRNA
+374,"P-site fMet-tRNAMet, mitochondrial",tRNA
+375,P-site Ile-tRNA,tRNA
+376,P-site Isoleucine tRNA (77-MER),tRNA
+377,P-site Leu-tRNA(Leu),tRNA
+378,P-site or E-site fMet-tRNA(fMet),tRNA
+379,P-site PHE-tRNA,tRNA
+380,P-site Phe-tRNA(Phe),tRNA
+381,P site trNA,tRNA
+382,P- site tRNA,tRNA
+383,P-site tRNA,tRNA
+384,P-Site tRNA,tRNA
+385,P-SITE tRNA,tRNA
+386,P-site tRNA ASL fragment,tRNA
+387,P-site tRNA Aspartate,tRNA
+388,P-site tRNA CHAIN,tRNA
+389,"P-site tRNA, Deacylated Initiator Methionyl-tRNA",tRNA
+390,P site tRNAfmet,tRNA
+391,P-site tRNA f-Met,tRNA
+392,P-site tRNA fMet,tRNA
+393,P-site tRNA-fMet,tRNA
+394,P-site tRNAfMet,tRNA
+395,P-site tRNA fMET,tRNA
+396,P-site tRNAfMET,tRNA
+397,P-SITE tRNA fMet,tRNA
+398,P-SITE TRNA FMET,tRNA
+399,P-SITE TRNA FMET (UNMODIFIED BASES EXCEPT FOR THYMINE 54),tRNA
+400,P-site tRNA-Gly,tRNA
+401,P-site tRNAPhe,tRNA
+402,P-site tRNA(Pro),tRNA
+403,P-site tRNA-Pro,tRNA
+404,P-site tRNA-Pro(CGG),tRNA
+405,P-site tRNA SufA6,tRNA
+406,P-tRNA,tRNA
+407,P-tRNA CCA-end,tRNA
+408,P-tRNA fMet,tRNA
+409,P-tRNAfMet,tRNA
+410,P-tRNA (leu),tRNA
+411,P-tRNA(Leu),tRNA
+412,PtRNA (Leu),tRNA
+413,PtRNA-Leu,tRNA
+414,PUROMYCIN-5'-MONOPHOSPHATE,Antibiotics
+415,Pyrrhocoricin,Antibiotics
+416,Quinupristin,Antibiotics
+417,Radezolid,Mixed Ligands
+418,Ribosomal silencing factor RsfS,Factors
+419,Ribosome assembly factor MRT4,Factors
+420,"Ribosome-binding factor PSRP1, chloroplastic",Factors
+421,Ribosome hibernation promoting factor,Factors
+422,Ribosome hibernation promotion factor,Factors
+423,Ribosome maturation factor RimP,Factors
+424,Ribosome modulation factor,Factors
+425,Ribosome production factor 1,Factors
+426,ribosome recycling factor,Factors
+427,Ribosome-recycling factor,Factors
+428,RIBOSOME RECYCLING FACTOR,Factors
+429,"Ribosome-recycling factor, chloroplastic",Factors
+430,"Ribosome-recycling factor, mitochondrial",Factors
+431,"Ribosome recycling factor, RRF",Factors
+432,"Ribosome-releasing factor 2, mitochondrial",Factors
+433,"RNA (5'-R(P*CP*CP*G)-3'), mRNA",mRNA
+435,S-ADENOSYL-L-HOMOCYSTEINE,Mixed Ligands
+436,Sarecycline,Mixed Ligands
+437,SECIS mRNA,mRNA
+438,Sec-tRNASec,tRNA
+439,SELENOCYSTEINE,Mixed Ligands
+440,Selenocysteine-specific elongation factor,Factors
+441,SINEFUNGIN,Antibiotics
+442,SPARSOMYCIN,Antibiotics
+443,SPECTINOMYCIN,Antibiotics
+444,SPERMIDINE,Mixed Ligands
+445,SPERMINE,Mixed Ligands
+446,STREPTOMYCIN,Antibiotics
+447,TC007,Mixed Ligands
+448,Tedizolid,Mixed Ligands
+449,Tedizolid isomer,Mixed Ligands
+450,TELITHROMYCIN,Antibiotics
+451,TETRACYCLINE,Mixed Ligands
+452,TETRAETHYLENE GLYCOL,Mixed Ligands
+453,The A-site tRNA was modeled based on an E. coli tRNA-Lys,tRNA
+454,THERMINE,Mixed Ligands
+455,Thermorubin,Antibiotics
+456,TIGECYCLINE,Mixed Ligands
+457,Titin,Antibiotics
+458,tmRNA,mRNA
+459,TMRNA DELA,mRNA
+460,TOBRAMYCIN,Antibiotics
+461,TOXIN OF THE YOEB-YEFM TOXIN-ANTITOXIN SYSTEM,Antibiotics
+462,Toxin relE,Antibiotics
+463,Toxin YoeB,Antibiotics
+464,Transcription factor BTF3,Factors
+465,"Transcription termination factor 4, mitochondrial",Factors
+466,transfer-messenger RNA (tmRNA),mRNA
+467,transfer RNA,tRNA
+468,Transfer RNA,tRNA
+469,Transfer RNA - Phe,tRNA
+470,Translation initiation factor 1A,Factors
+471,Translation initiation factor 2 subunit alpha,Factors
+472,Translation initiation factor 2 subunit beta,Factors
+473,Translation initiation factor 2 subunit gamma,Factors
+474,Translation initiation factor IF-1,Factors
+475,Translation initiation factor IF-2,Factors
+476,"Translation initiation factor IF-2, mitochondrial",Factors
+477,Translation initiation factor IF-3,Factors
+478,"Translation initiation factor IF-3, mitochondrial",Factors
+479,Translation initiation factor RLI1,Factors
+480,TRIETHYLENE GLYCOL,Mixed Ligands
+481,Trigger factor,Factors
+482,TRIPHOSPHATE,Mixed Ligands
+483,tRNA,tRNA
+484,TRNA,tRNA
+485,tRNA (5'-D(*AP*UP*CP*CP*CP*CP*GP*UP*GP*UP*CP*CP*UP*UP*GP*GP*UP*UP*CP*G)-3'),tRNA
+486,tRNA (75-MER),tRNA
+487,tRNA (76-MER),tRNA
+488,tRNA acceptor end mimic,tRNA
+489,tRNA-Ala,tRNA
+490,tRNA-Ala-UGC,tRNA
+491,tRNAArg,tRNA
+492,"tRNA, A-site and E-site tRNAs",tRNA
+493,tRNA ASL Escherichia coli Arg1,tRNA
+494,tRNA ASL Escherichia coli Arg2,tRNA
+495,tRNA-Asp,tRNA
+496,tRNA-CCA,tRNA
+497,tRNA CCAend,tRNA
+498,tRNA CCA end (5'-R(P*CP*CP*A)-3'),tRNA
+499,tRNA CCA-end acetylated (Phe),tRNA
+500,tRNA fMet,tRNA
+501,tRNA(fMet),tRNA
+502,tRNA-fMet,tRNA
+503,tRNAfMet,tRNA
+504,tRNA-fMET,tRNA
+505,TRNA-FMET,tRNA
+506,tRNA-fMETi,tRNA
+507,TRNA FMET (UNMODIFIED BASES),tRNA
+508,tRNA-Gln,tRNA
+509,tRNA(gly),tRNA
+510,tRNAi,tRNA
+511,tRNAiMet,tRNA
+512,tRNA-Leu,tRNA
+513,TRNA-LEU,tRNA
+514,tRNA(Lys),tRNA
+515,tRNA-Lys,tRNA
+516,tRNALys,tRNA
+517,tRNA (Lys3),tRNA
+518,tRNA met,tRNA
+519,tRNA-met,tRNA
+520,tRNA-Met,tRNA
+521,tRNA-Phe,tRNA
+522,tRNAPhe,tRNA
+523,tRNA-Phe anticodon stem,tRNA
+524,"tRNA-Phe, mitochondrial",tRNA
+525,TRNA-PHE WITH UNMODIFIED NUCLEOTIDES EXCEPT FOR MIA37,tRNA
+526,tRNAPro,tRNA
+527,tRNAThr,tRNA
+528,tRNA-Tyr,tRNA
+529,TRNA-TYR,tRNA
+530,tRNAval,tRNA
+531,tRNA Val,tRNA
+532,tRNA(Val),tRNA
+533,tRNA-Val,tRNA
+534,tRNAVal,tRNA
+535,tRNAVAL,tRNA
+536,truncated mRNA,mRNA
+537,TRYPTOPHAN,Mixed Ligands
+538,Tubulin Beta,Antibiotics
+539,"Ubiquitin, putative",Antibiotics
+540,UNKNOWN,Mixed Ligands
+541,URIDINE 5'-TRIPHOSPHATE,Mixed Ligands
+542,Valine-specific transfer RNA,tRNA
+543,Val tRNA,tRNA
+544,Viomycin,Antibiotics
+545,VIOMYCIN,Antibiotics
+546,VIRGINIAMYCIN M1,Antibiotics
+547,VIRGINIAMYCIN S1,Antibiotics
+548,yeast Phe-tRNA-Phe,tRNA
+549,Z-site tRNA,tRNA
