@@ -174,40 +174,44 @@ def init_transpose_ligand(
 		else:
 
 			resids :List[int] = [
-				resid for  resid in [*map(lambda x : x['residue_id'], binding_site[chain]['residues'])]
+				resid for resid in [*map(lambda x : x['residue_id'], binding_site[chain]['residues'])]
 			]
 
 			origin_chains[binding_site.data[chain]['nomenclature'][0]] = {
-				'strand'       : chain,
-				'seq'          : binding_site.data[chain]['sequence'],
-				'auth_asym_id': binding_site.data[chain][ 'auth_asym_id' ],
-				'ids'          : resids
+				# 'strand'      : chain,
+				'seq'         : binding_site.data[chain]['sequence'],
+				'auth_asym_id': binding_site.data[chain]['auth_asym_id'],
+				'ids'         : resids
 			}
 
 	target_polymers = [*target_profile['rnas'],*target_profile['proteins']]
+
 	for nom in origin_chains:
-		name_matches = []
-		#* goal is to look up the chain in the targe struct __by nomenclature__
+
+		#* goal is to look up the chain in the target struct __by nomenclature__
 		matches =  [*filter(lambda tgt_poly: nom in tgt_poly['nomenclature'], target_polymers)]
 		if len( matches )  < 1:
 			continue
 
-		seq          = matches[0]['entity_poly_seq_one_letter_code'] #----------------------------------------> [ Major handwaving with respect to duplicate auth_asym_ids by always grabbing the first of (possibly) multiple matches]
-		strand       = matches[0]['entity_poly_strand_id']
+		seq          = matches[0]['entity_poly_seq_one_letter_code'] 
 		auth_asym_id = matches[0]['auth_asym_id']
 
 		target_chains[nom] ={
-			'seq'          : seq,
-			'strand'       : strand,
+			'seq'         : seq,
 			'auth_asym_id': auth_asym_id
 		}
 
 
 	prediction ={}
+
 	for name in origin_chains:
+
+		# If no chain with a given nomenclature found in target --> skip it.
 		if name not in target_chains:
 			continue
+
 		src_ids = origin_chains[name]['ids']
+
 		src     = origin_chains[name]['seq']
 		tgt     = target_chains[name]['seq']
 
@@ -219,16 +223,17 @@ def init_transpose_ligand(
 		aln_ids = sq.aligned_ids
 		tgt_ids = sq.tgt_ids
 
+
 		prediction[name] = {
 			"source":{
 				"src"    : src,
 				"src_ids": src_ids,
-				"strand" : origin_chains[name]['strand']
+				"auth_asym_id" : origin_chains[name]['auth_asym_id']
 			},
 			"target":{
 				"tgt"    : tgt,
 				"tgt_ids": tgt_ids,
-				'strand' : target_chains[name]['strand']
+				'auth_asym_id' : target_chains[name]['auth_asym_id']
 			},
 			"alignment" :{
 				"aln_ids": aln_ids,

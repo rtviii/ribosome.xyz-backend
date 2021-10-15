@@ -35,20 +35,22 @@ def get_individual_ligand(request):
 def get_all_ligands(request):
 
     CYPHER_STRING="""
-        match (l:Ligand)-[]-(r:RibosomeStructure)  where not l.chemicalName  contains "ION"
+        match (l:Ligand)-[]-(r:RibosomeStructure)  where 
+        not l.chemicalName  contains "ION" 
+        and not l.chemicalName contains "CLUSTER"
+        and not l.chemicalName contains "["
         return {{  
         polymer    : false,
         description: l.chemicalName,
-
         chemicalId : l.chemicalId,
-
-        presentIn  : collect( distinct {{
-                src_organism_ids     : r.src_organism_ids     ,
-                citation_title       : r.citation_title       ,
-                expMethod            : r.expMethod            ,
-                rcsb_id              : r.rcsb_id              ,
-                resolution           : r.resolution
-            }})
+        presentIn  : {{
+                src_organism_ids: r.src_organism_ids,
+                description     : l.chemicalName,
+                citation_title  : r.citation_title,
+                expMethod       : r.expMethod,
+                rcsb_id         : r.rcsb_id,
+                resolution      : r.resolution
+            }}
         }}
     """.format()
     return Response(_neoget(CYPHER_STRING))
@@ -61,14 +63,15 @@ def get_all_ligandlike(request):
         return {{
             polymer     : true,
             description : l.rcsb_pdbx_description,
-            auth_asym_id: l.auth_asym_id,
-            presentIn  : collect(distinct  {{
-                src_organism_ids     : r.src_organism_ids     ,
-                citation_title       : r.citation_title       ,
-                expMethod            : r.expMethod            ,
-                rcsb_id              : r.rcsb_id              ,
-                resolution           : r.resolution
-            }})
+            presentIn  : {{
+                auth_asym_id    : l.auth_asym_id,
+                src_organism_ids: r.src_organism_ids,
+                description     : l.rcsb_pdbx_description,
+                citation_title  : r.citation_title,
+                expMethod       : r.expMethod,
+                rcsb_id         : r.rcsb_id,
+                resolution      : r.resolution
+            }}
         }}""".format()
     return Response(_neoget(CYPHER_STRING))
 
