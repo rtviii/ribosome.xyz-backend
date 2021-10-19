@@ -18,7 +18,6 @@ from dataclasses import dataclass, field
 from asyncio import run
 import itertools
 import numpy as np
-from ribetl.ciftools.neoget import _neoget
 flatten = itertools.chain.from_iterable
 
 def get_dict(path:str,)->dict:

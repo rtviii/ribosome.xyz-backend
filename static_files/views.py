@@ -221,7 +221,7 @@ def download_structure(request):
     params     = dict(request.GET)
     struct_id    = params['struct_id'][0].upper()
 
-    filename   = "{}.cif".format(struct_id)
+    filename   = "{}_modified.cif".format(struct_id)
     filehandle = os.path.join(STATIC_ROOT, struct_id, filename)
 
     try:

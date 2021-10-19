@@ -280,9 +280,6 @@ if __name__ =="__main__":
 
 	args = prs.parse_args()
 
-
-
-
 	SRC_STRUCT = args.source_structure.upper()
 	TGT_STRUCT = args.target_structure.upper()
 
@@ -303,7 +300,6 @@ if __name__ =="__main__":
 		ligand_chemicalId = LIG)
 
 	prediction = init_transpose_ligand(SRC_STRUCT,TGT_STRUCT,_target_handle_json,bsite)
-
 	fname = f'PREDICTION_{LIG if LIG else POLY}_{SRC_STRUCT}_{TGT_STRUCT}.json'
 	with open(os.path.join(os.getenv('STATIC_ROOT' ),TGT_STRUCT,fname), 'w') as outfile:
 		json.dump(prediction,outfile)

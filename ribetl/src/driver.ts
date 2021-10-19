@@ -16,10 +16,8 @@ export const writeupdateStruct = (r:RibosomeStructure) =>{
     if (!fs.existsSync(path.dirname(target_filename))){
         shell.mkdir('-p', path.dirname(target_filename))
     }
-
       fs.writeFileSync(target_filename, JSON.stringify(r, null, 4))
       console.log("Has written to ", path.dirname(target_filename))
-
 }
 
 export const updateCatalogueWStruct = async (
