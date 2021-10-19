@@ -3,18 +3,19 @@ import os
 
 def _neoget(CYPHER_STRING:str):
 
-    print("PASSSWORD IS ", os.getenv("NEO4J_PASSWORD"))
     driver = GraphDatabase.driver(
         os.getenv( 'NEO4J_URI' ),
         auth=(
         os.getenv( 'NEO4J_USER' ),
         os.getenv( 'NEO4J_PASSWORD')
-    )
+    ),
+    database=os.environ.get("NEO4J_CURRENTDB")
     )
 
     def parametrized_query(tx, **kwargs):
         result:Result = tx.run(CYPHER_STRING, **kwargs)
         return result.values()
+
     with driver.session() as session:
         session.close()
         return session.read_transaction(parametrized_query)
