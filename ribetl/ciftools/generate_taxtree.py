@@ -1,7 +1,9 @@
 from asyncio import gather
+from dataclasses import dataclass
 import json
 import os
-import pprint
+from pprint import pprint
+from typing import Dict, List
 import dotenv
 import numpy as np
 from ete3 import NCBITaxa
@@ -32,6 +34,10 @@ dotenv.load_dotenv(dotenv_path='/home/rxz/dev/riboxyzbackend/rxz_backend/.env')
 STATIC_ROOT = os.environ.get('STATIC_ROOT')
 
 
+
+# Want to know each structure's tax ids.
+# Want to know each tax id's structures.
+
 # Void --> List[Path]
 def gather_taxa():
     """"""
@@ -44,12 +50,16 @@ def gather_taxa():
         org_id_arrays.append(profile_taxa(profile))
     return org_id_arrays
 
-# Path --> Tuple[src_organisms, host_organisms]
+# Path --> Dict[rcsb_id,
+# src_orgs : Array[int],
+# host_orgs: Array[int]
+# ]
 def profile_taxa(path:str):
     """"Provided a profile path, extract source and host organisms in a given profile."""
 
     with open(path,'r') as infile:
         profile   = json.load(infile)
+        rcsb_id   = profile['rcsb_id']
         src_orgs  = []
         host_orgs = []
 
@@ -61,20 +71,52 @@ def profile_taxa(path:str):
             src_orgs  = [*src_orgs,*rna['src_organism_ids']]
             host_orgs = [*host_orgs,*rna['host_organism_ids']]
 
-        return [src_orgs, host_orgs]
+        return {  
+            "rcsb_id"         : rcsb_id,
+            "source_organisms": src_orgs,
+            "host_organisms"  : host_orgs }
+
+
+
+
+@dataclass
+class TaxaProfile(): 
+      rcsb_id      : str
+      classified_as: int
+      src_orgs     : Dict[int,int]
+      host_orgs    : Dict[int,int]
+
 
         
-# Void --> List[Int]
-def unique_taxa_static():
-    src_tax_ids = np.array(gather_taxa())[:,0]
-    flat        = []
-    for i in src_tax_ids:
-        flat = [*flat, *i]
-    return list(set(flat))
+# Dict[...] -->  TaxaProfile
+def classify_profile(d:dict)->TaxaProfile:
+
+    s={}
+    for _ in d['source_organisms']:
+        if _ in s:
+            s[_]+=1
+        else:
+            s[_]= 1
+
+    h={}
+    for _ in d['host_organisms']:
+        if _ in h:
+            h[_]+=1
+        else:
+            h[_]= 1
+
+    top_org = [* sorted(s.items(), key=lambda x: x[1], reverse=True) ][0][0]
+
+    return TaxaProfile(
+        rcsb_id       = d["rcsb_id"],
+        classified_as = top_org,
+        src_orgs      = s,
+        host_orgs     = h,
+    )
 
 
-def generate_tax_trees():
-    taxid2name = ncbi.get_taxid_translator(unique_taxa_static() )
+def generate_tax_trees(unique_taxa:List[int]):
+    taxid2name = ncbi.get_taxid_translator(unique_taxa)
     b          = ncbi.get_name_translator (['Bacteria'] )['Bacteria'][0]
     a          = ncbi.get_name_translator (['Archaea']  )['Archaea'][0]
     e          = ncbi.get_name_translator (['Eukaryota'])['Eukaryota'][0]
@@ -161,6 +203,19 @@ def generate_tax_trees():
 
 
 
-pprint.pprint(gather_taxa())
+
+
+tax_profiles = [classify_profile(_).classified_as for _ in gather_taxa()]
+
+
+for taxon in tax_profiles:
+    lineage:List[int] = ncbi.get_lineage(taxon)
+    name = ncbi.get_taxid_translator(lineage)
+    # name = ncbi.get_taxid_translator([ lineage[1] ])
+    pprint(name)
+    # ncbi.get_name_translator(lineage[1])
+
+    
+
 # pprint.pprint(unique_taxa_static())
 # pprint.pprint(unique_taxa_static())
