@@ -1,11 +1,12 @@
 from asyncio import gather
 import json
 import os
+import pprint
 import dotenv
 import numpy as np
 from ete3 import NCBITaxa
 ncbi = NCBITaxa()
-unique_taxa = list(set(unique_taxa))
+# unique_taxa = list(set(unique_taxa))
 
 # ? These tax ids are a unique scan over all structures in the current instance of neo4j.
 """This script is used to generate taxonomy files that contain the structure's species present in the database:
@@ -33,24 +34,34 @@ STATIC_ROOT = os.environ.get('STATIC_ROOT')
 
 # Void --> List[Path]
 def gather_taxa():
+    """"""
     structs       = [*filter(lambda x: os.path.isdir(os.path.join(STATIC_ROOT,x)) ,os.listdir(STATIC_ROOT))]
     profiles      = list(map(lambda _: os.path.join(STATIC_ROOT,_,f"{_}.json"),structs))
+
     org_id_arrays = []
-    for pf in profiles:
-        org_id_arrays.append(profile_taxa(pf))
+
+    for profile in profiles:
+        org_id_arrays.append(profile_taxa(profile))
     return org_id_arrays
 
 # Path --> Tuple[src_organisms, host_organisms]
 def profile_taxa(path:str):
+    """"Provided a profile path, extract source and host organisms in a given profile."""
+
     with open(path,'r') as infile:
-        d = json.load(infile)
-        src_orgs = []
+        profile   = json.load(infile)
+        src_orgs  = []
         host_orgs = []
-        for prot in d['proteins']:
+
+        for prot in profile['proteins']:
             src_orgs  = [*src_orgs,*prot['src_organism_ids']]
             host_orgs = [*host_orgs,*prot['host_organism_ids']]
 
-        return [list(set(src_orgs)), list(set(host_orgs))]
+        for rna in profile['rnas']:
+            src_orgs  = [*src_orgs,*rna['src_organism_ids']]
+            host_orgs = [*host_orgs,*rna['host_organism_ids']]
+
+        return [src_orgs, host_orgs]
 
         
 # Void --> List[Int]
@@ -147,3 +158,9 @@ def generate_tax_trees():
         json.dump(e_dict,infile)
     with open('archaea_browser.json','w') as infile:
         json.dump(a_dict,infile)
+
+
+
+pprint.pprint(gather_taxa())
+# pprint.pprint(unique_taxa_static())
+# pprint.pprint(unique_taxa_static())
