@@ -4,7 +4,7 @@
 # (that's where file:// reads from by default : /var/lib/neo4j/import)
 
 
-DB_NAME='ribolocal';
+DB_NAME='riboxyz';
 
 # Create constraints
 echo '

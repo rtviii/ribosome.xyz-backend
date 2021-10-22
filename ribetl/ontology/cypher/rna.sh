@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 
-DB_NAME='ribolocal'
+DB_NAME='riboxyz'
 
 filepath=$1
 if [ -f $filepath ];

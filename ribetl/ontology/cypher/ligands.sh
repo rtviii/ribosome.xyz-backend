@@ -2,7 +2,7 @@
 
 filepath=$1
 
-DB_NAME='ribolocal'
+DB_NAME='riboxyz'
 
 if [ -f $filepath ];
 then

@@ -42,17 +42,6 @@ def _neoget(CYPHER_STRING:str):
 
 
 
-def get_chain_auth_asym_id(struct:str, auth_asym_id:str)->Union[None,Path]:
-
-    struct            = struct.upper()
-    struct_chains_dir = Path(opj(STATIC_ROOT, struct, "CHAINS"))
-    matches           = [* struct_chains_dir.glob("{}_STRAND_{}_*.cif".format(struct, auth_asym_id)) ]
-
-    if len(matches) < 1:
-        return None
-    return matches[0]
-
-
 
 
 @api_view(['GET','POST'])
@@ -71,14 +60,17 @@ def align_3d(request):
 
     name1   = "{}_STRAND_{}.cif".format(struct1,auth_asym_id1)
     name2   = "{}_STRAND_{}.cif".format(struct2,auth_asym_id2)
+    handle1   = Path(os.path.join(os.environ.get("STATIC_ROOT"), struct1,"CHAINS", name1))
+    handle2   = Path(os.path.join(os.environ.get("STATIC_ROOT"), struct2,"CHAINS", name2))
 
     handle1 = Path(os.path.join(os.environ.get("STATIC_ROOT"), struct1,"CHAINS", name1))
     handle2 = Path(os.path.join(os.environ.get("STATIC_ROOT"), struct2,"CHAINS", name2))
 
-
     if None in [handle1,handle2]:
+        print("Failed to find handles:", handle1, handle2)
         return Response(-1)
 
+    print("Found handles:", handle1, handle2)
     for x in [handle1,handle2]:
         if  not x.is_file():
             raise FileNotFoundError(f"File {x} is not found in {STATIC_ROOT}")
