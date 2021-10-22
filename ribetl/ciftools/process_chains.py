@@ -1,6 +1,5 @@
 from pprint import pprint
 import struct
-from termios import CIBAUD
 from Bio.PDB.Chain import Chain
 import os
 import sys

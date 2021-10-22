@@ -59,6 +59,7 @@ def get_chain_auth_asym_id(struct:str, auth_asym_id:str)->Union[None,Path]:
 def align_3d(request):
     params = dict(request.GET)
 
+    print("-------------------+------------------")
     print("GOT PARAMS", params)
     print("-------------------+------------------")
     struct1       = params['struct1'][0].upper()
@@ -67,15 +68,13 @@ def align_3d(request):
     auth_asym_id1 = params['auth_asym_id1'][0]
     auth_asym_id2 = params['auth_asym_id2'][0]
 
+
     name1   = "{}_STRAND_{}.cif".format(struct1,auth_asym_id1)
     name2   = "{}_STRAND_{}.cif".format(struct2,auth_asym_id2)
 
+    handle1 = Path(os.path.join(os.environ.get("STATIC_ROOT"), struct1,"CHAINS", name1))
+    handle2 = Path(os.path.join(os.environ.get("STATIC_ROOT"), struct2,"CHAINS", name2))
 
-
-    handle1,handle2 = [
-        get_chain_auth_asym_id(struct1, auth_asym_id1),
-        get_chain_auth_asym_id(struct2, auth_asym_id2)
-    ]
 
     if None in [handle1,handle2]:
         return Response(-1)
@@ -83,8 +82,8 @@ def align_3d(request):
     for x in [handle1,handle2]:
         if  not x.is_file():
             raise FileNotFoundError(f"File {x} is not found in {STATIC_ROOT}")
-    
-    protein_alignment_script = os.getenv('PROTEIN_ALIGNMENT_SCRIPT')
+
+    protein_alignment_script = os.environ.get('PROTEIN_ALIGNMENT_SCRIPT')
     try:
         subprocess.call([
             protein_alignment_script,
