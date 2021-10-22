@@ -10,10 +10,12 @@ PDBID       = sys.argv[1].upper()
 dotenv.load_dotenv(dotenv_path='/home/rxz/dev/riboxyzbackend/rxz_backend/.env')
 STATIC_ROOT = os.environ.get('STATIC_ROOT')
 
-cifpath     = os.path.join(STATIC_ROOT,PDBID, PDBID+".cif")
-cifmodified = os.path.join(STATIC_ROOT,PDBID, PDBID+"_modified.cif")
 
-structprofile           = bsite.open_structure(PDBID, 'json')
+
+
+cifpath       = os.path.join(STATIC_ROOT,PDBID, PDBID+".cif")
+cifmodified   = os.path.join(STATIC_ROOT,PDBID, PDBID+"_modified.cif")
+structprofile = bsite.open_structure(PDBID, 'json')
 
 def make_nom_dict(profile)->dict:
 	nomdict = {}
@@ -31,6 +33,7 @@ for i in make_nom_dict(structprofile).items():
 
 doc.write_file(cifmodified)
 print("\033[91m Wrote {} \033[0m".format(cifmodified))
+
 
 # strand_id = "0"
 # nom = "uL22"

@@ -107,7 +107,6 @@ class BindingSite:
     def __init__(self, data: Dict[str, BindingSiteChain]) -> None:
         self.data: Dict[str, BindingSiteChain] = data
 
-
     def __getitem__(self, chainkey:str)->BindingSiteChain:
         if chainkey not in self.data:
             raise KeyError(f"Chain {chainkey} not found in the binding site.")
@@ -152,7 +151,7 @@ def parse_polymer_nbhd(poly: PolymerRef, structure: Structure):
         return 
 
     residues: List[Residue] = get_polymer_residues(poly.auth_asym_id, structure)
-    bs: BindingSite = get_poly_nbrs(residues, structure)
+    bs: BindingSite = get_poly_nbrs(residues, structure, poly.auth_asym_id)
     bs.to_json(outfile_json)
 
 def get_liglike_polymers(struct_profile:dict) -> List[PolymerRef]:
@@ -180,12 +179,15 @@ def get_lig_ids(pdbid: str, profile:dict) -> List[tuple]:
     return [ ] if len(_) < 1 else [* filter(lambda k: "ion" not in k[1].lower(), _)] 
 
 def get_poly_nbrs(
-    residues: List[Residue],
-    struct: Structure,
-) -> BindingSite:
+      residues      : List[Residue],
+      struct        : Structure,
+      auth_asym_id  : str
+    ) -> BindingSite: 
 
     """KDTree search the neighbors of a given list of residues(which constitue a ligand)
     and return unique having tagged them with a ban identifier proteins within 5 angstrom of these residues. """
+
+
 
     pdbid         = struct.get_id().upper()
     ns            = NeighborSearch(list(struct.get_atoms()))
@@ -221,11 +223,13 @@ def get_poly_nbrs(
             auth_asym_id,
             sorted([residue for residue in nbr_residues if residue.parent_auth_asym_id == c], key=operator.attrgetter('residue_id')))
 
+
     return BindingSite(nbr_dict)
 
 def get_ligand_nbrs(
       ligand_residues: List[Residue],
       struct         : Structure,
+      chemicalId: str
     ) -> BindingSite : 
     """KDTree search the neighbors of a given list of residues(which constitue a ligand) 
     and return unique having tagged them with a ban identifier proteins within 5 angstrom of these residues. """
@@ -271,13 +275,14 @@ def get_ligand_nbrs(
             auth_asym_id,
             sorted([residue for residue in nbr_residues if residue.parent_auth_asym_id == c], key=operator.attrgetter('residue_id')))
 
+
     return BindingSite(nbr_dict)
 
 def parse_and_save_ligand(ligid: str, rcsbid: str, structure: Structure):
     STATIC_ROOT  = os.environ.get('STATIC_ROOT')
     outfile_json = os.path.join(STATIC_ROOT, rcsbid.upper(), f'LIGAND_{ligid}.json')
     residues: List[Residue] = getLigandResIds(ligid, structure)
-    bs      : BindingSite   = get_ligand_nbrs(residues, structure)
+    bs      : BindingSite   = get_ligand_nbrs(residues, structure, ligid)
     bs.to_json(outfile_json)
 
 def getLigandResIds(ligchemid: str, struct: Structure) -> List[Residue]:
