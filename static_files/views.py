@@ -230,8 +230,7 @@ def cif_chain_by_class(request):
     struct     = params['struct'][0].upper()
 
 
-    CYPHER = """match (n:RibosomeStructure)-[]-(r:Protein)-[]-(b:ProteinClass)
-    where n.rcsb_id ="{}" and b.class_id = "{}"
+    CYPHER = """match (n:RibosomeStructure)-[]-(r)-[]-(b) where n.rcsb_id ="{}" and b.class_id = "{}"
     return {{ struct: n.rcsb_id, auth_asym_id: r.auth_asym_id }}""".format(struct,classid)
 
     chains = _neoget(CYPHER)
@@ -239,7 +238,7 @@ def cif_chain_by_class(request):
         return Response("Not found")
     auth_asym_id     = chains[0]['auth_asym_id']
     filename   = "{}_STRAND_{}.cif".format(struct,auth_asym_id)
-    filehandle = get_chain_auth_asym_id(struct,auth_asym_id)
+    filehandle = os.path.join(STATIC_ROOT, struct.upper(), "CHAINS", filename)
 
     try:
         doc = open(filehandle, 'rb')

@@ -108,7 +108,7 @@ def see_poly(POLY,SRC):
 	cmd.delete('all')
 
 	source_path = os.path.join(STATIC_ROOT, SRC,f"{SRC}.cif")
-	poly_path   = os.path.join(STATIC_ROOT, TGT,f"POLYMER_{POLY}.json")
+	poly_path   = os.path.join(STATIC_ROOT, SRC,f"POLYMER_{POLY}.json")
 
 	cmd.load(source_path)
 

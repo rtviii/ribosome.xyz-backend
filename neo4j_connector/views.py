@@ -265,36 +265,32 @@ def get_rna_class(request):
     params        = dict(request.GET)
     rna_class     = str(params['rna_class'][0])
 
-    param2class = {
-        '5'   : '5SrRNA',
-        '5.8' : '5.8SrRNA',
-        '12'  : '12SrRNA',
-        '16'  : '16SrRNA',
-        '21'  : '21SrRNA',
-        '23'  : '23SrRNA',
-        '25'  : '25SrRNA',
-        '28'  : '28SrRNA',
-        '35'  : '35SrRNA',
-        'mrna': 'mRNA',
-        'trna': 'tRNA',
-    }
-    if rna_class not in param2class.keys():
-        return Response([])
 
     CYPHER_STRING  = """
     match (c:RNAClass {{ class_id:"{}" }})-[]-(n)-[]-(rib:RibosomeStructure)
     return {{
-    struct            : n.parent_rcsb_id,
-    src_organism_ids  : n.src_organism_ids,
-    src_organism_names: n.src_organism_names,
-    seq               : n.entity_poly_seq_one_letter_code,
-    strand            : n.entity_poly_strand_id,
-    parent_year       : rib.citation_year,
-    parent_resolution : rib.resolution,
-    parent_citation   : rib.citation_title,
-    parent_method     : rib.expMethod,
-    nomenclature      : c.class_id}}
-    """.format(param2class[rna_class])
+        parent_year                         : rib.citation_year                      ,
+        parent_resolution                   : rib.resolution                         ,
+        parent_citation                     : rib.citation_title                     ,
+        parent_method                       : rib.expMethod                          ,
+        asym_ids                            : n.asym_ids                           ,
+        auth_asym_id                        : n.auth_asym_id                       ,
+        nomenclature                        : c.class_id                           ,
+        parent_rcsb_id                      : n.parent_rcsb_id                     ,
+        src_organism_names                  : n.src_organism_names                 ,
+        host_organism_names                 : n.host_organism_names                ,
+        src_organism_ids                    : n.src_organism_ids                   ,
+        host_organism_ids                   : n.host_organism_ids                  ,
+        rcsb_pdbx_description               : n.rcsb_pdbx_description              ,
+        entity_poly_strand_id               : n.entity_poly_strand_id              ,
+        entity_poly_seq_one_letter_code     : n.entity_poly_seq_one_letter_code    ,
+        entity_poly_seq_one_letter_code_can : n.entity_poly_seq_one_letter_code_can,
+        entity_poly_seq_length              : n.entity_poly_seq_length             ,
+        entity_poly_polymer_type            : n.entity_poly_polymer_type           ,
+        entity_poly_entity_type             : n.entity_poly_entity_type            ,
+        ligand_like                         : n.ligand_like                        
+    }}
+    """.format(rna_class)
 
     return Response(_neoget(CYPHER_STRING))
 
@@ -308,15 +304,15 @@ def nomenclature(request):
     params        = dict(request.GET)
     if 'rcsb_id' in params and len( params['rcsb_id'] ) > 0:
         cypher_single ="""match (n:RibosomeStructure{{rcsb_id:"{}"}})-[]-(c) where c:Protein or c:RNA 
-        return {{struct:n.rcsb_id, strand:c.entity_poly_strand_id,nomenclature:c.nomenclature}}""".format(params['rcsb_id'][0].upper())
+        return {{struct:n.rcsb_id, strand:c.auth_asym_id,nomenclature:c.nomenclature}}""".format(params['rcsb_id'][0].upper())
         maps=  _neoget(cypher_single)
         d={}
         for _ in maps:
-            d.update({ _['strand']:_['nomenclature'] })
+            d.update({ _['auth_asym_id']:_['nomenclature'] })
         return Response(d)
     else:
         cypher_all ="""match (n:RibosomeStructure)-[]-(c) where c:Protein or c:RNA 
-        return {{struct:n.rcsb_id, strand:c.entity_poly_strand_id,nomenclature:c.nomenclature}}""".format()
+        return {{struct:n.rcsb_id, auth_asym_id:c.auth_asym_id,nomenclature:c.nomenclature}}""".format()
         all_maps = {
 
         }
@@ -324,11 +320,11 @@ def nomenclature(request):
         resp = _neoget(cypher_all)
         for _ in resp:
             if _['struct'] in all_maps:
-                all_maps[_['struct']].update({_['strand']:_['nomenclature']})
+                all_maps[_['struct']].update({_['auth_asym_id']:_['nomenclature']})
             else:
                 all_maps.update(
                     {
-                    _['struct']:{_['strand']:_['nomenclature']}
+                    _['struct']:{_['auth_asym_id']:_['nomenclature']}
                     }
                 )
 

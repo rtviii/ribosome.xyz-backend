@@ -219,164 +219,162 @@ BACTERIA = 2
 ARCHAEA  = 2157
 EUKARYA  = 2759
 
-ncbi.get_taxid_translator([BACTERIA,EUKARYA,ARCHAEA])
-tax_profiles = [classify_profile(_).classified_as for _ in gather_taxa()]
-t            = ncbi.get_topology(tax_profiles)
+# ncbi.get_taxid_translator([BACTERIA,EUKARYA,ARCHAEA])
+# tax_profiles = [classify_profile(_).classified_as for _ in gather_taxa()]
+# t            = ncbi.get_topology(tax_profiles)
 
-def node_lineage(node):
-    return  ncbi.get_lineage( node.taxid )
+# def node_lineage(node):
+#     return  ncbi.get_lineage( node.taxid )
 
-
-
-# def get_count(node):
+# # def get_count(node):
 
 
 
 
-lins = [*sorted([*map(lambda x: ncbi.get_lineage(x), tax_profiles)], key=lambda x: len(x))] 
+# lins = [*sorted([*map(lambda x: ncbi.get_lineage(x), tax_profiles)], key=lambda x: len(x))] 
 
 
-# [print(l) for l in lins]
+# # [print(l) for l in lins]
 
-# [561,562]
-flat_lincount = {
-}
+# # [561,562]
+# flat_lincount = {
+# }
 
-for i in range(100):
-    for l in lins:
-        if i >len(l)-1:
-            continue
-        else:
-            if l[i] not in flat_lincount:
-                flat_lincount[l[i]] = 1
-            else:
-                flat_lincount[l[i]] += 1
-
-
-
-pprint(flat_lincount)
-
-
-root= t.get_tree_root()
-def layout(n):
-
-    # rd = int(t.get_distance(n,root))
-    # if rd ==2:
-
-    faces.add_face_to_node(TextFace (fsize =20 , text=f"{flat_lincount[n.taxid]}", fgcolor= f"blue"), n, column=2)
-
-    _ = [* (ncbi.get_taxid_translator([n.taxid])).values() ][0].lower()
-    if "homo" in _ or "coli" in _ or 'thermus' in _:
-        faces.add_face_to_node(AttrFace ( "sci_name" , fsize =20,                  fgcolor= 'black' ), n, column=0)
-
-    # faces.add_face_to_node(TextFace (              fsize =14 , text=f"distance to root : {t.get_distance(n,root)}", fgcolor= f"purple"), n, column=2)
+# for i in range(100):
+#     for l in lins:
+#         if i >len(l)-1:
+#             continue
+#         else:
+#             if l[i] not in flat_lincount:
+#                 flat_lincount[l[i]] = 1
+#             else:
+#                 flat_lincount[l[i]] += 1
 
 
 
-ts           = TreeStyle()
-tshz_line_width = 4
-ts.mode      = "r"
-ts.layout_fn = layout
-
-ts.show_leaf_name = False
-ts.legend.add_face(TextFace("Structure Count", fsize=24), column=1)
-
-for n in t.traverse():
-    # n.img_style = custom_style
-    nstyle = NodeStyle()
-
-    nstyle["fgcolor"]              = "#0f0f0f"
-    nstyle["vt_line_color"]        = "black"
-    nstyle["hz_line_color"]        = "black"
-    nstyle["vt_line_width"]        = 4
-    nstyle["hz_line_width"]        = 4
-    nstyle["vt_line_type"]         = 0 # 0 solid, 1 dashed, 2 dotted
-    nstyle["hz_line_type"]         = 1
-    n.set_style(nstyle)
-    if BACTERIA in node_lineage(n):
-
-        nstyle["fgcolor"]              = "#0f0f0f"
-        nstyle["vt_line_color"]        = "black"
-        nstyle["hz_line_color"]        = "black"
-        nstyle["vt_line_width"]        = 4
-        nstyle["hz_line_width"]        = 4
-        nstyle["vt_line_type"]         = 0 # 0 solid, 1 dashed, 2 dotted
-        nstyle["hz_line_type"]         = 1
-        nstyle["bgcolor"]              = "PaleGreen"
-        n.set_style(nstyle)
-
-    if ARCHAEA in node_lineage(n):
-
-        # nstyle["vt_line_width"] = 4
-        # nstyle["hz_line_width"] = 4
-        nstyle["fgcolor"]              = "#0f0f0f"
-        nstyle["vt_line_color"]        = "black"
-        nstyle["hz_line_color"]        = "black"
-        nstyle["vt_line_width"]        = 4
-        nstyle["hz_line_width"]        = 4
-        nstyle["vt_line_type"]         = 0 # 0 solid, 1 dashed, 2 dotted
-        nstyle["hz_line_type"]         = 1
-        nstyle["bgcolor"] = "PowderBlue"
-        n.set_style(nstyle)
-
-    if EUKARYA in node_lineage(n):
-        nstyle["fgcolor"]              = "#0f0f0f"
-        nstyle["vt_line_color"]        = "black"
-        nstyle["hz_line_color"]        = "black"
-        nstyle["vt_line_width"]        = 4
-        nstyle["hz_line_width"]        = 4
-        nstyle["vt_line_type"]         = 0 # 0 solid, 1 dashed, 2 dotted
-        nstyle["hz_line_type"]         = 1
-        nstyle["bgcolor"] = "OldLace"
-        n.set_style(nstyle)
+# pprint(flat_lincount)
 
 
-t.show(tree_style=ts)
+# root= t.get_tree_root()
+# def layout(n):
+
+#     # rd = int(t.get_distance(n,root))
+#     # if rd ==2:
+
+#     faces.add_face_to_node(TextFace (fsize =20 , text=f"{flat_lincount[n.taxid]}", fgcolor= f"blue"), n, column=2)
+
+#     _ = [* (ncbi.get_taxid_translator([n.taxid])).values() ][0].lower()
+#     if "homo" in _ or "coli" in _ or 'thermus' in _:
+#         faces.add_face_to_node(AttrFace ( "sci_name" , fsize =20,                  fgcolor= 'black' ), n, column=0)
+
+#     # faces.add_face_to_node(TextFace (              fsize =14 , text=f"distance to root : {t.get_distance(n,root)}", fgcolor= f"purple"), n, column=2)
 
 
 
+# ts           = TreeStyle()
+# tshz_line_width = 4
+# ts.mode      = "r"
+# ts.layout_fn = layout
 
-# ========================================================================================
-bydomain={}
-#depth 1: domains
-for taxon in tax_profiles: 
+# ts.show_leaf_name = False
+# ts.legend.add_face(TextFace("Structure Count", fsize=24), column=1)
 
-    lineage            = ncbi.get_lineage(taxon)
-    lineage_name_pairs = ncbi.get_taxid_translator(lineage)
-    kvps               = [*lineage_name_pairs.keys()]
+# for n in t.traverse():
+#     # n.img_style = custom_style
+#     nstyle = NodeStyle()
 
-    if kvps[1] in bydomain:
-        bydomain[kvps[1]] +=1
-    else:
-        bydomain[kvps[1]] =1
+#     nstyle["fgcolor"]              = "#0f0f0f"
+#     nstyle["vt_line_color"]        = "black"
+#     nstyle["hz_line_color"]        = "black"
+#     nstyle["vt_line_width"]        = 4
+#     nstyle["hz_line_width"]        = 4
+#     nstyle["vt_line_type"]         = 0 # 0 solid, 1 dashed, 2 dotted
+#     nstyle["hz_line_type"]         = 1
+#     n.set_style(nstyle)
+#     if BACTERIA in node_lineage(n):
 
-byclass = {
+#         nstyle["fgcolor"]              = "#0f0f0f"
+#         nstyle["vt_line_color"]        = "black"
+#         nstyle["hz_line_color"]        = "black"
+#         nstyle["vt_line_width"]        = 4
+#         nstyle["hz_line_width"]        = 4
+#         nstyle["vt_line_type"]         = 0 # 0 solid, 1 dashed, 2 dotted
+#         nstyle["hz_line_type"]         = 1
+#         nstyle["bgcolor"]              = "PaleGreen"
+#         n.set_style(nstyle)
 
-    2:{
+#     if ARCHAEA in node_lineage(n):
 
-    },
-    2759:{
+#         # nstyle["vt_line_width"] = 4
+#         # nstyle["hz_line_width"] = 4
+#         nstyle["fgcolor"]              = "#0f0f0f"
+#         nstyle["vt_line_color"]        = "black"
+#         nstyle["hz_line_color"]        = "black"
+#         nstyle["vt_line_width"]        = 4
+#         nstyle["hz_line_width"]        = 4
+#         nstyle["vt_line_type"]         = 0 # 0 solid, 1 dashed, 2 dotted
+#         nstyle["hz_line_type"]         = 1
+#         nstyle["bgcolor"] = "PowderBlue"
+#         n.set_style(nstyle)
+
+#     if EUKARYA in node_lineage(n):
+#         nstyle["fgcolor"]              = "#0f0f0f"
+#         nstyle["vt_line_color"]        = "black"
+#         nstyle["hz_line_color"]        = "black"
+#         nstyle["vt_line_width"]        = 4
+#         nstyle["hz_line_width"]        = 4
+#         nstyle["vt_line_type"]         = 0 # 0 solid, 1 dashed, 2 dotted
+#         nstyle["hz_line_type"]         = 1
+#         nstyle["bgcolor"] = "OldLace"
+#         n.set_style(nstyle)
+
+
+# t.show(tree_style=ts)
+
+
+
+
+# # ========================================================================================
+# bydomain={}
+# #depth 1: domains
+# for taxon in tax_profiles: 
+
+#     lineage            = ncbi.get_lineage(taxon)
+#     lineage_name_pairs = ncbi.get_taxid_translator(lineage)
+#     kvps               = [*lineage_name_pairs.keys()]
+
+#     if kvps[1] in bydomain:
+#         bydomain[kvps[1]] +=1
+#     else:
+#         bydomain[kvps[1]] =1
+
+# byclass = {
+
+#     2:{
+
+#     },
+#     2759:{
     
-    },
-    2157:{
+#     },
+#     2157:{
 
-    },
-    10239:{}
-}
-#depth 1: domains
-for taxon in tax_profiles: 
+#     },
+#     10239:{}
+# }
+# #depth 1: domains
+# for taxon in tax_profiles: 
 
-    lineage            = ncbi.get_lineage(taxon)
-    lineage_name_pairs = ncbi.get_taxid_translator(lineage)
-    kvps               = [*lineage_name_pairs.keys()]
-    domain             = kvps[1]
-    cls                = kvps[2]
+#     lineage            = ncbi.get_lineage(taxon)
+#     lineage_name_pairs = ncbi.get_taxid_translator(lineage)
+#     kvps               = [*lineage_name_pairs.keys()]
+#     domain             = kvps[1]
+#     cls                = kvps[2]
 
-    if cls in byclass[domain]:
-        byclass[domain][cls] +=1
-    else:
-        byclass[domain][cls] =1
-pprint(__to_names(bydomain))
+#     if cls in byclass[domain]:
+#         byclass[domain][cls] +=1
+#     else:
+#         byclass[domain][cls] =1
+# pprint(__to_names(bydomain))
 
 
 
