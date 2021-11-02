@@ -34,22 +34,3 @@ for i in make_nom_dict(structprofile).items():
 doc.write_file(cifmodified)
 print("\033[91m Wrote {} \033[0m".format(cifmodified))
 
-
-# strand_id = "0"
-# nom = "uL22"
-# structure   = gemmi.read_structure(cifpath)
-# chainA = structure[0]['0']
-# print(chainA)
-# print(chainA.name)
-# chainA.name ='B_uL22'
-
-# s = gemmi.Structure()
-
-# # deletes chains other than B
-# for model in structure:
-#     for chain in model:
-#         if chain.name != 'B':
-#             del chain[:]
-
-# s.name = "model_chain_{}_uL22".format(strand_id)
-# s.make_mmcif_document().write_file("somechain.cif")

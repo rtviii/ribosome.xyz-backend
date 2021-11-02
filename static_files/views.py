@@ -40,10 +40,6 @@ def _neoget(CYPHER_STRING:str):
     with driver.session() as session:
         return session.read_transaction(parametrized_query)
 
-
-
-
-
 @api_view(['GET','POST'])
 def align_3d(request):
     params = dict(request.GET)
@@ -105,7 +101,6 @@ def align_3d(request):
 
     return response
 
-
 @api_view(['GET','POST'])
 def get_chain(request):
     params = dict(request.GET)
@@ -119,7 +114,6 @@ def get_chain(request):
     response = HttpResponse(FileWrapper(document), content_type='chemical/x-pdb')
     response['Content-Disposition'] = 'attachment; filename="{}_subchain_{}.pdb"'.format(structid, chainid)
     return response
-
 
 @api_view(['GET','POST'])
 def download_ligand_nbhd(request):
@@ -139,7 +133,6 @@ def download_ligand_nbhd(request):
     response = HttpResponse(FileWrapper(doc), content_type='application/json')
     response['Content-Disposition'] = 'attachment; filename="{}_LIGAND_{}.json"'.format(structid, chemid)
     return response
-
 
 @api_view(['GET','POST'])
 def ligand_prediction(request):
@@ -167,7 +160,6 @@ def ligand_prediction(request):
     #* Transpose Ligand Script
     prediction = transpose_ligand.init_transpose_ligand(src_struct,tgt_struct, target_handle, bsite)
     return Response(prediction)
-
 
 @api_view(['GET','POST'])
 def get_ligand_nbhd(request):
@@ -229,7 +221,6 @@ def cif_chain_by_class(request):
     classid    = params['classid'][0]
     struct     = params['struct'][0].upper()
 
-
     CYPHER = """match (n:RibosomeStructure)-[]-(r)-[]-(b) where n.rcsb_id ="{}" and b.class_id = "{}"
     return {{ struct: n.rcsb_id, auth_asym_id: r.auth_asym_id }}""".format(struct,classid)
 
@@ -249,7 +240,7 @@ def cif_chain_by_class(request):
     response['Content-Disposition'] = 'attachment; filename="{}"'.format(filename)
     return response
 
-    # return Response(chains[0]['strand'])
+
 @api_view(['GET', 'POST'])
 def tunnel(request):
     params     = dict(request.GET)
