@@ -2,15 +2,18 @@ from asyncio import gather
 from cgi import print_environ
 from dataclasses import dataclass
 import json
+from lib2to3.pytree import Node
 import os
 from pprint import pprint
+from re import I
 import sys
-from typing import Dict, List, Tuple
+from turtle import bgcolor, position
+from typing import Dict, List, Text, Tuple
 import dotenv
 import numpy as np
 import requests
 import pandas as pd
-from ete3 import NCBITaxa,  TreeStyle,  faces, AttrFace, TextFace, NodeStyle
+from ete3 import NCBITaxa,  TreeStyle,  faces, AttrFace, TextFace, NodeStyle, CircleFace, ImgFace, RectFace,SeqMotifFace
 from .generate_taxtree import classify_profile, profile_taxa
 BACTERIA        = 2
 ARCHAEA         = 2157
@@ -28,17 +31,6 @@ ncbi = NCBITaxa()
 def node_lineage(node):
     return  ncbi.get_lineage( node.taxid )
 
-
-def layout(n):
-    taxid = n.taxid
-    count = 0
-    for x in taxons:
-        if int(x) == int(taxid):
-            count+=1
-
-        faces.add_face_to_node(AttrFace ( "sci_name" , fsize =15,                  fgcolor= 'black' ), n, column=0)
-        faces.add_face_to_node(AttrFace ( "rank" , fsize =15,                  fgcolor= 'black' ), n, column=0)
-        # faces.add_face_to_node(TextFace ( f"{count}" , fsize =30,                  fgcolor= 'red' ), n, column=0)
 
 
 
@@ -65,78 +57,141 @@ def lift_rank(taxid:int)->int:
 # 	print(lift_rank(i))
 
 taxprofiles = list(map(classify_profile,map(profile_taxa, profiles)))
-taxons = list(map( lift_rank, map(lambda _: _.classified_as, taxprofiles)))
+taxons      = list(map( lift_rank, map(lambda _: _.classified_as, taxprofiles)))
 
-ncbi = NCBITaxa()
-t    = ncbi.get_topology(taxons)
+ncbi        = NCBITaxa()
+t           = ncbi.get_topology(taxons)
 
+def taxid_to_linnaean(spec_taxid:int):_ = str(ncbi.get_taxid_translator([spec_taxid])[spec_taxid]).split(" "); return _[0][0] + ". "+ _[1]
+def layout(n):
+	tid = n.taxid
+	count = 0
+	for s in taxons:
+		if s == tid: count+=1
 
+	if tid in taxons:
+		taxname = TextFace( 
+			f"{taxid_to_linnaean(tid)}" ,
+			fsize =10,
+			fstyle='italic',
+			fgcolor= 'black' )
 
-# print(ncbi.get_taxid_translator([ lift_rank(9606) ]))
-
-
-# for  t in taxons:
-# 	print(t)
-# 	print(ncbi.get_rank([t]))
-# 	print(ncbi.get_lineage(t))
-
-
-
-# ts                = TreeStyle()
-# ts.mode           = "c"
-# ts.layout_fn      = layout
-# ts.show_leaf_name = False
-
-
-# for n in t.traverse():
-#     # n.img_style = custom_style
-#     nstyle = NodeStyle()
-
-#     nstyle["fgcolor"]              = "#0f0f0f"
-#     nstyle["vt_line_color"]        = "black"
-#     nstyle["hz_line_color"]        = "black"
-#     nstyle["vt_line_width"]        = 4
-#     nstyle["hz_line_width"]        = 4
-#     nstyle["vt_line_type"]         = 0 # 0 solid, 1 dashed, 2 dotted
-#     nstyle["hz_line_type"]         = 1
-#     n.set_style(nstyle)
-
-#     if BACTERIA in node_lineage(n):
-
-#         nstyle["fgcolor"]              = "#0f0f0f"
-#         nstyle["vt_line_color"]        = "black"
-#         nstyle["hz_line_color"]        = "black"
-#         nstyle["vt_line_width"]        = 4
-#         nstyle["hz_line_width"]        = 4
-#         nstyle["vt_line_type"]         = 0 # 0 solid, 1 dashed, 2 dotted
-#         nstyle["hz_line_type"]         = 1
-#         nstyle["bgcolor"]              = "PaleGreen"
-#         n.set_style(nstyle)
-
-#     if ARCHAEA in node_lineage(n):
-
-#         #      nstyle["vt_line_width"] = 4
-#         #      nstyle["hz_line_width"] = 4
-#         nstyle["fgcolor"]              = "#0f0f0f"
-#         nstyle["vt_line_color"]        = "black"
-#         nstyle["hz_line_color"]        = "black"
-#         nstyle["vt_line_width"]        = 4
-#         nstyle["hz_line_width"]        = 4
-#         nstyle["vt_line_type"]         = 0 # 0 solid, 1 dashed, 2 dotted
-#         nstyle["hz_line_type"]         = 1
-#         nstyle["bgcolor"]              = "PowderBlue"
-#         n.set_style(nstyle)
-
-#     if EUKARYA in node_lineage(n):
-#         nstyle["fgcolor"]              = "#0f0f0f"
-#         nstyle["vt_line_color"]        = "black"
-#         nstyle["hz_line_color"]        = "black"
-#         nstyle["vt_line_width"]        = 4
-#         nstyle["hz_line_width"]        = 4
-#         nstyle["vt_line_type"]         = 0 # 0 solid, 1 dashed, 2 dotted
-#         nstyle["hz_line_type"]         = 1
-#         nstyle["bgcolor"] = "OldLace"
-#         n.set_style(nstyle)
+		taxname.margin_left  = 15
+		taxname.margin_right = 15
 
 
-# t.show(tree_style=ts)
+
+		def getcolor(c):
+			if  0 > c > 10:
+				return "BlanchedAlmond"
+			if  10 > c > 25:
+				return "NavajoWhite"
+			if  25 > c > 50:
+				return "BurlyWood"
+			if  50 > c > 100:
+				return "SandyBrown"
+			if  100 > c > 150:
+				return "Sienna"
+			if   c > 150:
+				return "Maroon"
+
+		C = CircleFace(radius= 4 +  10 * count/250, color=getcolor(count), style="circle")
+		C.opacity = 0.6
+		C.margin_top         = 5
+		C.margin_right       = 5
+		C.margin_left        = 5
+		C.margin_bottom      = 5
+		
+		ligands_svg = '/home/rxz/dev/riboxyzbackend/ribetl/taxonomy/ligand_icon.svg'
+		imgf= ImgFace(ligands_svg, 30,30)
+
+
+
+		rna_rect                    = TextFace("87", fsize=8, fgcolor='PaleTurquoise')
+		factors_rect                = TextFace("25", fsize=8, fgcolor='PaleTurquoise')
+
+		rna_rect.margin_top           = 5
+		rna_rect.margin_right         = 5
+		rna_rect.margin_left          = 5
+		rna_rect.margin_bottom        = 5
+		rna_rect.opacity              = 0.9
+		rna_rect.border.width         = 1
+		rna_rect.background.color     = "SteelBlue"
+
+		factors_rect.margin_top         = 5
+		factors_rect.margin_right       = 5
+		factors_rect.margin_left        = 5
+		factors_rect.margin_bottom      = 5
+
+		factors_rect.opacity            = 0.9
+		factors_rect.border.width         = 1
+		# factors_rect.inner_border.width = 1
+		# factors_rect.inner_border.type  = 1
+		# factors_rect.border.width       = 1
+		factors_rect.background.color   = "DimGray"
+		
+
+		rna_rect.hz_align               = 1
+		factors_rect.hz_align               = 3
+
+		
+		
+		seq = ("-----------------------------------------------AQAK---IKGSKKAIKVFSSA---"
+		"APERLQEYGSIFTDA---GLQRRPRHRIQSK-------ALQEKLKDFPVCVSTKPEPEDDAEEGLGGLPSN"
+		"ISSVSSLLLFNTTENLYKKYVFLDPLAG----THVMLGAETEEKLFDAPLSISKREQLEQQVPENYFYVPD"
+		"LGQVPEIDVPSYLPDLPGIANDLMYIADLGPGIAPSAPGTIPELPTFHTEVAEPLKVGELGSGMGAGPGTP"
+		"AHTPSSLDTPHFVFQTYKMGAPPLPPSTAAPVGQGARQDDSSSSASPSVQGAPREVVDPSGGWATLLESIR"
+		"QAGGIGKAKLRSMKERKLEKQQQKEQEQVRATSQGGHL--MSDLFNKLVMRRKGISGKGPGAGDGPGGAFA"
+		"RVSDSIPPLPPPQQPQAEDED----")
+
+
+		seqFace = SeqMotifFace(seq, gapcolor="blue")
+
+		seqFace = SeqMotifFace(seq[40:100], seq_format="seq")
+
+		faces.add_face_to_node(taxname                   ,                                 n,    column   =0      ,             )
+		faces.add_face_to_node(TextFace     ( f"{count}" , fsize = 14, fgcolor= 'black' ), n,    column   =1      , aligned=True)
+		# faces.add_face_to_node(C                         ,                                 n, 2, position ="float", aligned=True)
+		# faces.add_face_to_node(rna_rect                  ,                                 n, 3, position ="float", aligned=True)
+		# faces.add_face_to_node(factors_rect              ,                                 n, 4, position ="float", aligned=True)
+		faces.add_face_to_node(seqFace              ,                                 n, 2, position ="float", aligned=True)
+
+
+
+
+ts                = TreeStyle()
+ts.mode           = "r"
+ts.layout_fn      = layout
+ts.show_leaf_name = False
+
+
+
+ts.show_branch_length  = False
+ts.show_branch_support = False
+
+for n in t.traverse():
+	nstyle = NodeStyle()
+
+	if BACTERIA in node_lineage(n):
+		nstyle["bgcolor"]              = "PaleGreen"
+	if ARCHAEA in node_lineage(n):
+		nstyle["bgcolor"]              = "PowderBlue"
+	if EUKARYA in node_lineage(n):
+		nstyle["bgcolor"] = "OldLace"
+
+	#      nstyle['shape'] = 'circle'
+	nstyle["shape"]        = "square"
+	nstyle["size"]         = 0
+	nstyle["fgcolor"]      = "blue"
+
+
+	# nstyle["vt_line_color"] = 10
+	# nstyle["hz_line_color"] = 10
+	nstyle["hz_line_width"]  = 2
+	nstyle["vt_line_width"]  = 2
+
+	nstyle["fgcolor"]       = "blue"
+	nstyle["fgcolor"]       = "blue"
+	n.set_style(nstyle)
+
+t.show(tree_style=ts)
