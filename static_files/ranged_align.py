@@ -68,7 +68,8 @@ cmd.select("resi {}-{} and m. {} ".format(*r2,n2))
 cmd.create("{}_{}".format(tgt_struct, tgt_auth_asym_id),"sele")
 cmd.delete(n2)
 cmd.super("{}_{}".format(src_struct, src_auth_asym_id),"{}_{}".format(tgt_struct, tgt_auth_asym_id))
-cmd.save(os.path.join(STATIC_ROOT,"_TEMP_CHAIN.cif"))
+cmd.save(os.environ.get("TEMP_CHAIN"))
+
 
 
 

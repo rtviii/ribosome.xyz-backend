@@ -79,14 +79,25 @@ def ranged_super(
 		exit(1)
 
 
-	ixs= [*range(rstart,rend)]
-	sm = SeqMatch(src_seq,tgt_seq, ixs)
+	ixs = [*range(rstart,rend)]
+	sm  = SeqMatch(src_seq,tgt_seq, ixs)
 
 	target_range = ( sm.tgt_ids[0],sm.tgt_ids[-1] )
 	source_range = ( sm.src_ids[0],sm.src_ids[-1] )
 
 	src_chain_path = os.path.join(os.environ.get( "STATIC_ROOT" ), src_struct.upper(), "CHAINS", "{}_STRAND_{}.cif".format(src_struct.upper(),src_auth_asym_id))
 	tgt_chain_path = os.path.join(os.environ.get( "STATIC_ROOT" ), tgt_struct.upper(), "CHAINS", "{}_STRAND_{}.cif".format(tgt_struct.upper(),tgt_auth_asym_id))
+
+
+	print(sm.hl_ixs(sm.src, sm.src_ids))
+	print("\n")
+	print(sm.hl_ixs(sm.src_aln, sm.aligned_ids))
+	print("\n")
+	print(sm.hl_ixs(sm.tgt_aln, sm.aligned_ids))
+	print("\n")
+	print(sm.hl_ixs(sm.tgt, sm.tgt_ids))
+
+
 
 	print("Aligning:\n{}\nvs\n{}".format(src_chain_path, tgt_chain_path))
 	return (src_chain_path, source_range, tgt_chain_path, target_range )
