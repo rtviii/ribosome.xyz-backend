@@ -1,31 +1,37 @@
-import argparse
+import datetime
 import os
-
+import sys
 from dotenv import load_dotenv
 from pymol import cmd
-from ribetl.ciftools.super import ranged_super
 
 
+load_dotenv(dotenv_path='/home/rxz/dev/riboxyzbackend/rxz_backend/.env')
+STATIC_ROOT = os.environ.get('STATIC_ROOT')
+def root_self(rootname: str = ''):
+	"""Returns the rootpath for the project if it's unique in the current folder tree."""
+	root = os.path.abspath(__file__)[:os.path.abspath(
+		__file__).find(rootname)+len(rootname)]
+	sys.path.append(root)
 
-if __name__ =="__main__":
-	load_dotenv(dotenv_path='/home/rxz/dev/riboxyzbackend/rxz_backend/.env')
-	STATIC_ROOT = os.environ.get('STATIC_ROOT')
+root_self('riboxyzbackend')
+import ribetl.ciftools.super as super
 
-prs = argparse.ArgumentParser()
+os.system(f"""echo \"Last called ranged_align.py at {datetime.datetime.now()} with args :
+	src_struct       = {sys.argv[1].upper()}
+	tgt_struct       = {sys.argv[2].upper()}
+	src_auth_asym_id = {sys.argv[3]}
+	tgt_auth_asym_id = {sys.argv[4]}
+	rstart , rend 	 = [* map(int,{ sys.argv[5] }.split("-")) ]
 
-prs.add_argument('-s', '--source_struct' , type=str, required=True)
-prs.add_argument('-t', '--target_struct' , type=str, required=True)
-prs.add_argument('-c', '--poly_class'    , type=str, required=True)
-prs.add_argument('-r', '--residue_range' , type=str, required=True)
+	\" > alignment.log""")
 
-args = prs.parse_args()
+src_struct       = sys.argv[1].upper()
+tgt_struct       = sys.argv[2].upper()
+src_auth_asym_id = sys.argv[3]
+tgt_auth_asym_id = sys.argv[4]
+rstart ,                 rend = [* map(int,sys.argv[5].split("-")) ]
 
-src_struct      =            args.source_struct.upper()
-tgt_struct      =            args.target_struct.upper()
-poly_class      =            args.poly_class
-rstart    ,rend = [* map(int,args.residue_range        .split("-")) ]
-
-[ c1 ,r1,c2,r2 ] = ranged_super( poly_class   ,src_struct, tgt_struct,( int(rstart), int(rend )))
+[ c1 ,r1,c2,r2 ] = super.ranged_super( src_struct, src_auth_asym_id, tgt_struct,tgt_auth_asym_id, ( int(rstart), int(rend )))
 
 n1 = c1.split("/")[-1].split('.')[0]
 n2 = c2.split("/")[-1].split('.')[0]
@@ -40,6 +46,7 @@ cmd.select("resi {}-{} and m. {} ".format(*r2,n2))
 cmd.create("snip2","sele")
 cmd.delete(n2)
 cmd.super("snip1","snip2")
-cmd.save("RANGED_ALIGNMENT.pdb")
+cmd.save(os.path.join(STATIC_ROOT,"RANGED_ALIGNMENT.pdb"))
+
 
 

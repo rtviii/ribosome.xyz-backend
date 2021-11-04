@@ -40,6 +40,54 @@ def _neoget(CYPHER_STRING:str):
     with driver.session() as session:
         return session.read_transaction(parametrized_query)
 
+
+
+
+@api_view(['GET','POST'])
+def ranged_align(request):
+    params = dict(request.GET)
+
+    print("-------------------+------------------")
+    print("GOT PARAMS", params)
+    print("-------------------+------------------")
+
+    rstart = int(params['rstart'][0])
+    rend   = int(params['rend'][0])
+
+    struct1       = params['struct1'][0].upper()
+    struct2       = params['struct2'][0].upper()
+    auth_asym_id1 = params['auth_asym_id1'][0]
+    auth_asym_id2 = params['auth_asym_id2'][0]
+
+    if 0 not in [rstart,rend]:
+        ranged_alignment_script = os.environ.get('RANGED_ALIGNMENT_SCRIPT')
+        print(ranged_alignment_script)
+
+        os.system("python3 /home/rxz/dev/riboxyzbackend/static_files/ranged_align.py {} {} {} {} {}-{}".format(struct1,struct2, auth_asym_id1, auth_asym_id2, rstart,rend))
+        # subprocess.call([ranged_alignment_script])
+            # struct1,
+            # struct2,
+            # auth_asym_id1,
+            # auth_asym_id2,
+            # f"{rstart}-{rend}"])
+
+    alignedfile=os.environ["TEMP_CHAIN"]
+    print("Produced alignment file:", alignedfile)
+
+    try:
+        doc = open(alignedfile, 'rb')
+    except: 
+        print(f"Could not find {alignedfile}. Exited")
+        return Response(-1)
+
+    response = HttpResponse(FileWrapper(doc), content_type='chemical/x-mmcif')
+    response['Content-Disposition'] = 'attachment; filename="{}-{}_{}-{}.cif"'.format(
+    struct1,auth_asym_id1,struct2,auth_asym_id2)
+
+    # return response
+    return Response("thanks")
+
+
 @api_view(['GET','POST'])
 def align_3d(request):
     params = dict(request.GET)
@@ -47,11 +95,13 @@ def align_3d(request):
     print("-------------------+------------------")
     print("GOT PARAMS", params)
     print("-------------------+------------------")
+
     struct1       = params['struct1'][0].upper()
     struct2       = params['struct2'][0].upper()
 
     auth_asym_id1 = params['auth_asym_id1'][0]
     auth_asym_id2 = params['auth_asym_id2'][0]
+
 
 
     name1   = "{}_STRAND_{}.cif".format(struct1,auth_asym_id1)
