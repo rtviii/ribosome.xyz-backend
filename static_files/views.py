@@ -62,14 +62,7 @@ def ranged_align(request):
     if 0 not in [rstart,rend]:
         ranged_alignment_script = os.environ.get('RANGED_ALIGNMENT_SCRIPT')
         print("Ranged align script:", ranged_alignment_script)
-
         os.system("python3 /home/rxz/dev/riboxyzbackend/static_files/ranged_align.py {} {} {} {} {}-{}".format(struct1,struct2, auth_asym_id1, auth_asym_id2, rstart,rend))
-        # subprocess.call([ranged_alignment_script])
-            # struct1,
-            # struct2,
-            # auth_asym_id1,
-            # auth_asym_id2,
-            # f"{rstart}-{rend}"])
 
     alignedfile=os.environ["TEMP_CHAIN"]
     print("Produced alignment file:", alignedfile)
@@ -84,8 +77,7 @@ def ranged_align(request):
     response['Content-Disposition'] = 'attachment; filename="{}-{}_{}-{}.cif"'.format(
     struct1,auth_asym_id1,struct2,auth_asym_id2)
 
-    # return response
-    return Response("thanks")
+    return response
 
 
 @api_view(['GET','POST'])

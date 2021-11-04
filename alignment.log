@@ -1,0 +1,99 @@
+Last called ranged_align.py at 2021-11-04 18:20:29.652630 with args :
+	src_struct       = 6Y0G
+	tgt_struct       = 6Z6J
+	src_auth_asym_id = LL
+	tgt_auth_asym_id = LL
+	rstart , rend 	 = 20-50
+	
+
+ranged_super.py returned 
+
+	paths     : 
+
+	chain1    : /home/rxz/dev/riboxyzbackend/ribetl/static/6Y0G/CHAINS/6Y0G_STRAND_LL.cif,
+	chain2    : /home/rxz/dev/riboxyzbackend/ribetl/static/6Z6J/CHAINS/6Z6J_STRAND_LL.cif,
+
+	source_range: (20, 49),
+	target_range: (19, 48),
+
+	
+Last called ranged_align.py at 2021-11-04 18:49:37.542949 with args :
+	src_struct       = 6Y0G
+	tgt_struct       = 6Z6J
+	src_auth_asym_id = LL
+	tgt_auth_asym_id = LL
+	rstart , rend 	 = 20-50
+	
+
+ranged_super.py returned 
+	paths     : 
+	chain1    : /home/rxz/dev/riboxyzbackend/ribetl/static/6Y0G/CHAINS/6Y0G_STRAND_LL.cif,
+	chain2    : /home/rxz/dev/riboxyzbackend/ribetl/static/6Z6J/CHAINS/6Z6J_STRAND_LL.cif,
+	source_range: (20, 49),
+	target_range: (19, 48),
+
+	
+Last called ranged_align.py at 2021-11-04 18:49:50.815019 with args :
+	src_struct       = 6Y0G
+	tgt_struct       = 6Z6J
+	src_auth_asym_id = LL
+	tgt_auth_asym_id = LL
+	rstart , rend 	 = 20-50
+	
+
+ranged_super.py returned 
+	paths     : 
+	chain1    : /home/rxz/dev/riboxyzbackend/ribetl/static/6Y0G/CHAINS/6Y0G_STRAND_LL.cif,
+	chain2    : /home/rxz/dev/riboxyzbackend/ribetl/static/6Z6J/CHAINS/6Z6J_STRAND_LL.cif,
+	source_range: (20, 49),
+	target_range: (19, 48),
+
+	
+Last called ranged_align.py at 2021-11-04 18:51:03.365647 with args :
+	src_struct       = 6Y0G
+	tgt_struct       = 6Z6J
+	src_auth_asym_id = LL
+	tgt_auth_asym_id = LL
+	rstart , rend 	 = 20-50
+	
+
+ranged_super.py returned 
+	paths     : 
+	chain1    : /home/rxz/dev/riboxyzbackend/ribetl/static/6Y0G/CHAINS/6Y0G_STRAND_LL.cif,
+	chain2    : /home/rxz/dev/riboxyzbackend/ribetl/static/6Z6J/CHAINS/6Z6J_STRAND_LL.cif,
+	source_range: (20, 49),
+	target_range: (19, 48),
+
+	
+Last called ranged_align.py at 2021-11-04 18:51:35.192941 with args :
+	src_struct       = 6Y0G
+	tgt_struct       = 6Z6J
+	src_auth_asym_id = LL
+	tgt_auth_asym_id = LL
+	rstart , rend 	 = 20-50
+	
+
+ranged_super.py returned 
+	paths     : 
+	chain1    : /home/rxz/dev/riboxyzbackend/ribetl/static/6Y0G/CHAINS/6Y0G_STRAND_LL.cif,
+	chain2    : /home/rxz/dev/riboxyzbackend/ribetl/static/6Z6J/CHAINS/6Z6J_STRAND_LL.cif,
+	source_range: (20, 49),
+	target_range: (19, 48),
+
+	
+Last called ranged_align.py at 2021-11-04 18:53:27.956047 with args :
+	src_struct       = 6Y0G
+	tgt_struct       = 6Z6J
+	src_auth_asym_id = LL
+	tgt_auth_asym_id = LL
+	rstart , rend 	 = 20-50
+	
+
+ranged_super.py returned 
+	paths     : 
+	chain1    : /home/rxz/dev/riboxyzbackend/ribetl/static/6Y0G/CHAINS/6Y0G_STRAND_LL.cif,
+	chain2    : /home/rxz/dev/riboxyzbackend/ribetl/static/6Z6J/CHAINS/6Z6J_STRAND_LL.cif,
+	source_range: (20, 49),
+	target_range: (19, 48),
+
+	
