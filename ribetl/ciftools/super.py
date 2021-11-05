@@ -35,6 +35,73 @@ and a residue range:
 6. superimpose the individual snippets
 """
 
+def ranged_super_class(
+	src_struct: str,
+	tgt_struct: str,
+	rng       : Tuple[int,int],
+	poly_class: str
+
+)->Tuple[str, Tuple[int,int], str, Tuple[int,int]]:
+
+	"""Return a bundle of path + mapped range for a source and a target structure
+	for a given polymer class. Feed this into pymol 
+	to chop up on the ranges and superimpose resultant snippets.""" 
+
+	# assert(rng[1]-rng[0]>20)
+# 
+	rstart    ,rend = rng
+
+
+	json_src = open_structure(src_struct.upper(),'json')
+	json_tgt = open_structure(tgt_struct.upper(),'json')
+
+	src_chainind , tgt_chainind = [ None, None ]
+	tgt_seq      , src_seq      = [ None, None ]
+
+
+	for chain in [ *json_src['proteins'], *json_src['rnas'] ]:
+		if poly_class in chain['nomenclature']:
+			src_chainind = chain['auth_asym_id']
+			src_seq      = chain['entity_poly_seq_one_letter_code']
+
+	for chain in [ *json_tgt['proteins'], *json_tgt['rnas'] ]:
+		if poly_class in chain['nomenclature']:
+			tgt_chainind = chain['auth_asym_id']
+			tgt_seq      = chain['entity_poly_seq_one_letter_code']
+
+	if None in [ tgt_seq, src_seq, tgt_chainind,src_chainind]: 
+		print("""Could not retrieve either of the arguments:
+			src_auth_asym, src_seq = [ {}, {} ],
+			tgt_auth_asym, tgt_seq = [ {}, {} ]
+		 Exiting.""".format(src_chainind,src_seq, tgt_chainind,tgt_seq));
+		exit(1)
+
+
+	ixs = [*range(rstart,rend)]
+	sm  = SeqMatch(src_seq,tgt_seq, ixs)
+
+	target_range = ( sm.tgt_ids[0],sm.tgt_ids[-1] )
+	source_range = ( sm.src_ids[0],sm.src_ids[-1] )
+
+	src_chain_path = os.path.join(os.environ.get( "STATIC_ROOT" ), src_struct.upper(), "CHAINS", "{}_STRAND_{}.cif".format(src_struct.upper(),src_chainind))
+	tgt_chain_path = os.path.join(os.environ.get( "STATIC_ROOT" ), tgt_struct.upper(), "CHAINS", "{}_STRAND_{}.cif".format(tgt_struct.upper(),tgt_chainind))
+
+
+	print(sm.hl_ixs(sm.src, sm.src_ids))
+	print("\n")
+	print(sm.hl_ixs(sm.src_aln, sm.aligned_ids))
+	print("\n")
+	print(sm.hl_ixs(sm.tgt_aln, sm.aligned_ids))
+	print("\n")
+	print(sm.hl_ixs(sm.tgt, sm.tgt_ids))
+
+	print("Aligning:\n{}\nvs\n{}".format(src_chain_path, tgt_chain_path))
+	return (src_chain_path, source_range, tgt_chain_path, target_range )
+
+
+
+
+
 
 
 def ranged_super(
@@ -104,6 +171,29 @@ def ranged_super(
 
 
 
+
+if __name__ =="__main__":
+	load_dotenv(dotenv_path='/home/rxz/dev/riboxyzbackend/rxz_backend/.env')
+	STATIC_ROOT = os.environ.get('STATIC_ROOT')
+
+	prs = argparse.ArgumentParser()
+
+
+	prs.add_argument('-s' , '--source_struct' , type=str, required=True)
+	prs.add_argument('-t' , '--target_struct' , type=str, required=True)
+	prs.add_argument('-cs', '--chain_source'  , type=str, required=True)
+	prs.add_argument('-ct', '--chain_target'  , type=str, required=True)
+	prs.add_argument('-r' , '--residue_range' , type=str, required=True)
+
+	args = prs.parse_args()
+
+	src_struct      =            args.source_struct.upper()
+	tgt_struct      =            args.target_struct.upper()
+	chain_source      =            args.chain_source
+	chain_target      =            args.chain_target
+	rstart    ,rend = [* map(int,args.residue_range        .split("-")) ]
+
+	print(ranged_super(src_struct,chain_source,tgt_struct,chain_target,(rstart,rend)))
 
 if __name__ =="__main__":
 	load_dotenv(dotenv_path='/home/rxz/dev/riboxyzbackend/rxz_backend/.env')

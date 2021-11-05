@@ -120,7 +120,6 @@ const matchRPNomenclature = (
     + firstcap[1].toUpperCase() 
     + firstcap.slice(2)
     ) as ProteinClass
-
     return [name]
   }
   // * otherwise resort to pfams

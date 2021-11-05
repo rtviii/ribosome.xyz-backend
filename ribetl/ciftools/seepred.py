@@ -6,11 +6,11 @@ import dotenv
 from pymol import cmd
 import argparse
 sys.path.append('/home/rxz/dev/riboxyzbackend')
-import ribetl.ciftools.transpose_ligand as transpose_ligand
-from ribetl.ciftools.super import ranged_super
-import ribetl.ciftools.bsite_mixed as bsite_mixed
 sys.path.append('../../')
 
+import ribetl.ciftools.transpose_ligand as transpose_ligand
+from ribetl.ciftools.super import ranged_super, ranged_super_class
+import ribetl.ciftools.bsite_mixed as bsite_mixed
 
 # 5JU8 5JTE 4WFN 4V7X 4V7U 3J7z 1YI2 6S0X 6ND6      --- ERY ---> 7aqc
 # 5JU8 5JTE 4WFN 4V7X 4V7U 3J7z 1YI2 6S0z 6S0X 6ND6 --- PAR ---> 4lfz
@@ -20,8 +20,13 @@ dotenv_path='/home/rxz/dev/riboxyzbackend/rxz_backend/.env'
 dotenv.load_dotenv(dotenv_path=dotenv_path)
 STATIC_ROOT = os.environ.get("STATIC_ROOT")
 
+
+
 print("Environment injected from:", dotenv_path)
 print("STATIC ROOT:", STATIC_ROOT)
+
+
+
 
 @cmd.extend
 def see_lig_pred(LIG,SRC,TGT):
@@ -126,30 +131,37 @@ def see_poly(POLY,SRC):
 			cmd.color('green',f'c. {chain} and resi {i}')
 
 		
-
-
 @cmd.extend
-def rsuper(src_struct,tgt_struct,poly_class,rstart,rend):
-	# cmd.delete('all')
+def rsuper(src_struct,tgt_struct,rstart,rend, poly_class,):
+	cmd.delete('all')
 
-	[ c1 ,r1,c2,r2 ] = ranged_super( poly_class   ,src_struct, tgt_struct,( int(rstart), int(rend )))
+	[ c1 ,r1, c2,r2 ] = ranged_super_class(src_struct, tgt_struct,( int(rstart), int(rend )), poly_class)
 
 	n1 = c1.split("/")[-1].split('.')[0]
 	n2 = c2.split("/")[-1].split('.')[0]
 
+	src_snip = "{}_{}".format(src_struct, poly_class)
+	tgt_snip = "{}_{}".format(tgt_struct, poly_class)
+
 	cmd.load(c1)
 	cmd.select("resi {}-{} and m. {} ".format(*r1,n1))
-	cmd.create("snip1","sele")
+	cmd.create(src_snip,"sele")
+	cmd.color('cyan',src_snip)
 	cmd.delete(n1)
 
 	cmd.load(c2)
 	cmd.select("resi {}-{} and m. {} ".format(*r2,n2))
-	cmd.create("snip2","sele")
+	cmd.create(tgt_snip,"sele")
+	cmd.color('wheat',tgt_snip)
 	cmd.delete(n2)
-	cmd.super("snip1","snip2")
-	cmd.save("RANGED_ALIGNMENT.pdb")
 
+	# print("Aligned with CEALIGN.")
+	# cmd.cealign("{}_{}".format(src_struct, poly_class),"{}_{}".format(tgt_struct, poly_class))
 
-		
+	print("Aligned with SUPER.")
+	cmd.super("{}_{}".format(src_struct, poly_class),"{}_{}".format(tgt_struct, poly_class))
+
+	# print("Aligned with ALIGN.")
+	# cmd.align(src_snip,tgt_snip)
 
 

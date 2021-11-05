@@ -22,9 +22,7 @@ export const writeupdateStruct = (r:RibosomeStructure) =>{
 
 export const updateCatalogueWStruct = async (
   new_entry:CatalogueEntry) =>{
-
     if (fs.existsSync(process.env.CATALOGUE as string)){
-
     } else{
       console.log("Catalogue file doesn't exist. Creating.");
       fs.writeFileSync(process.env.CATALOGUE as string,JSON.stringify({}))
@@ -59,10 +57,10 @@ export const updateCatalogueWStruct = async (
       var new_entry: CatalogueEntry = {
         [struct.rcsb_id.toUpperCase()]: {
           _did_rename_chains: false,
-          _did_split_chains: false,
-          _ligands_parsed: false,
-          status: true,
-          error: null
+          _did_split_chains : false,
+          _ligands_parsed   : false,
+          status            : true,
+          error             : null
         }
       };
       await updateCatalogueWStruct(new_entry)
@@ -72,10 +70,10 @@ export const updateCatalogueWStruct = async (
       var new_entry: CatalogueEntry = {
         [args.struct.toUpperCase()]: {
           _did_rename_chains: false,
-          _did_split_chains: false,
-          _ligands_parsed: false,
-          status: true,
-          error: e
+          _did_split_chains : false,
+          _ligands_parsed   : false,
+          status            : true,
+          error             : e
         }
       };
 	  console.log("Failed: \n\n");
