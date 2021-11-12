@@ -1,24 +1,8 @@
-Last called align.py at 2021-11-05 21:52:22.242143 with args :
+Last called align.py at 2021-11-06 00:05:43.290809 with args :
 
-handle1    =/home/rxz/dev/riboxyzbackend/ribetl/static/3J7Z/CHAINS/3J7Z_STRAND_A.cif
-handle2    =/home/rxz/dev/riboxyzbackend/ribetl/static/7K00/CHAINS/7K00_STRAND_a.cif
-pymol_name1=3J7Z_A
-pymol_name2=7K00_a
+handle1    =/home/rxz/dev/riboxyzbackend/ribetl/static/5AFI/CHAINS/5AFI_STRAND_E.cif
+handle2    =/home/rxz/dev/riboxyzbackend/ribetl/static/4UG0/CHAINS/4UG0_STRAND_LC.cif
+pymol_name1=5AFI_E
+pymol_name2=4UG0_LC
 
 
-Last called ranged_align.py at 2021-11-05 21:52:32.084703 with args :
-	src_struct       = 3J7Z
-	tgt_struct       = 7K00
-	src_auth_asym_id = A
-	tgt_auth_asym_id = a
-	rstart , rend 	 = 2007-2094
-	
-
-ranged_super.py returned 
-	paths     : 
-	chain1    : /home/rxz/dev/riboxyzbackend/ribetl/static/3J7Z/CHAINS/3J7Z_STRAND_A.cif,
-	chain2    : /home/rxz/dev/riboxyzbackend/ribetl/static/7K00/CHAINS/7K00_STRAND_a.cif,
-	source_range: (2007, 2093),
-	target_range: (2051, 2145),
-
-	
