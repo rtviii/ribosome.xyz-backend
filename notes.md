@@ -47,3 +47,19 @@ Considering the scale of the ribosome as a biomolecule, it warrants
 - most of the ribosomes are in between 5000 and 25000 polymer residues-large
 - the only things in the pdb that are effectively larger than ribosomes (>30k residues) are viruses.
 - a panoply of things smaller: a lot of modularity to build on
+
+
+______________________________
+
+
+
+- number of structures per deposition -- type of deposition (investigating mechanism/inhibition or a structural analysis)
+- Term analysis. Scatter onto the timeline 
+- Scatter onto the timeline 
+  
+
+
+
+Characterizing the 4 major clusters:
+- ligand positions in the density plot
+- classes of proteins count

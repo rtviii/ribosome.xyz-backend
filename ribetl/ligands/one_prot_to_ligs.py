@@ -1,6 +1,3 @@
-from abc import abstractproperty
-from ast import arg, parse
-from logging import log
 import os,sys
 from pprint import pprint
 import json
@@ -11,7 +8,7 @@ import dotenv
 from pymol import cmd
 import argparse
 import glob
-from ciftools.bsite_mixed import BindingSite
+from ribetl.ciftools.bsite_mixed import BindingSite
 from Bio.Align import MultipleSeqAlignment
 import numpy as np
 from Bio import pairwise2
@@ -93,7 +90,6 @@ def get_matches_lig(ligpath:str,description:str, nomclass:str):
 
 
 residue_hits_all = []
-# sought_seqs  = []
 
 for i in profiles:
 	associated_liglike:List[dict] = get_liglike_and_paths(i)
@@ -115,6 +111,7 @@ candidates_len   = len(residue_hits_all)
 candidates_names = [* map(lambda y : y[0], residue_hits_all)]
 # print(candidates_len)
 # pprint([ *enumerate(candidates_names) ])
+
 
 # !-------------------※⋈------------- ∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷※⋈∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷--------⋮Ͽ⋈--------※⋈----Ͼ-----⋮∷-------------------------
 conss ={

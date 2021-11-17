@@ -1,0 +1,685 @@
+
+Binding Action
+
+Mechanism
+
+Translation
+
+antibiotic/*mycin
+
+
+
+_______________________________
+
+Binding and Action of Amino Acid Analogs of Chloramphenicol upon the Bacterial Ribosome.
+
+A general mechanism of ribosome dimerization revealed by single-particle cryo-electron microscopy.
+
+Structure of EF-G-ribosome complex in a pretranslocation state.
+
+Cryo-EM structure of the large subunit of the spinach chloroplast ribosome.
+
+Structural insight into the role of the ribosomal tunnel in cellular regulation
+
+A steric block in translation caused by the antibiotic spectinomycin.
+
+Recycling of Aborted Ribosomal 50S Subunit-Nascent Chain-tRNA Complexes by the Heat Shock Protein Hsp15.
+
+Drug Sensing by the Ribosome Induces Translational Arrest via Active Site Perturbation.
+
+The final step of 40S ribosomal subunit maturation is controlled by a dual key lock.
+
+Structural analysis of kasugamycin inhibition of translation
+
+Modular assembly of the nucleolar pre-60S ribosomal subunit.
+Structural Visualization of the Formation and Activation of the 50S Ribosomal Subunit during In Vitro Reconstitution.
+
+An open interface in the pre-80S ribosome coordinated by ribosome assembly factors Tsr1 and Dim1 enables temporal regulation of Fap7.
+
+Blasticidin S inhibits translation by trapping deformed tRNA on the ribosome.
+
+Negamycin binds to the wall of the nascent chain exit tunnel of the 50S ribosomal subunit.
+
+The complete structure of the 55S mammalian mitochondrial ribosome.
+
+Molecular architecture of the 90S small subunit pre-ribosome.
+
+RsgA couples the maturation state of the 30S ribosomal decoding center to activation of its GTPase pocket.
+
+Structure of a human cap-dependent 48S translation pre-initiation complex.
+
+Ribosome heterogeneity in Drosophila melanogaster gonads through paralog-switching.
+
+Structure of the Maturing 90S Pre-ribosome in Association with the RNA Exosome.
+
+High-resolution crystal structures of ribosome-bound chloramphenicol and erythromycin provide the ultimate basis for their competition.
+
+Structure of a purine-purine wobble base pair in the decoding center of the ribosome.
+
+EDF1 coordinates cellular responses to ribosome collisions.
+
+Interconnected assembly factors regulate the biogenesis of mitoribosomal large subunit.
+
+Dynamic RNA acetylation revealed by quantitative cross-evolutionary mapping.
+
+Cryo-EM structure of the ribosome-SecYE complex in the membrane environment.
+
+Pseudouridinylation of mRNA coding sequences alters translation.
+
+Decoding in the absence of a codon by tmRNA and SmpB in the ribosome.
+
+Crystal structures of EF-G-ribosome complexes trapped in intermediate states of translocation.
+
+The initiation of mammalian protein synthesis and mRNA scanning mechanism.
+
+Initiation of Translation by Cricket Paralysis Virus Ires Requires its Translocation in the Ribosome.
+
+Inhibition of peptide bond formation by pleuromutilins: the structure of the 50S ribosomal subunit from Deinococcus radiodurans in complex with tiamulin.
+
+Insights Into Translational Termination from the Structure of Rf2 Bound to the Ribosome.
+
+The universally conserved GTPase HflX is an RNA helicase that restores heat-damagedEscherichia coliribosomes.
+
+The intrinsically disordered domain of the antitoxin Phd chaperones the toxin Doc against irreversible inactivation and misfolding
+
+Ensemble cryo-EM elucidates the mechanism of translation fidelity.
+
+Disruption of evolutionarily correlated tRNA elements impairs accurate decoding.
+Binding and Action of Triphenylphosphonium Analog of Chloramphenicol upon the Bacterial Ribosome.
+
+Cryo-EM structure of 90S preribosome with inactive Utp24 (state A2)
+
+Crystal Structure of 30S ribosomal subunit from Thermus thermophilus in complex with Sisomicin
+
+A synthetic antibiotic scaffold effective against multidrug-resistant bacterial pathogens
+
+Structural basis for the control of translation initiation during stress.
+
+Structural and mechanistic basis for translation inhibition by macrolide and ketolide antibiotics.
+
+Mechanism of ribosome rescue by alternative ribosome-rescue factor B.
+
+Crystal structure of the Thermus thermophilus 30S ribosomal subunit
+
+Study of the structural dynamics of the E. coli 70S ribosome using real space refinement
+
+Structure of Bipa in GTP Form Bound to the Ratcheted Ribosome.
+
+Structural basis for the antibacterial activity of the 12-membered-ring mono-sugar macrolide methymycin
+
+The Binding Mode of the Trigger Factor on the Ribosome: Implications for Protein Folding and SRP Interaction
+
+Crystallographic characterization of the ribosomal binding site and molecular mechanism of action of Hygromycin A.
+
+Folding pathway of an Ig domain is conserved on and off the ribosome.
+
+Formation of the first peptide bond: the structure of EF-P bound to the 70S ribosome.
+
+Structures of MLSBK antibiotics bound to mutated large ribosomal subunits provide a structural explanation for resistance.
+
+Thermophile 89S Pre-ribosome Structures Reveal the Reverse Order of Co-transcriptional 18S rRNA Subdomain Integration.
+
+Structures of ribosome-bound initiation factor 2 reveal the mechanism of subunit association.
+
+Translational regulation via L11: molecular switches on the ribosome turned on and off by thiostrepton and micrococcin.
+
+Structure of the chloroplast ribosome with chl-RRF and hibernation-promoting factor.
+
+The crystal structure of the bacteria-specific L17 ribosomal protein from Thermus thermophilus.
+
+Control of ribosomal subunit rotation by elongation factor G.
+
+A Structural Basis for Restricted Codon Recognition Mediated by 2-thiocytidine in tRNA Containing a Wobble Position Inosine.
+
+TTC5 mediates autoregulation of tubulin via mRNA degradation.
+
+Crystal Structure of the Human Ribosome in Complex with DENR-MCT-1.
+
+Modified Uridines with C5-Methylene Substituents at the First Position of the tRNA Anticodon Stabilize U.G Wobble Pairing During Decoding.
+
+Structure and dynamics of the Mammalian ribosomal pretranslocation complex.
+
+Structures of translationally inactive mammalian ribosomes.
+
+Structure of Erm-modified 70S ribosome reveals the mechanism of macrolide resistance.
+
+Structural insights into mRNA reading frame regulation by tRNA modification and slippery codon-anticodon pairing.
+
+Selective inhibition of human translation termination by a drug-like compound.
+
+Mechanism of ribosome stalling during translation of a poly(A) tail.
+
+Analysis of subunit folding contribution of three yeast large ribosomal subunit proteins required for stabilisation and processing of intermediate nuclear rRNA precursors.
+
+Structure of functionally activated small ribosomal subunit at 3.3 angstroms resolution.
+
+Ribosome-dependent activation of stringent control.
+
+Mechanism of ribosome rescue by ArfA and RF2.
+
+Negamycin induces translational stalling and miscoding by binding to the small subunit head domain of the Escherichia coli ribosome.
+
+Structures of the ribosome in intermediate States of ratcheting.
+
+Ribosome protection by antibiotic resistance ATP-binding cassette protein.
+
+Cryo-EM structure of the hibernating Thermus thermophilus 100S ribosome reveals a protein-mediated dimerization mechanism.
+
+Nonstructural Protein 1 of SARS-CoV-2 Is a Potent Pathogenicity Factor Redirecting Host Protein Synthesis Machinery toward Viral RNA.
+
+Translational operator of mRNA on the ribosome: how repressor proteins exclude ribosome binding.
+
+Crystal structure of the ribosome at 5.5 A resolution
+
+A Peptide Deformylase-Ribosome Complex Reveals Mechanism of Nascent Chain Processing.
+
+The structure of the ribosome with elongation factor G trapped in the posttranslocational state.
+
+Structure and Assembly Pathway of the Ribosome Quality Control Complex.
+
+Atomic resolution snapshot of Leishmania ribosome inhibition by the aminoglycoside paromomycin.
+
+Structural insight into the antibiotic action of telithromycin against resistant mutants
+
+Hflx is a Ribosome Splitting Factor Rescuing Stalled Ribosomes Under Stress Conditions
+
+The stringent factor RelA adopts an open conformation on the ribosome to stimulate ppGpp synthesis.
+
+Molecular basis for erythromycin-dependent ribosome stalling during translation of the ErmBL leader peptide.
+
+An ER translocon for multi-pass membrane protein biogenesis.
+
+Structural Basis for the Function of a Small Gtpase Rsga on the 30S Ribosomal Subunit Maturation Revealed by Cryoelectron Microscopy.
+
+Structural Insights into the Roles of Water and the 2' Hydroxyl of the P Site tRNA in the Peptidyl Transferase Reaction.
+Elongation arrest by SecM via a cascade of ribosomal RNA rearrangements
+Harnessing evolutionarily flexibility in tRNAs to maximize nonsense suppression activities
+Tightly-orchestrated rearrangements govern catalytic center assembly of the ribosome.
+Ribosome rearrangements at the onset of translational bypassing.
+A distinct assembly pathway of the human 39S late pre-mitoribosome.
+cryoEM-Guided Development of Antibiotics for Drug-Resistant Bacteria.
+The structural basis for release-factor activation during translation termination revealed by time-resolved cryogenic electron microscopy.
+Human tRNA(Lys3)(UUU) Is Pre-Structured by Natural Modifications for Cognate and Wobble Codon Binding through Keto-Enol Tautomerism.
+Novel base-pairing interactions at the tRNA wobble position crucial for accurate reading of the genetic code.
+Structural Basis for Linezolid Binding Site Rearrangement in the Staphylococcus aureus Ribosome.
+Defining the mRNA recognition signature of a bacterial toxin protein.
+The central role of protein S12 in organizing the structure of the decoding site of the ribosome.
+Discovery of C13-Aminobenzoyl Cycloheximide Derivatives that Potently Inhibit Translation Elongation.
+Structures of the orthosomycin antibiotics avilamycin and evernimicin in complex with the bacterial 70S ribosome.
+Structure of ribosome-bound azole-modified peptide phazolicin rationalizes its species-specific mode of bacterial translation inhibition.
+Cryo-EM structure of 90 S small ribosomal subunit precursors in transition states.
+Concerted removal of the Erb1-Ytm1 complex in ribosome biogenesis relies on an elaborate interface.
+Co-produced natural ketolides methymycin and pikromycin inhibit bacterial growth by preventing synthesis of a limited number of proteins.
+Controlling orthogonal ribosome subunit interactions enables evolution of new function.
+Structure of the 70S ribosome complexed with mRNA and tRNA.
+Structural insights of lincosamides targeting the ribosome of Staphylococcus aureus.
+Amicoumacin A induces cancer cell death by targeting the eukaryotic ribosome.
+Structure of a mitochondrial ribosome with minimal RNA
+Crystal Structure of the Eukaryotic 40S Ribosomal Subunit in Complex with Initiation Factor 1.
+Allosteric control of the ribosome by small-molecule antibiotics.
+Structural basis for the rescue of stalled ribosomes: structure of YaeJ bound to the ribosome.
+Tetracenomycin X inhibits translation by binding within the ribosomal exit tunnel.
+Chemically related 4,5-linked aminoglycoside antibiotics drive subunit rotation in opposite directions.
+Structures of the Escherichia coli ribosome with antibiotics bound near the peptidyl transferase center explain spectra of drug action.
+Structure of the 40S-ABCE1 post-splitting complex in ribosome recycling and translation initiation.
+Inhibition of mitochondrial translation suppresses glioblastoma stem cell growth.
+HCV IRES Captures an Actively Translating 80S Ribosome.
+Structural insights into assembly of the ribosomal nascent polypeptide exit tunnel.
+Comprehensive molecular structure of the eukaryotic ribosome.
+Cryo-EM structure of the ribosome functional complex of the human pathogen Staphylococcus aureus at 3.2 angstrom resolution.
+Conformational Changes of Elongation Factor G on the Ribosome during tRNA Translocation.
+Spontaneous ribosomal translocation of mRNA and tRNAs into a chimeric hybrid state.
+Structures of the scanning and engaged states of the mammalian SRP-ribosome complex.
+N(6)-methyladenosine in mRNA disrupts tRNA selection and translation-elongation dynamics.
+Structure of the human mitochondrial ribosome-EF-G2 complex with mtRRF(ClassI)
+Structural dynamics of protein S1 on the 70S ribosome visualized by ensemble cryo-EM.
+Structures of Yeast 80S Ribosome-tRNA Complexes in the Rotated and Nonrotated Conformations.
+Mechanism of tRNA-mediated +1 ribosomal frameshifting.
+Translational Regulation Via L11: Molecular Switches on the Ribosome Turned on and Off by Thiostrepton and Micrococcin.
+The Ribosomal Protein uL22 Modulates the Shape of the Protein Exit Tunnel.
+Structural Basis for Polyproline-Mediated Ribosome Stalling and Rescue by the Translation Elongation Factor EF-P.
+Functionally distinct roles for eEF2K in the control of ribosome availability and p-body abundance
+Structure and function of yeast Lso2 and human CCDC124 bound to hibernating ribosomes.
+Structural insights into the role of rRNA modifications in protein synthesis and ribosome assembly.
+Differences in structure and hibernation mechanism highlight diversification of the microsporidian ribosome.
+Structural changes enable start codon recognition by the eukaryotic translation initiation complex.
+60S ribosome biogenesis requires rotation of the 5S ribonucleoprotein particle.
+3.4 angstrom cryo-EM structure of yeast 90S small subunit preribosome
+Sarecycline interferes with tRNA accommodation and tethers mRNA to the 70S ribosome.
+A Structural Model for the Large Subunit of the Mammalian Mitochondrial Ribosome
+Structure of the yeast mitochondrial large ribosomal subunit.
+The Complete Structure of the Large Subunit of the Mammalian Mitochondrial Ribosome
+Initiation of translation in bacteria by a structured eukaryotic IRES RNA.
+Structural basis for the inhibition of the eukaryotic ribosome.
+A conserved rRNA switch is central to decoding site maturation on the small ribosomal subunit.
+Crystal Structure of a 70S Ribosome-tRNA Complex Reveals Functional Interactions and Rearrangements
+Cryo-EM Determination of Eravacycline-Bound Structures of the Ribosome and the Multidrug Efflux Pump AdeJ of Acinetobacter baumannii.
+Architecture of the 90S Pre-ribosome: A Structural View on the Birth of the Eukaryotic Ribosome.
+Escherichia coli NusG Links the Lead Ribosome with the Transcription Elongation Complex.
+Translational termination without a stop codon.
+Regulation of the protein-conducting channel by a bound ribosome.
+Promiscuous behaviour of archaeal ribosomal proteins: Implications for eukaryotic ribosome evolution.
+Mechanism of membrane-tethered mitochondrial protein synthesis.
+Decoding Mammalian Ribosome-mRNA States by Translational GTPase Complexes.
+Energy barriers and driving forces in tRNA translocation through the ribosome.
+How Hibernation Factors RMF, HPF, and YfiA Turn Off Protein Synthesis.
+Structural basis for ribosome recycling by RRF and tRNA.
+Structures and dynamics of hibernating ribosomes from Staphylococcus aureus mediated by intermolecular interactions of HPF.
+Cryo-Em Structure of the Archaeal 50S Ribosomal Subunit in Complex with Initiation Factor 6 and Implications for Ribosome Evolution
+The antibiotic thermorubin inhibits protein synthesis by binding to inter-subunit bridge b2a of the ribosome.
+Structural characterization of ribosome recruitment and translocation by type IV IRES.
+Bacterial ribosome heterogeneity: Changes in ribosomal protein composition during transition into stationary growth phase.
+Structures of Five Antibiotics Bound at the Peptidyl Transferase Center of 
+the Large Ribosomal Subunit
+The Structures of Antibiotics Bound to the E Site Region of the 50 S Ribosomal Subunit of Haloarcula marismortui: 13-Deoxytedanolide and Girodazole.
+Structural insights into the function of a unique tandem GTPase EngA in bacterial ribosome assembly
+Elongation factor G bound to the ribosome in an intermediate state of translocation.
+Peptide Inhibitors of Bacterial Protein Synthesis with Broad Spectrum and SbmA-Independent Bactericidal Activity against Clinical Pathogens.
+Cryo-EM structure of Mycobacterium smegmatis ribosome reveals two unidentified ribosomal proteins close to the functional centers.
+Cryo-Em of Ribosomal 80S Complexes with Termination Factors Reveals the Translocated Cricket Paralysis Virus Ires.
+Staphylococcus aureus 30S ribosomal subunit in presence of spermidine
+Structures of deacylated tRNA mimics bound to the E site of the large ribosomal subunit
+Structures of the human and Drosophila 80S ribosome.
+Structure of the E. coli ribosome-EF-Tu complex at <3 angstrom resolution by Cs-corrected cryo-EM.
+Recognition of the amber UAG stop codon by release factor RF1.
+2.8- angstrom Cryo-EM Structure of the Large Ribosomal Subunit from the Eukaryotic Parasite Leishmania.
+Structural basis for +1 ribosomal frameshifting during EF-G-catalyzed translocation.
+Design at the atomic level: design of biaryloxazolidinones as potent orally active antibiotics.
+Good Vibrations: Structural Remodeling of Maturing Yeast Pre-40S Ribosomal Particles Followed by Cryo-Electron Microscopy.
+Dissecting the in vivo assembly of the 30S ribosomal subunit reveals the role of RimM and general features of the assembly process
+trans-Translation inhibitors bind to a novel site on the ribosome and clear Neisseria gonorrhoeae in vivo.
+Unusual base pairing during the decoding of a stop codon by the ribosome.
+Structure of the Bacillus subtilis 70S ribosome reveals the basis for species-specific stalling.
+Structural basis for selective stalling of human ribosome nascent chain complexes by a drug-like molecule.
+The complete structure of the chloroplast 70S ribosome in complex with translation factor pY.
+Exit tunnel modulation as resistance mechanism of S. aureus erythromycin resistant mutant.
+Structural characterization of mRNA-tRNA translocation intermediates.
+Avilamycin and evernimicin induce structural changes in rProteins uL16 and CTC that enhance the inhibition of A-site tRNA binding.
+The pathway to GTPase activation of elongation factor SelB on the ribosome.
+Ciliate mitoribosome illuminates evolutionary steps of mitochondrial translation.
+Ribosome•RelA structures reveal the mechanism of stringent response activation.
+Cryo-EM study of the spinach chloroplast ribosome reveals the structural and functional roles of plastid-specific ribosomal proteins
+Structural basis of the ribosomal machinery for Peptide bond formation, 
+translocation, and nascent chain progression
+Structural basis of transcription-translation coupling.
+Architecture of the Large Subunit of the Mammalian Mitochondrial Ribosome.
+Molecular Basis for the Ribosome Functioning as an L-Tryptophan Sensor.
+Translational initiation factor eIF5 replaces eIF1 on the 40S ribosomal subunit to promote start-codon recognition.
+Structural basis of l-tryptophan-dependent inhibition of release factor 2 by the TnaC arrest peptide.
+Large-Scale Movements of IF3 and tRNA during Bacterial Translation Initiation.
+Interactions and dynamics of the Shine Dalgarno helix in the 70S ribosome.
+Structural basis for potent inhibitory activity of the antibiotic tigecycline during protein synthesis.
+EF4 disengages the peptidyl-tRNA CCA end and facilitates back-translocation on the 70S ribosome
+Structure of the base of the L7/L12 stalk of the Haloarcula marismortui large ribosomal subunit: Analysis of L11 movements
+Structural insight into nascent polypeptide chain-mediated translational stalling.
+Conformational proofreading of distant 40S ribosomal subunit maturation events by a long-range communication mechanism.
+The cryo-EM structure of hibernating 100S ribosome dimer from pathogenic Staphylococcus aureus.
+Structures of Mlsbk Antibiotics Bound to Mutated Large Ribosomal Subunits Provide a Structural Explanation for Resistance.
+Crystal Structures of the Ribosome in Complex with Release Factors RF1 and RF2 Bound to a Cognate Stop Codon.
+Structure of the mammalian antimicrobial peptide Bac7(1-16) bound within the exit tunnel of a bacterial ribosome.
+Structural mechanism of GTPase-powered ribosome-tRNA movement.
+Dissecting the in vivo assembly of the 30S ribosomal subunit reveals the role of RimM and general features of the assembly process.
+Large-scale movement of eIF3 domains during translation initiation modulate start codon selection.
+The complex of tmRNA-SmpB and EF-G on translocating ribosomes.
+Following the Signal Sequence from Ribosomal Tunnel Exit to Signal Recognition Particle
+X-ray crystal structures of the WT and a hyper-accurate ribosome from Escherichia coli
+Role of Era in assembly and homeostasis of the ribosomal small subunit.
+Cryo-electron microscopy structure of the 70S ribosome from Enterococcus faecalis.
+Structure of the Mammalian 80S Initiation Complex with Eif5B on Hcv Ires
+Mitoribosomal small subunit biogenesis in trypanosomes involves an extensive assembly machinery.
+Cryo-Em Structure of Hepatitis C Virus Ires Bound to the Human Ribosome at 3.9 Angstrom Resolution
+Structural and mutational analysis of the ribosome-arresting human XBP1u.
+Structure of the 70S Ribosome from the Human Pathogen Acinetobacter baumannii in Complex with Clinically Relevant Antibiotics.
+mRNA bound to the 30S subunit is a HigB toxin substrate.
+Structural basis for ArfA-RF2-mediated translation termination on mRNAs lacking stop codons.
+Structure of the 70S ribosome from human pathogen Staphylococcus aureus.
+Mimicry of Canonical Translation Elongation Underlies Alanine Tail Synthesis in RQC.
+The 3D arrangement of the 23 S and 5 S rRNA in the Escherichia coli 50 S ribosomal subunit based on a cryo-electron microscopic reconstruction at 7.5 A resolution.
+Mefloquine targets the Plasmodium falciparum 80S ribosome to inhibit protein synthesis.
+Structure of a hibernating 100S ribosome reveals an inactive conformation of the ribosomal protein S1.
+Mechanism of completion of peptidyltransferase centre assembly in eukaryotes.
+The Structural Basis for Specific Decoding of Aua by Isoleucine tRNA on the Ribosome
+Structure of the Escherichia coli ribosomal termination complex with release factor 2
+Interactions of designer antibiotics and the bacterial ribosome aminoacyl-tRNA site
+Molecular analysis of the ribosome recycling factor ABCE1 bound to the 30S post-splitting complex.
+Crystal Structure of the Eukaryotic 60S Ribosomal Subunit in Complex with Initiation Factor 6.
+Bactobolin A Binds to a Site on the 70S Ribosome Distinct from Previously Seen Antibiotics.
+Klebsazolicin inhibits 70S ribosome by obstructing the peptide exit tunnel.
+Structure of Dirithromycin Bound to the Bacterial Ribosome Suggests New Ways for Rational Improvement of Macrolides.
+Assessment of the nucleotide modifications in the high-resolution cryo-electron microscopy structure of the Escherichia coli 50S subunit.
+None
+The molecular mechanism of cotranslational membrane protein recognition and targeting by SecA.
+Diverse roles of assembly factors revealed by structures of late nuclear pre-60S ribosomes
+Evolutionary shift toward protein-based architecture in trypanosomal mitochondrial ribosomes.
+Structural basis for translation termination on the 70S ribosome
+The Mechanism for Activation of GTP Hydrolysis on the Ribosome.
+Structural basis for late maturation steps of the human mitoribosomal large subunit.
+Insights into substrate stabilization from snapshots of the peptidyl transferase center of the intact 70S ribosome.
+Mechanism of endonuclease cleavage by the HigB toxin.
+A new tRNA intermediate revealed on the ribosome during EF4-mediated back-translocation
+Blasticidin S inhibits mammalian translation and enhances production of protein encoded by nonsense mRNA.
+Mechanism for Expanding the Decoding Capacity of Transfer Rnas by Modification of Uridines
+Molecular Architecture of the Ribosome-Bound Hepatitis C Virus Internal Ribosomal Entry Site RNA.
+Revisiting the structures of several antibiotics bound to the bacterial ribosome.
+The Israeli acute paralysis virus IRES captures host ribosomes by mimicking a ribosomal state with hybrid tRNAs.
+Alternative conformations and motions adopted by 30S ribosomal subunits visualized by cryo-electron microscopy.
+Structural basis for interaction of the ribosome with the switch regions of GTP-bound elongation factors.
+Molecular insights into protein synthesis with proline residues.
+Solution structure of the E. coli 70S ribosome at 11.5 A resolution.
+Structures of the human mitochondrial ribosome bound to EF-G1 reveal distinct features of mitochondrial translation elongation.
+A combined cryo-EM and molecular dynamics approach reveals the mechanism of ErmBL-mediated translation arrest.
+Crystal Structure of the 70S Ribosome Bound with the Q253P Mutant Form of Release Factor RF2.
+Elongation factor 4 remodels the A-site tRNA on the ribosome.
+A pre-translocational intermediate in protein synthesis observed in crystals of enzymatically active 50S subunits.
+Peptidyl-CCA deacylation on the ribosome promoted by induced fit and the O3'-hydroxyl group of A76 of the unacylated A-site tRNA.
+Characterization of the Core Ribosomal Binding Region for the Oxazolidone Family of Antibiotics Using Cryo-EM.
+Structure of the Mammalian ribosome-sec61 complex to 3.4 a resolution.
+Conformational Control of Translation Termination on the 70S Ribosome.
+Visualizing late states of human 40S ribosomal subunit maturation.
+Following the signal sequence from ribosomal tunnel exit to signal recognition particle.
+Mechanism of premature translation termination on a sense codon.
+Crystal structure of release factor RF3 trapped in the GTP state on a rotated conformation of the ribosome.
+Zinc depletion induces ribosome hibernation in mycobacteria.
+Cryo-EM structure of 90S small ribosomal precursors complex with Dhr1
+Ribosome-Srp-Ftsy Cotranslational Targeting Complex in the Closed State.
+Odilorhabdins, Antibacterial Agents that Cause Miscoding by Binding at a New Ribosomal Site.
+Molecular architecture of a eukaryotic translational initiation complex.
+mRNA stem-loops can pause the ribosome by hindering A-site tRNA binding.
+The antibiotic kasugamycin mimics mRNA nucleotides to destabilize tRNA binding and inhibit canonical translation initiation.
+Insights into the improved macrolide inhibitory activity from the high-resolution cryo-EM structure of dirithromycin bound to theE. coli70S ribosome.
+Conserved heterodimeric GTPase Rbg1/Tma46 promotes efficient translation in eukaryotic cells.
+Structures of Trnas with an Expanded Anticodon Loop in the Decoding Center of the 30S Ribosomal Subunit.
+How Mutations in tRNA Distant from the Anticodon Affect the Fidelity of Decoding.
+Reorganization of an intersubunit bridge induced by disparate 16S ribosomal ambiguity mutations mimics an EF-Tu-bound state.
+The antibiotics dityromycin and GE82832 bind protein S12 and block EF-G-catalyzed translocation.
+Structures of the E. coli translating ribosome with SRP and its receptor and with the translocon
+Structure of Gcn1 bound to stalled and colliding 80S ribosomes.
+Ribosome-induced changes in elongation factor Tu conformation control GTP hydrolysis
+Insights Into Substrate Stabilization from Snapshots of the Peptidyl Transferase Center of the Intact 70S Ribosome
+Structure of the 30S ribosomal subunit.
+The path of messenger RNA through the ribosome.
+The structural basis for the action of the antibiotics tetracycline, pactamycin, and hygromycin B on the 30S ribosomal subunit.
+Structural robustness of the ribosome inferred from X-ray crystal structures of the 30S ribosomal subunit and the 70S ribosome lacking ribosomal protein uS17
+Structural insights into cognate versus near-cognate discrimination during decoding.
+Nucleolar maturation of the human small subunit processome.
+Crystal structure of 70S ribosome with both cognate tRNAs in the E and P sites representing an authentic elongation complex.
+Amicoumacin a inhibits translation by stabilizing mRNA interaction with the ribosome.
+Cryo-EM structures of the late-stage assembly intermediates of the bacterial 50S ribosomal subunit
+Structure of the Mammalian 80S Initiation Complex with Initiation Factor 5B on Hcv-Ires RNA.
+Structural basis for the antibiotic activity of ketolides and azalides.
+Resistance mutations generate divergent antibiotic susceptibility profiles against translation inhibitors.
+Structural basis for mRNA and tRNA positioning on the ribosome.
+Structure and function of Vms1 and Arb1 in RQC and mitochondrial proteome homeostasis.
+Cryo-electron Microscopy Structure of the Acinetobacter baumannii 70S Ribosome and Implications for New Antibiotic Development.
+An antimicrobial peptide that inhibits translation by trapping release factors on the ribosome.
+Structural insights into peptide bond formation.
+A crevice adjoining the ribosome tunnel: Hints for cotranslational folding.
+Long-range interdomain communications in eIF5B regulate GTP hydrolysis and translation initiation.
+Mechanistic insights into the slow peptide bond formation with D-amino acids in the ribosomal active site.
+Unique localization of the plastid-specific ribosomal proteins in the chloroplast ribosome small subunit provides mechanistic insights into the chloroplastic translation
+Structural basis for antibiotic resistance mediated by theBacillus subtilisABCF ATPase VmlR.
+Cryo-EM structure of Mammalian mitochondrial ribosome complex with mtEFG2 and mtRRF
+Cryo-EM structure of a late pre-40S ribosomal subunit fromSaccharomyces cerevisiae.
+The structure of an elongation factor G-ribosome complex captured in the absence of inhibitors.
+Cryo-EM of elongating ribosome with EF-Tu•GTP elucidates tRNA proofreading.
+Cryo-EM structure of 90S preribosome with inactive Utp24 (state C)
+Synthetic group A streptogramin antibiotics that overcome Vat resistance.
+Importance of potassium ions for ribosome structure and function revealed by long-wavelength X-ray diffraction.
+Structural basis of ABCF-mediated resistance to pleuromutilin, lincosamide, and streptogramin A antibiotics in Gram-positive pathogens.
+Synergy of streptogramin antibiotics occurs independently of their effects on translation.
+The Amaryllidaceae Alkaloid Haemanthamine Binds the Eukaryotic Ribosome to Repress Cancer Cell Growth.
+Modification of 16S ribosomal RNA by the KsgA methyltransferase restructures the 30S subunit to optimize ribosome function.
+Structural Insights into Peptide Bond Formation
+The kink-turn: a new RNA secondary structure motif.
+Cryo-EM structure of the RNA-rich plant mitochondrial ribosome.
+Structures of the bacterial ribosome at 3.5 A resolution.
+Ensemble cryo-EM uncovers inchworm-like translocation of a viral IRES through the ribosome.
+Cryo-EM shows stages of initial codon selection on the ribosome by aa-tRNA in ternary complex with GTP and the GTPase-deficient EF-TuH84A.
+Structural basis for plazomicin antibiotic action and resistance.
+Regulation of the Mammalian Elongation Cycle by Subunit Rolling: A Eukaryotic-Specific Ribosome Rearrangement.
+Structures of tRNAs with an expanded anticodon loop in the decoding center of the 30S ribosomal subunit.
+Dynamical features of the Plasmodium falciparum ribosome during translation.
+The Complete Structure of the Mycobacterium smegmatis 70S Ribosome.
+Structure of the mature kinetoplastids mitoribosome and insights into its large subunit biogenesis.
+Uniformity of Peptide Release Is Maintained by Methylation of Release Factors.
+Structural basis of highly conserved ribosome recycling in eukaryotes and archaea.
+Structure of trigger factor binding domain in biologically homologous complex with eubacterial ribosome reveals its chaperone action
+Visualization of chemical modifications in the human 80S ribosome structure.
+Conformational switches control early maturation of the eukaryotic small ribosomal subunit.
+Structural basis for the final steps of human 40S ribosome maturation.
+Structures of the human mitochondrial ribosome in native states of assembly.
+Structural and Functional Insights Into the Mode of Action of a Universally Conserved Obg Gtpase.
+Cryo-EM structure of 90S preribosome with inactive Utp24 (state F1)
+Context-specific inhibition of eukaryotic translation by macrolide antibiotics
+Crystal structures of complexes of the small ribosomal subunit with tetracycline, edeine and IF3.
+Mechanism of ribosome shutdown by RsfS in Staphylococcus aureus revealed by integrative structural biology approach.
+The structural basis for mRNA recognition and cleavage by the ribosome-dependent endonuclease RelE.
+Mechanisms of ribosome stalling by SecM at multiple elongation steps
+Inhibition of Eukaryotic Translation by the Antitumor Natural Product Agelastatin A.
+The proline-rich antimicrobial peptide Onc112 inhibits translation by blocking and destabilizing the initiation complex.
+Construction of the Central Protuberance and L1 Stalk during 60S Subunit Biogenesis.
+Madumycin II inhibits peptide bond formation by forcing the peptidyl transferase center into an inactive state.
+Structural snapshots of human pre-60S ribosomal particles before and after nuclear export.
+Nmd3 is a structural mimic of eIF5A, and activates the cpGTPase Lsg1 during 60S ribosome biogenesis.
+Structures of Mycobacterium smegmatis 70S ribosomes in complex with HPF, tmRNA, and P-tRNA.
+MetAP-like Ebp1 occupies the human ribosomal tunnel exit and recruits flexible rRNA expansion segments.
+Insights into the improved macrolide inhibitory activity from the high-resolution cryo-EM structure of dirithromycin bound to the E. coli 70S ribosome.
+The Structure of the E. coli Ribosome Before and After Accommodation: Implications for Proofreading
+Structure of Monomeric Yeast and Mammalian Sec61 Complexes Interacting with the Translating Ribosome.
+Cryo-EM structure of the tetracycline resistance protein TetM in complex with a translating ribosome at 3.9- angstrom resolution.
+Structure of RNA polymerase bound to ribosomal 30S subunit.
+Protein Synthesis in the Developing Neocortex at Near-Atomic Resolution Reveals Ebp1-Mediated Neuronal Proteostasis at the 60S Tunnel Exit.
+Structural insights into translational recoding by frameshift suppressor tRNASufJ.
+Cryo-EM structure of the Plasmodium falciparum 80S ribosome bound to the anti-protozoan drug emetine.
+Tautomeric G•U pairs within the molecular ribosomal grip and fidelity of decoding in bacteria.
+Mutations outside the anisomycin-binding site can make ribosomes drug-resistant.
+Cryo-EM structure of the small subunit of the mammalian mitochondrial ribosome.
+A snapshot of the 30S ribosomal subunit capturing mRNA via the Shine-Dalgarno interaction
+Activation of GTP hydrolysis in mRNA-tRNA translocation by elongation factor G.
+Evolutionary compaction and adaptation visualized by the structure of the dormant microsporidian ribosome.
+GTPase activation of elongation factor EF-Tu by the ribosome during decoding
+A proton wire to couple aminoacyl-tRNA accommodation and peptide-bond formation on the ribosome.
+Crystal Structure of 30S ribosomal subunit from Thermus thermophilus
+The oxazolidinone antibiotics perturb the ribosomal peptidyl-transferase center and effect tRNA positioning
+Structural insights into +1 frameshifting promoted by expanded or modification-deficient anticodon stem loops.
+Loss of a single methylation in 23S rRNA delays 50S assembly at multiple late stages and impairs translation initiation and elongation.
+Crystal structure of the ribosome recycling factor bound to the ribosome.
+High-Resolution Cryo-Electron Microscopy Structure of the Trypanosoma Brucei Ribosome.
+Structural evidence for product stabilization by the ribosomal mRNA helicase.
+How hibernation factors RMF, HPF, and YfiA turn off protein synthesis.
+Architecture of the Rix1-Rea1 checkpoint machinery during pre-60S-ribosome remodeling
+Structural insights into species-specific features of the ribosome from the human pathogen Mycobacterium tuberculosis.
+Monomeric YoeB toxin retains RNase activity but adopts an obligate dimeric form for thermal stability.
+Late steps in bacterial translation initiation visualized using time-resolved cryo-EM.
+Cryo-Em Structures of Ribosomal 80S Complexes with Termination Factors and Cricket Paralysis Virus Ires Reveal the Ires in the Translocated State
+The structure of the yeast mitochondrial ribosome.
+Revisiting the Haloarcula marismortui 50S ribosomal subunit model.
+Unifying the Aminohexopyranose- and Peptidyl-Nucleoside Antibiotics: Implications for Antibiotic Design
+Structural basis for messenger RNA movement on the ribosome.
+Crystal Structure Of Colicin E3 In Complex With Its Immunity Protein
+A structural inventory of native ribosomal ABCE1-43S pre-initiation complexes.
+Crystal Structure of the Oxazolidinone Antibiotic 
+Linezolid Bound to the 50S Ribosomal Subunit
+Structural basis for aminoglycoside inhibition of bacterial ribosome recycling.
+Taura syndrome virus IRES initiates translation by binding its tRNA-mRNA-like structural element in the ribosomal decoding center.
+Structures of the bacterial ribosome in classical and hybrid states of tRNA binding.
+ArfB can displace mRNA to rescue stalled ribosomes
+Structure of the quaternary complex between SRP, SR, and translocon bound to the translating ribosome.
+Structural basis for the interaction of antibiotics with the peptidyl transferase centre in eubacteria.
+A new understanding of the decoding principle on the ribosome.
+Structural consequences of the interaction of RbgA with a 50S ribosomal subunit assembly intermediate.
+Mechanism of Inhibition of Translation Termination by Blasticidin S.
+Unique features of mammalian mitochondrial translation initiation revealed by cryo-EM.
+Insights into RNA binding by the anticancer drug cisplatin from the crystal structure of cisplatin-modified ribosome.
+Analysis of subunit folding contribution of three yeast large ribosomal proteins required for stabilisation and processing of intermediate nuclear rRNA precursors.
+Crystal structure of elongation factor 4 bound to a clockwise ratcheted ribosome.
+Dynamics of uS19 C-Terminal Tail during the Translation Elongation Cycle in Human Ribosomes.
+Structural Insights into the Mechanism of Mitoribosomal Large Subunit Biogenesis.
+Molecular recognition and modification of the 30S ribosome by the aminoglycoside-resistance methyltransferase NpmA.
+Visualization of translation termination intermediates trapped by the Apidaecin 137 peptide during RF3-mediated recycling of RF1.
+Structure ofPseudomonas aeruginosaribosomes from an aminoglycoside-resistant clinical isolate.
+Ribosomal ambiguity (ram) mutations promote the open (off) to closed (on) transition and thereby increase miscoding.
+Structures of triacetyloleandomycin and mycalamide A bind to the large ribosomal subunit of Haloarcula marismortui.
+Structural insights into the interplay of protein biogenesis factors with the 70S ribosome.
+Structural basis of co-translational quality control by ArfA and RF2 bound to ribosome.
+High resolution structure of the large ribosomal subunit from a mesophilic eubacterium
+Aminoglycoside ribosome interactions reveal novel conformational states at ambient temperature.
+Alterations at the Peptidyl Transferase Centre of the Ribosome Induced by the Synergistic Action of the Streptogramins Dalfopristin and Quinupristin.
+Distinct pre-initiation steps in human mitochondrial translation.
+Crystal Structures of the uL3 Mutant Ribosome: Illustration of the Importance of Ribosomal Proteins for Translation Efficiency.
+Structural basis of the ribosomal machinery for Peptide bond formation,  
+translocation, and nascent chain progression
+Cysteine oxidation and disulfide formation in the ribosomal exit tunnel.
+Structural aspects of messenger RNA reading frame maintenance by the ribosome.
+Expanded use of sense codons is regulated by modified cytidines in tRNA.
+Binding and action of CEM-101, a new fluoroketolide antibiotic that inhibits protein synthesis.
+Specific interaction between EF-G and RRF and its implication for GTP-dependent ribosome splitting into subunits.
+Structural insights into the translational infidelity mechanism.
+Structural basis for hygromycin B inhibition of protein biosynthesis
+RqcH and RqcP catalyze processive poly-alanine synthesis in a reconstituted ribosome-associated quality control system.
+90 S pre-ribosome transformation into the primordial 40 S subunit.
+Structure of the hypusinylated eukaryotic translation factor eIF-5A bound to the ribosome.
+Snapshots of native pre-50S ribosomes reveal a biogenesis factor network and evolutionary specialization.
+Distinct tRNA Accommodation Intermediates Observed on the Ribosome with the Antibiotics Hygromycin A and A201A.
+Recognition of cognate transfer RNA by the 30S ribosomal subunit.
+Dissociation of Antibacterial Activity and Aminoglycoside Ototoxicity in the 4-Monosubstituted 2-Deoxystreptamine Apramycin.
+Structural Insights into the Role of Diphthamide on Elongation Factor 2 in mRNA Reading-Frame Maintenance.
+X-ray crystallography on ribosome recycling: mechanism of binding and action of RRF on the 50S ribosomal subunit
+The crystal structure of the ribosome bound to EF-Tu and aminoacyl-tRNA.
+Novel 3-O-carbamoyl erythromycin A derivatives (carbamolides) with activity against resistant staphylococcal and streptococcal isolates.
+The complete atomic structure of the large ribosomal subunit at 2.4 A resolution.
+Structure of a eukaryotic cytoplasmic pre-40S ribosomal subunit.
+The complete structure of the small-subunit processome.
+High-resolution structure of the Escherichia coli ribosome.
+Aminoglycoside interactions and impacts on the eukaryotic ribosome.
+The cryo-EM structure of a ribosome-Ski2-Ski3-Ski8 helicase complex.
+Coupling of 5S RNP rotation with maturation of functional centers during large ribosomal subunit assembly.
+Cryo-EM study of an archaeal 30S initiation complex gives insights into evolution of translation initiation.
+How a circularized tmRNA moves through the ribosome.
+Visualizing the Assembly Pathway of Nucleolar Pre-60S Ribosomes.
+EttA regulates translation by binding the ribosomal E site and restricting ribosome-tRNA dynamics.
+Structures of the Sec61 complex engaged in nascent peptide translocation or membrane insertion.
+Dual tRNA mimicry in the Cricket Paralysis Virus IRES uncovers an unexpected similarity with the Hepatitis C Virus IRES.
+Dynamic association of human Ebp1 with the ribosome.
+A novel pleuromutilin antibacterial compound, its binding mode and selectivity mechanism.
+Crystal structure of the eukaryotic ribosome.
+Cryo-EM structure of the highly atypical cytoplasmic ribosome of Euglena gracilis.
+Mechanism of tetracycline resistance by ribosomal protection protein Tet(O).
+Understanding the role of intermolecular interactions between lissoclimides and the eukaryotic ribosome.
+Structural snapshot of cytoplasmic pre-60S ribosomal particles bound by Nmd3, Lsg1, Tif6 and Reh1
+Cryo-Electron Microscopy Structure of the 30S Subunit in Complex with the Yjeq Biogenesis Factor.
+Structural Insights Into Peptide Bond Formation
+ArfB can displace mRNA to rescue stalled ribosomes.
+The Halastavi arva Virus Intergenic Region IRES Promotes Translation by the Simplest Possible Initiation Mechanism.
+Ribosome Interactions of Aminoacyl-tRNA and Elongation Factor TU in the   
+Codon Recognition Complex
+Architecture of the Rix1-Rea1 checkpoint machinery during pre-60S-ribosome remodeling.
+Structural basis of sequestration of the anti-Shine-Dalgarno sequence in the Bacteroidetes ribosome.
+Structural Basis for Regulation of the Opposing (p)ppGpp Synthetase and Hydrolase within the Stringent Response Orchestrator Rel.
+Structure of the 70S ribosome bound to release factor 2 and a substrate analog provides insights into catalysis of peptide release.
+Crystal structure of an initiation factor bound to the 30S ribosomal subunit.
+Stepwise maturation of the peptidyl transferase region of human mitoribosomes.
+Induced-fit tightens pleuromutilins binding to ribosomes and remote interactions enable their selectivity.
+The mechanism of inhibition of protein synthesis by the proline-rich peptide oncocin.
+Ribosome. The complete structure of the 55S mammalian mitochondrial ribosome.
+The force-sensing peptide VemP employs extreme compaction and secondary structure formation to induce ribosomal stalling.
+Structural Snapshots of Actively Translating Human Ribosomes
+Domain movements of elongation factor eEF2 and the eukaryotic 80S ribosome facilitate tRNA translocation.
+Coping with proline stalling: structural basis of hypusine-induced protein synthesis by the eukaryotic ribosome
+Structure of the large ribosomal subunit from human mitochondria.
+Alternative Mode of E-Site tRNA Binding in the Presence of a Downstream mRNA Stem Loop at the Entrance Channel.
+Design, Multigram Synthesis, and in Vitro and in Vivo Evaluation of Propylamycin: A Semisynthetic 4,5-Deoxystreptamine Class Aminoglycoside for the Treatment of Drug-Resistant Enterobacteriaceae and Other Gram-Negative Pathogens.
+Structural Basis for 16S Ribosomal RNA Cleavage by the Cytotoxic Domain of Colicin E3.
+ZNF598 Is a Quality Control Sensor of Collided Ribosomes.
+Selection of tRNA by the Ribosome Requires a Transition from an Open to a Closed Form
+Improved model derived from cryo-EM map of Staphylococcus aureus large ribosomal subunit
+Structural impact of K63 ubiquitin on yeast translocating ribosomes under oxidative stress.
+Insertion of the Biogenesis Factor Rei1 Probes the Ribosomal Tunnel during 60S Maturation.
+Mechanism for expanding the decoding capacity of transfer RNAs by modification of uridines.
+The structures of the anti-tuberculosis antibiotics viomycin and capreomycin bound to the 70S ribosome.
+Crystal Structure of Hypusine-Containing Translation Factor eIF5A Bound to a Rotated Eukaryotic Ribosome.
+Structural basis of ribosomal frameshifting during translation of the SARS-CoV-2 RNA genome.
+RbfA Is Involved in Two Important Stages of 30S Subunit Assembly: Formation of the Central Pseudoknot and Docking of Helix 44 to the Decoding Center.
+Ribosome. The structure of the human mitochondrial ribosome.
+Structure and assembly model for the Trypanosoma cruzi 60S ribosomal subunit.
+Structure of the bacterial ribosome at 2 angstrom resolution.
+Negamycin Interferes with Decoding and Translocation by Simultaneous Interaction with rRNA and tRNA.
+Structural basis for inhibition of the AAA-ATPase Drg1 by diazaborine.
+Structure of the GTP Form of Elongation Factor 4 (EF4) Bound to the Ribosome
+Ribosomal Dynamics: Intrinsic Instability of a Moleculaar Machine
+Mechanism of eIF6 release from the nascent 60S ribosomal subunit.
+Architecture of a transcribing-translating expressome.
+Cryo-EM structure of an early precursor of large ribosomal subunit reveals a half-assembled intermediate.
+SARS-CoV-2 Nsp1 suppresses host but not viral translation through a bipartite mechanism.
+Crystal Structure of a Bioactive Pactamycin Analog Bound to the 30S Ribosomal Subunit.
+Ambient-temperature crystal structure of 30S ribosomal subunit from Thermus thermophilus in complex with paromomycin
+Structure of a bacterial 30S ribosomal subunit at 5.5 A resolution.
+Trigger Factor in Complex with the Ribosome Forms a Molecular Cradle for Nascent Proteins
+Structural Basis for Translation Termination on a Pseudouridylated Stop Codon.
+Structure of a 30S pre-initiation complex stalled by GE81112 reveals structural parallels in bacterial and eukaryotic protein synthesis initiation pathways.
+Ornithine capture by a translating ribosome controls bacterial polyamine synthesis.
+Ensemble cryo-EM elucidates the mechanism of translation fidelity
+Structural characterization of an alternative mode of tigecycline binding to the bacterial ribosome.
+Cryo-EM structure of the 50S ribosomal subunit at 2.58 Angstroms with modeled GBC SecM peptide
+Macrolide-Peptide Conjugates as Probes of the Path of Travel of the Nascent Peptides through the Ribosome.
+Structural basis for stop codon recognition in eukaryotes.
+Structural basis of successive adenosine modifications by the conserved ribosomal methyltransferase KsgA.
+Cryo-EM structure of the spinach chloroplast ribosome reveals the location of plastid-specific ribosomal proteins and extensions.
+Mechanistic insights into the alternative translation termination by ArfA and RF2
+Structural robustness of the ribosome inferred from the X-ray crystal structure of a 30S ribosomal subunit lacking ribosomal protein S17
+Synthesis facilitates an understanding of the structural basis for translation inhibition by the lissoclimides.
+Visualization of two transfer RNAs trapped in transit during elongation factor G-mediated translocation.
+Importance of a tRNA anticodon loop modification and a conserved, noncanonical anticodon stem pairing intRNACGGProfor decoding
+A complex IRES at the 5'-UTR of a viral mRNA assembles a functional 48S complex via an uAUG intermediate.
+Structural Basis for Linezolid Binding Site Rearrangement in theStaphylococcus aureusRibosome.
+Structure of the SecY channel during initiation of protein translocation.
+Structural basis of GTPase-mediated mitochondrial ribosome biogenesis and recycling.
+Structural basis of early translocation events on the ribosome.
+Structure-function insights reveal the human ribosome as a cancer target for antibiotics.
+The role of modifications in codon discrimination by tRNA(Lys)(UUU).
+2'-O-methylation in mRNA disrupts tRNA decoding during translation elongation.
+Structural insights into unique features of the human mitochondrial ribosome recycling.
+An active role of the eukaryotic large ribosomal subunit in translation initiation fidelity.
+The ribosome prohibits the GU wobble geometry at the first position of the codon-anticodon helix.
+Cryo-Em Structures of Arx1 and Maturation Factors Rei1 and Jjj1 Bound to the 60S Ribosomal Subunit
+4'-O-Substitutions Determine Selectivity of Aminoglycoside Antibiotics
+Structures of the E. coli translating ribosome with SRP and its receptor and with the translocon.
+The Roles of Ribosomal Proteins in the Structure, Assembly and Evolution of the Large Ribosomal Subunit
+The molecular structure of the left-handed supra-molecular helix of eukaryotic polyribosomes.
+Crystal structures of complexes containing domains from two viral internal ribosome entry site (IRES) RNAs bound to the 70S ribosome.
+Structural insights into species-specific features of the ribosome from the pathogen Staphylococcus aureus.
+The Dolphin Proline-Rich Antimicrobial Peptide Tur1A Inhibits Protein Synthesis by Targeting the Bacterial Ribosome.
+Release factor-dependent ribosome rescue by BrfA in the Gram-positive bacterium Bacillus subtilis.
+The cryo-EM structure of YjeQ bound to the 30S subunit suggests a fidelity checkpoint function for this protein in ribosome assembly.
+Crystal structure of colicin E3: implications for cell entry and ribosome inactivation.
+Conformation of methylated GGQ in the Peptidyl Transferase Center during Translation Termination.
+The crystal structure of the eukaryotic 40S ribosomal subunit in complex with eIF1 and eIF1A.
+Head Swivel on the Ribosome Facilitates Translocation by Means of Intra-Subunit tRNA Hybrid Sites.
+3.2- angstrom -resolution structure of the 90S preribosome before A1 pre-rRNA cleavage.
+Structural mechanism of GTPase-powered ribosome-tRNA movement
+A structural basis for streptomycin-induced misreading of the genetic code.
+Crystal Structure of the Hybrid State of Ribosome in Complex with the Guanosine Triphosphatase Release Factor 3.
+The cryo-EM Structure of a Novel 40S Kinetoplastid-Specific Ribosomal Protein.
+Yoeb-Ribosome Structure: A Canonical Rnase that Requires the Ribosome for its Specific Activity.
+How the ribosome hands the A-site tRNA to the P site during EF-G-catalyzed translocation.
+A structural basis for streptomycin resistance
+Structure of the human 80S ribosome
+tRNA Translocation by the Eukaryotic 80S Ribosome and the Impact of GTP Hydrolysis.
+The structures of four macrolide antibiotics bound to the large ribosomal subunit.
+Structures of proline-rich peptides bound to the ribosome reveal a common mechanism of protein synthesis inhibition.
+Functional insights from the structure of the 30S ribosomal subunit and its interactions with antibiotics
+An induced-fit mechanism to promote peptide bond formation and exclude hydrolysis of peptidyl-tRNA.
+Crystal structure of the synergistic antibiotic pair, lankamycin and lankacidin, in complex with the large ribosomal subunit.
+X-ray Crystal Structures of the WT and a Hyper-Accurate Ribosome From Escherichia Coli
+Ribosome engineering reveals the importance of 5S rRNA autonomy for ribosome assembly.
+Structures and stabilization of kinetoplastid-specific split rRNAs revealed by comparing leishmanial and human ribosomes.
+Structure of the 30S ribosomal decoding complex at ambient temperature.
+Elongational stalling activates mitoribosome-associated quality control.
+Receptor compaction and GTPase rearrangement drive SRP-mediated cotranslational protein translocation into the ER.
+The structure of the eukaryotic ribosome at 3.0 angstrom resolution.
+Extensive ribosome and RF2 rearrangements during translation termination.
+U2504 determines the species specificity of the A-site cleft antibiotics: the structures of tiamulin, homoharringtonine, and bruceantin bound to the ribosome.
+Crystal structure of a translation termination complex formed with release factor RF2.
+Cryo-EM structures of the 80S ribosomes from human parasites Trichomonas vaginalis and Toxoplasma gondii
+Cryo-EM structure and rRNA model of a translating eukaryotic 80S ribosome at 5.5-A resolution.
+Structural insights into ribosomal rescue by Dom34 and Hbs1 at near-atomic resolution.

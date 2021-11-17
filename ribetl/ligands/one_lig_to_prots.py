@@ -14,7 +14,7 @@ import dotenv
 from pymol import cmd
 import argparse
 import glob
-from ciftools.bsite_mixed import BindingSite
+from ribetl.ciftools.bsite_mixed import BindingSite
 
 
 
