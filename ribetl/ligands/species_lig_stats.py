@@ -1,58 +1,103 @@
-from ctypes import Union
-from fnmatch import translate
+from nis import cat
 import os
+from pprint import pprint
 import re
 import sys
-from pprint import pprint
 import json
-from typing import List
-from Bio import Align
-from Bio.SeqRecord import SeqRecord
+from typing import List, Tuple, TypedDict
 import dotenv
-from pkg_resources import FileMetadata
-from pymol import cmd
-import argparse
-from typing import TypedDict, Union
-import glob
-from ribetl.ciftools.bsite_mixed import BindingSite
-from Bio.Align import MultipleSeqAlignment
 from enum import Enum
 import numpy as np
-from Bio import pairwise2
 import matplotlib.pyplot as plt
 
-def lig_cat(description:str)->str:
 
-	if "[(" in description.lower() :
-		return "Mixed"
+def lig_cat(description: str) -> List[str]:
 
-	if len(re.findall(r"(\w*(?<!(cha|pro|dom|str|pla|tox))in\b|(\b\w*zyme\b))", description.lower()))> 0:
+    if "[(" in description.lower():
+        return ["Mixed", 'other']
 
-		return "Antibiotics"
+    if len(re.findall(r"(\w*(?<!(cha|pro|dom|str|pla|tox))in\b|(\b\w*zyme\b))", description.lower())) > 0:
 
-	if len(re.findall(r"(factor)", description.lower()))> 0:
-        # elongation
-        # release
-        # recycling
-        # translation
-        # maturation 
-		return "Factors"
+        #! E coli implementation
+        if 'apidaesin' in description.lower():
+            ab_class = 'apidaesin'
+        elif 'midasin' in description.lower():
+            ab_class = 'midasin'
+        elif 'viomycin' in description.lower():
+            ab_class = 'viomycin'
+        elif 'paromomycin' in description.lower():
+            ab_class = 'paromomycin'
+        elif 'blasticidin' in description.lower():
+            ab_class = 'blasticidin'
+        elif 'kirromycin' in description.lower():
+            ab_class = 'kirromycin'
+        elif 'puromycin' in description.lower():
+            ab_class = 'puromycin'
+        elif 'virginiamycin' in description.lower():
+            ab_class = 'virginiamycin'
+        elif 'titin' in description.lower():
+            ab_class = 'titin'
+        elif 'neomycin' in description.lower():
+            ab_class = 'neomycin'
+        elif 'spectinomycin' in description.lower():
+            ab_class = 'spectinomycin'
+        elif 'colicin' in description.lower():
+            ab_class = 'colicin'
+        elif 'hygromycin' in description.lower():
+            ab_class = 'hygromycin'
+        elif 'erithromycin' in description.lower():
+            ab_class = 'erithromycin'
+        elif 'cathelicidin' in description.lower():
+            ab_class = 'cathelicidin'
+        else:
+            ab_class = 'other'
 
-	if "mrna" in description.lower() or "messenger" in description.lower():
+        return ["Antibiotics", ab_class]
 
-		return "mRNA"
+    if len(re.findall(r"(factor)", description.lower())) > 0:
 
-	if "trna" in description.lower() or "transfer" in description.lower():
-        # P-
-        # E-
-        # A-
-        # fmet
-        # phe
+        print("Got factor:", description)
+        if 'rescue' in description.lower():
+            ab_class = 'Ribosome-Rescue Factor'
+        elif 'elongation' in description.lower():
+            ab_class = 'Elongation Factor'
+        elif 'initiation' in description.lower():
+            ab_class = 'Translation Inititation'
+        elif 'recycling' in description.lower():
+            ab_class = 'Ribosome Recycling Factor'
+        elif 'releaase' in description.lower():
+            ab_class = 'Peptide Chain Release Factor'
+        elif 'transcription' in description.lower():
+            ab_class = 'Transcription Factor'
+        else:
+            ab_class = 'other'
 
+        return ["Factors", ab_class]
 
-		return "tRNA"
+    if "mrna" in description.lower() or "messenger" in description.lower():
 
-	return "Mixed"
+        return ["mRNA", 'other']
+
+    if "trna" in description.lower() or "transfer" in description.lower():
+
+        if 'p-' in description.lower():
+            ab_class = 'P-Site'
+        elif 'e-' in description.lower():
+            ab_class = 'E-Site'
+        elif 'a-' in description.lower():
+            ab_class = 'A-Site'
+        elif 'fmet' in description.lower():
+            ab_class = 'Fmet'
+        elif 'phe' in description.lower():
+            ab_class = 'Phe'
+        else:
+            ab_class = 'other'
+
+        return ["tRNA", ab_class]
+
+    else:
+        return ["Mixed", 'other']
+
 
 def get_noms(a: dict):
     _ = []
@@ -64,29 +109,33 @@ def get_noms(a: dict):
                 _ = [*_, [name, len(a[i]['residues'])]]
     return _
 
+
 sys.path.append('/home/rxz/dev/riboxyzbackend/')
 dotenv.load_dotenv(dotenv_path='/home/rxz/dev/riboxyzbackend/rxz_backend/.env')
 
 STATIC_ROOT = os.environ.get("STATIC_ROOT")
-bsites      = []
-profiles    = []
+bsites = []
+profiles = []
 
 SPECIES = int(sys.argv[1])
 
-class LigandCategory(Enum):
-    tRNA        = 'tRNA'
-    mRNA        = 'mRNA'
-    Factor      = 'Factor'
-    Antibiotics = 'Antibiotics'
-    Mixed       = 'Mixed'
 
-class LigandLike(TypedDict): 
-      description          : str
-      parent               : str
-      chain                : str
-      src_organism_ids     : List[int]
-      path                 : str
-      category             : LigandCategory
+class LigandCategory(Enum):
+    tRNA = 'tRNA'
+    mRNA = 'mRNA'
+    Factor = 'Factor'
+    Antibiotics = 'Antibiotics'
+    Mixed = 'Mixed'
+
+
+class LigandLike(TypedDict):
+    description: str
+    parent: str
+    chain: str
+    src_organism_ids: List[int]
+    path: str
+    category: Tuple[LigandCategory, str]
+
 
 for _ in os.listdir(STATIC_ROOT):
     if len(_) > 4:
@@ -96,15 +145,13 @@ for _ in os.listdir(STATIC_ROOT):
                     os.path.join(STATIC_ROOT, _, "{}.json".format(_))]
 
 
-
-
-def profile_ligandlikes_by_species(profile_path: str, sought_spec: int)-> List[LigandLike]:
-    profile = {}  
-    _       = []
+def profile_ligandlikes_by_species(profile_path: str, sought_spec: int) -> List[LigandLike]:
+    profile = {}
+    _ = []
     with open(profile_path, 'rb') as infile:
 
-        profile     = json.load(infile)
-        polymers    = []
+        profile = json.load(infile)
+        polymers = []
         nonpolymers = []
 
         if sought_spec not in profile['src_organism_ids']:
@@ -125,66 +172,62 @@ def profile_ligandlikes_by_species(profile_path: str, sought_spec: int)-> List[L
     for poly in polymers:
         if bool(poly['ligand_like']) == True:
             _.append({
-                'description'     : poly['rcsb_pdbx_description'],
-                'category'        : lig_cat(poly['rcsb_pdbx_description']),
-                'parent'          : profile['rcsb_id'],
-                'chain'           : poly['auth_asym_id'],
+                'description': poly['rcsb_pdbx_description'],
+                'category': lig_cat(poly['rcsb_pdbx_description']),
+                'parent': profile['rcsb_id'],
+                'chain': poly['auth_asym_id'],
                 'src_organism_ids': poly['src_organism_ids'],
-                'path'            : os.path.join(STATIC_ROOT, profile['rcsb_id'].upper(), "POLYMER_{}.json".format(poly['auth_asym_id']))})
+                'path': os.path.join(STATIC_ROOT, profile['rcsb_id'].upper(), "POLYMER_{}.json".format(poly['auth_asym_id']))})
 
     for np in nonpolymers:
         if not "ion" in np['chemicalName'].lower():
             _.append({
                 'description': np['chemicalName'],
-                'category'   : lig_cat(np['chemicalName']),
-                'parent'     : profile['rcsb_id'],
-                'path'       : os.path.join(STATIC_ROOT, profile['rcsb_id'].upper(), "LIGAND_{}.json".format(np['chemicalId']))})
+                'category': lig_cat(np['chemicalName']),
+                'parent': profile['rcsb_id'],
+                'path': os.path.join(STATIC_ROOT, profile['rcsb_id'].upper(), "LIGAND_{}.json".format(np['chemicalId']))})
     return _
 
 
-
-# p_counts= {
-#     "antibiotic"      : 0,
-#     "mrna_trna_factor": 0,
-#     "both"            : 0
-# }
-
-category_counts= {
-    'mRNA'       : 0,
-    'tRNA'       : 0,
-    'Factors'    : 0,
-    'Antibiotics': 0,
+category_counts = {
+    'mRNA': {"all": 0},
+    'tRNA': {},
+    'Factors': {},
+    'Antibiotics': {},
 }
 
 
-# category_counts= {
-#     'mRNA'       : 0,
-#     'tRNA'       : 0,
-#     'Factors'    : 0,
-#     'Antibiotics': 0,
-# }
-
-
-for ppath in profiles: 
+for ppath in profiles:
     ligandlike = profile_ligandlikes_by_species(ppath, SPECIES)
-    counts =  [ 0,0 ]
-    
-    if len( ligandlike) > 0 :
+    counts = [0, 0]
+
+    if len(ligandlike) > 0:
         for l in ligandlike:
-            path     = l['path']
-            desc     = l['description']
+            path = l['path']
+            desc = l['description']
             category = l['category']
+            if category[0] == 'Antibiotics':
+                if category[1] in category_counts['Antibiotics']:
+                    category_counts['Antibiotics'][category[1]] += 1
+                else:
+                    category_counts['Antibiotics'][category[1]] = 1
+            if category[0] == 'tRNA':
+                if category[1] in category_counts['tRNA']:
+                    category_counts['tRNA'][category[1]] += 1
+                else:
+                    category_counts['tRNA'][category[1]] = 1
 
-            if category == 'Mixed':
-                continue
+            if category[0] == 'mRNA':
+                category_counts['mRNA']['all'] += 1
 
-            # if category == 'Factors':
-            #     print("Factors: ", desc)
-            if category == 'Antibiotics':
-                print("Antibiotics: ", desc)
+            if category[0] == 'Factors':
+                if category[1] in category_counts['Factors']:
+                    category_counts['Factors'][category[1]] += 1
+                else:
+                    category_counts['Factors'][category[1]] = 1
 
 
-
+pprint(category_counts)
 # labels  = 'Antibiotics', 'mRNA/tRNA/Factor', 'Both'
 # sizes   = [p_counts['antibiotic'], p_counts['both'], p_counts['mrna_trna_factor']]
 # explode = (0, 0.1, 0)
@@ -201,28 +244,84 @@ for ppath in profiles:
 
 # plt.show()
 # !------------------------------------------------------------------------------#
-# fig, ax = plt.subplots()
 
-# size = 0.3
 
-# vals = np.array([[60., 32.], [37., 300], [29., 10.]])
-# cmap = plt.get_cmap("tab20c")
+# Make data: I have 3 groups and 7 subgroups
+group_names    = ['Antibiotics', 'mRNA', 'tRNA', 'Factors']
+group_size     = []
 
-# outer_colors = cmap(np.arange(3)*4)
-# inner_colors = cmap(np.array([1, 2, 5, 6, 9, 10]))
 
-# ax.pie(vals.sum    (axis=1), radius=1-size     , colors=outer_colors,wedgeprops=dict(width=size, edgecolor='w'))
-# ax.pie(vals.flatten(      ), radius=1, colors=inner_colors,wedgeprops=dict(width=size, edgecolor='w'))
+subgroup_names = []
+subgroup_size  = []
 
-# ax.set(aspect="equal", title='Pie plot with `ax.pie`')
-# plt.show()
+for name, count in category_counts['Antibiotics'].items():
+    subgroup_names.append(name)
+    subgroup_size.append(count)
+group_size.append(sum(category_counts['Antibiotics'].values()))
+
+for name, count in category_counts['mRNA'].items():
+    subgroup_names.append(name)
+    subgroup_size.append(count)
+group_size.append(sum(category_counts['mRNA'].values()))
+
+for name, count in category_counts['tRNA'].items():
+    subgroup_names.append(name)
+    subgroup_size.append(count)
+group_size.append(sum(category_counts['tRNA'].values()))
+    
+for name, count in category_counts['Factors'].items():
+    subgroup_names.append(name)
+    subgroup_size.append(count)
+group_size.append(sum(category_counts['Factors'].values()))
+    
+print(group_names)
+
+# subgroup_names = ['A.1', 'A.2', 'A.3', 'B.1', 'B.2', 'C.1', 'C.2', 'C.3', 'C.4', 'C.5']
+# subgroup_size  = [4,3,5,6,5,10,5,5,4,6]
+
+# Create colors
+# subgroup_names_legs=['A.1:a1desc', 'A.2:a2desc', 'A.3:a3desc', 
+# 'B.1:b1desc', 'B.2:b2desc', 'C.1:c1desc', 'C.2:c2desc', 'C.3:c3desc', 
+# 'C.4:c4desc', 'C.5:c5desc']
+# plt.legend(subgroup_names_legs,loc='best')
+
+# First Ring (outside)
+fig, ax = plt.subplots()
+ax.axis('equal')
+a, b, c, d=[plt.cm.Blues, plt.cm.Reds, plt.cm.Greens, plt.cm.Reds]
+
+mypie, _ = ax.pie(
+    group_size,
+    radius = 0.6,
+    labels = group_names,
+    labeldistance = 0.6,
+    colors = [a(0.9), a(0.6), a(0.3), a(0.1) ]
+    )
+
+mypie2, _ = ax.pie(
+    subgroup_size,
+    radius        = 1.3,
+    # labels        = subgroup_names,
+    labeldistance = 0.5,
+    # colors        = [a(0.5), a(0.4), a(0.3), b(0.5), b(0.4), c(0.6), c(0.5), c(0.4), c(0.3), c(0.2)]
+    )
+
+plt.setp( mypie, width=0.3, edgecolor='black')
+plt.setp( mypie2, width=0.3, edgecolor='blue')
+plt.margins(2,4)
+
+plt.legend(loc=(0.9, 0.1))
+handles, labels = ax.get_legend_handles_labels()
+
+# ax.legend(handles[3:], subgroup_names_legs, loc=(0.9, 0.1))
+plt.show()
 # !------------------------------------------------------------------------------#
 
 
-#? taxids of interest
+# ? taxids of interest
 # Curate antibiotics manually for the 4 species; trna/factor categories are a little easier to curate; mrna is one solid category
-# 
-# human 9606, antibiotics: 
+#
+# human 9606, antibiotics:
 
 # {
 #     'streptomycin': 0,
@@ -276,5 +375,3 @@ for ppath in profiles:
 #     'colicin'      : 0,
 # }
 # s.cerevisea 4932
-
-
