@@ -11,6 +11,45 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
+
+#! E coli implementation
+ECOLI_TARGETS = [
+    "Apidaesin"    ,
+    "Midasin"      ,
+    "Viomycin"     ,
+    "Paromomycin"  ,
+    "Blasticidin"  ,
+    "Kirromycin"   ,
+    "Puromycin"    ,
+    "Virginiamycin",
+    "Titin"        ,
+    "Neomycin"     ,
+    "Spectinomycin",
+    "Colicin"      ,
+    "Hygromycin"   ,
+    "Erithromycin" ,
+    "Cathelicidin" ,
+]
+
+HUMAN_TARGETS = [
+]
+
+YEAST_TARGETS = [
+]
+
+THERMUS_TARGETS = [
+]
+
+
+FACTORS = [
+    'Rescue',
+    'Elongation',
+    'Initiation',
+
+    'Recycling',
+    'Release',
+    'Transcription'
+]
 def lig_cat(description: str) -> List[str]:
 
     if "[(" in description.lower():
@@ -18,61 +57,18 @@ def lig_cat(description: str) -> List[str]:
 
     if len(re.findall(r"(\w*(?<!(cha|pro|dom|str|pla|tox))in\b|(\b\w*zyme\b))", description.lower())) > 0:
 
-        #! E coli implementation
-        if 'apidaesin' in description.lower():
-            ab_class = 'apidaesin'
-        elif 'midasin' in description.lower():
-            ab_class = 'midasin'
-        elif 'viomycin' in description.lower():
-            ab_class = 'viomycin'
-        elif 'paromomycin' in description.lower():
-            ab_class = 'paromomycin'
-        elif 'blasticidin' in description.lower():
-            ab_class = 'blasticidin'
-        elif 'kirromycin' in description.lower():
-            ab_class = 'kirromycin'
-        elif 'puromycin' in description.lower():
-            ab_class = 'puromycin'
-        elif 'virginiamycin' in description.lower():
-            ab_class = 'virginiamycin'
-        elif 'titin' in description.lower():
-            ab_class = 'titin'
-        elif 'neomycin' in description.lower():
-            ab_class = 'neomycin'
-        elif 'spectinomycin' in description.lower():
-            ab_class = 'spectinomycin'
-        elif 'colicin' in description.lower():
-            ab_class = 'colicin'
-        elif 'hygromycin' in description.lower():
-            ab_class = 'hygromycin'
-        elif 'erithromycin' in description.lower():
-            ab_class = 'erithromycin'
-        elif 'cathelicidin' in description.lower():
-            ab_class = 'cathelicidin'
-        else:
-            ab_class = 'other'
+        for t in ECOLI_TARGETS:
+            if t.lower() in description.lower():
+                return ['Antibiotics', t]
+        return ['Antibiotics', 'other']
 
-        return ["Antibiotics", ab_class]
 
     if len(re.findall(r"(factor)", description.lower())) > 0:
 
-        print("Got factor:", description)
-        if 'rescue' in description.lower():
-            ab_class = 'Ribosome-Rescue Factor'
-        elif 'elongation' in description.lower():
-            ab_class = 'Elongation Factor'
-        elif 'initiation' in description.lower():
-            ab_class = 'Translation Inititation'
-        elif 'recycling' in description.lower():
-            ab_class = 'Ribosome Recycling Factor'
-        elif 'releaase' in description.lower():
-            ab_class = 'Peptide Chain Release Factor'
-        elif 'transcription' in description.lower():
-            ab_class = 'Transcription Factor'
-        else:
-            ab_class = 'other'
-
-        return ["Factors", ab_class]
+        for f in FACTORS:
+            if f.lower() in description.lower():
+                return ['Factors', f + " Factor"]
+        return ['Factors', 'other']
 
     if "mrna" in description.lower() or "messenger" in description.lower():
 
@@ -81,17 +77,17 @@ def lig_cat(description: str) -> List[str]:
     if "trna" in description.lower() or "transfer" in description.lower():
 
         if 'p-' in description.lower():
-            ab_class = 'P-Site'
+            ab_class = 'P-Site tRNA'
         elif 'e-' in description.lower():
-            ab_class = 'E-Site'
+            ab_class = 'E-Site tRNA'
         elif 'a-' in description.lower():
-            ab_class = 'A-Site'
+            ab_class = 'A-Site tRNA'
         elif 'fmet' in description.lower():
-            ab_class = 'Fmet'
+            ab_class = 'Fmet tRNA'
         elif 'phe' in description.lower():
-            ab_class = 'Phe'
+            ab_class = 'Phe tRNA'
         else:
-            ab_class = 'other'
+            ab_class = 'Other tRNA'
 
         return ["tRNA", ab_class]
 
@@ -114,8 +110,8 @@ sys.path.append('/home/rxz/dev/riboxyzbackend/')
 dotenv.load_dotenv(dotenv_path='/home/rxz/dev/riboxyzbackend/rxz_backend/.env')
 
 STATIC_ROOT = os.environ.get("STATIC_ROOT")
-bsites = []
-profiles = []
+bsites      = []
+profiles    = []
 
 SPECIES = int(sys.argv[1])
 
@@ -243,86 +239,116 @@ pprint(category_counts)
 # ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
 
 # plt.show()
-# !------------------------------------------------------------------------------#
-
+# !----------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
 # Make data: I have 3 groups and 7 subgroups
-group_names    = ['Antibiotics', 'mRNA', 'tRNA', 'Factors']
+
+group_names    = ['mRNA',  'tRNA', 'Factors', 'Antibiotics']
 group_size     = []
 
+subgroup_names  = []
+subgroup_size   = []
+subgroup_colors = []
 
-subgroup_names = []
-subgroup_size  = []
+a, b, c, d = [ plt.cm.Blues,  plt.cm.Greens,plt.cm.Reds, plt.cm.Oranges ]
+ab_cs      = 'blue'
+mrna_cs    = 'green'
+trna_cs    = 'red'
+factors_cs = 'orange'
 
-for name, count in category_counts['Antibiotics'].items():
-    subgroup_names.append(name)
-    subgroup_size.append(count)
-group_size.append(sum(category_counts['Antibiotics'].values()))
 
 for name, count in category_counts['mRNA'].items():
     subgroup_names.append(name)
     subgroup_size.append(count)
 group_size.append(sum(category_counts['mRNA'].values()))
 
+aval =0.1
 for name, count in category_counts['tRNA'].items():
     subgroup_names.append(name)
     subgroup_size.append(count)
+    subgroup_colors.append(b(aval))
+    aval+=0.1
 group_size.append(sum(category_counts['tRNA'].values()))
     
+bval = 0.1
 for name, count in category_counts['Factors'].items():
     subgroup_names.append(name)
     subgroup_size.append(count)
+    subgroup_colors.append(c(bval))
+    bval+=0.1
 group_size.append(sum(category_counts['Factors'].values()))
+
+cval =0.1
+for name, count in category_counts['Antibiotics'].items():
+    subgroup_names.append(name)
+    subgroup_size.append(count)
+    subgroup_colors.append(d(cval))
+    cval+=0.1
+group_size.append(sum(category_counts['Antibiotics'].values()))
+
+# ※----------------------------------------------------------------------------------------------------------------------------------------------------------------------#
     
-print(group_names)
-
-# subgroup_names = ['A.1', 'A.2', 'A.3', 'B.1', 'B.2', 'C.1', 'C.2', 'C.3', 'C.4', 'C.5']
-# subgroup_size  = [4,3,5,6,5,10,5,5,4,6]
-
-# Create colors
-# subgroup_names_legs=['A.1:a1desc', 'A.2:a2desc', 'A.3:a3desc', 
-# 'B.1:b1desc', 'B.2:b2desc', 'C.1:c1desc', 'C.2:c2desc', 'C.3:c3desc', 
-# 'C.4:c4desc', 'C.5:c5desc']
-# plt.legend(subgroup_names_legs,loc='best')
-
-# First Ring (outside)
 fig, ax = plt.subplots()
 ax.axis('equal')
-a, b, c, d=[plt.cm.Blues, plt.cm.Reds, plt.cm.Greens, plt.cm.Reds]
 
-mypie, _ = ax.pie(
+mypie, text = ax.pie(
     group_size,
-    radius = 0.6,
-    labels = group_names,
-    labeldistance = 0.6,
-    colors = [a(0.9), a(0.6), a(0.3), a(0.1) ]
-    )
+    radius        = 0.7,
+    labels        = group_names,
+    labeldistance = 0.7,
+    colors        = [ab_cs, mrna_cs, trna_cs, factors_cs ])
 
-mypie2, _ = ax.pie(
+mypie2, text2 = ax.pie(
     subgroup_size,
-    radius        = 1.3,
-    # labels        = subgroup_names,
-    labeldistance = 0.5,
-    # colors        = [a(0.5), a(0.4), a(0.3), b(0.5), b(0.4), c(0.6), c(0.5), c(0.4), c(0.3), c(0.2)]
-    )
+    radius        = 0.95,
+    labels        = subgroup_size,
+    labeldistance = 0.9,
+    colors        = subgroup_colors)
 
-plt.setp( mypie, width=0.3, edgecolor='black')
-plt.setp( mypie2, width=0.3, edgecolor='blue')
-plt.margins(2,4)
+bbox_props = dict(boxstyle="square,pad=0.3", fc="w", ec="k", lw=0.72)
+kw         = dict(arrowprops=dict(arrowstyle="-"),bbox=bbox_props, zorder=0, va="center")
+
+mypie2[0].set_visible(False)
+
+for i, p in enumerate(mypie2):
+
+    # print(p)
+    ang = (p.theta2 - p.theta1)/2. + p.theta1
+
+    y                   = np.sin(np.deg2rad(ang))
+    x                   = np.cos(np.deg2rad(ang))
+
+    horizontalalignment = {-1: "right", 1: "left"}[int(np.sign(x))]
+    connectionstyle     = "angle,angleA=0,angleB={}".format(ang)
+
+    kw["arrowprops"].update({"connectionstyle": connectionstyle
+    })
+
+    # if subgroup_names[i] not in [ *ECOLI_TARGETS, 'all', 'other']: 
+    print("Annotating", subgroup_names[i], subgroup_size[i])
+    ax.annotate(
+        subgroup_names[i],
+        xy=(x, y),
+        xytext=(1.5*np.sign(x),1.4*y),
+        horizontalalignment=horizontalalignment,
+            **kw)
+
+
+plt.setp    ( mypie , width=0.25, edgecolor='black')
+plt.setp    ( mypie2, width=0.15, edgecolor='black' )
+
+plt.margins ( 2,4 )
 
 plt.legend(loc=(0.9, 0.1))
 handles, labels = ax.get_legend_handles_labels()
 
-# ax.legend(handles[3:], subgroup_names_legs, loc=(0.9, 0.1))
 plt.show()
 # !------------------------------------------------------------------------------#
 
 
 # ? taxids of interest
 # Curate antibiotics manually for the 4 species; trna/factor categories are a little easier to curate; mrna is one solid category
-#
 # human 9606, antibiotics:
-
 # {
 #     'streptomycin': 0,
 #     'bystin'      : 0,
