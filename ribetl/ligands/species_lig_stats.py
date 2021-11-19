@@ -1,3 +1,4 @@
+from ctypes import alignment
 from nis import cat
 import os
 from pprint import pprint
@@ -312,15 +313,19 @@ ax.axis('equal')
 
 mypie, text = ax.pie(
     group_size,
-    radius=0.7,
-    # labels        = group_names,
-    labeldistance=0.7,
-    colors=[
+    radius        = 0.75,
+    # labels        = group_size,
+    labeldistance = 0.74,
+    textprops     = {'fontsize': 20, 'family':'monospace'},
+    colors        = [
         mrna_color,
         trna_color,
         factor_color,
         antibiotic_color,
         ])
+
+for patch in mypie:
+    print(patch)
 
 mypie2, text2 = ax.pie(
     subgroup_size,
@@ -328,6 +333,8 @@ mypie2, text2 = ax.pie(
     # labels        = subgroup_size,
     labeldistance=0.9,
     colors=subgroup_colors)
+
+
 
 bbox_props = dict(boxstyle="square,pad=0.3", fc="w", ec="k", lw=0.72)
 kw = dict(arrowprops=dict(arrowstyle="-"),
@@ -356,16 +363,19 @@ for i, p in enumerate(mypie2):
      ]:
 # '$\mathregular{tRNA_{Phe}}$'
 # '$\mathregular{tRNA_{fMet}}$'
-        ax.annotate(
+        t = ax.annotate(
             subgroup_names[i],
             xy=(x, y),
             xytext=(1.5*np.sign(x), 1.4*y),
             horizontalalignment=horizontalalignment,
-            fontsize=12,
-            **kw)
+            fontsize=16,
+            c='black',**kw)
 
-plt.setp(mypie, width=0.25, edgecolor='black')
-plt.setp(mypie2, width=0.15, edgecolor='black')
+        t.set_bbox(dict(facecolor=subgroup_colors[i],  edgecolor='black'))
+            
+
+plt.setp(mypie, width=0.25, edgecolor='gray')
+plt.setp(mypie2, width=0.15, edgecolor='blue')
 plt.margins(2, 4)
 
 
