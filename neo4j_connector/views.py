@@ -1,4 +1,5 @@
 from operator import sub
+from numpy import log
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from neo4j import  Result, GraphDatabase
@@ -362,5 +363,8 @@ def tax_ids(request):
 @api_view(['GET','POST'])
 def custom_cypher(request):
     params        = dict(request.GET)
-    CYPHER_STRING = params['cypher']
-    return Response(_neoget(CYPHER_STRING))
+    CYPHER_STRING = params['cypher'][0]
+    print("GOT STRING", CYPHER_STRING)
+    k = _neoget(CYPHER_STRING)
+    print("->>>>>>>>>>>>>",k)
+    return Response()

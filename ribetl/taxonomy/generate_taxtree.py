@@ -147,11 +147,52 @@ profiles      = list(map(lambda _: os.path.join(STATIC_ROOT,_,f"{_}.json"),struc
 
 #     return org_id_arrays
 
+
+@dataclass
+class TaxaProfile(): 
+      rcsb_id      : str
+      classified_as: int
+      src_orgs     : Dict[int,int]
+      host_orgs    : Dict[int,int]
+
+
 # Path --> Dict[rcsb_id,
 # src_orgs : Array[int],
 # host_orgs: Array[int]]
-def profile_taxa(path:str)->dict:
+def profile_taxa(path:str)->TaxaProfile:
     """"Provided a profile path, extract source and host organisms in a given profile."""
+
+    # Dict[...] -->  TaxaProfile
+    def classify_profile(d:dict)->TaxaProfile:
+        """Given a an organism id dictionary of the form(above), classifies a given structure.
+        {  
+                "rcsb_id"         : str,
+                "source_organisms": List[str],
+                "host_organisms"  : List[str] 
+                }
+        """
+        s={}
+        for _ in d['source_organisms']:
+            if _ in s:
+                s[_]+=1
+            else:
+                s[_]= 1
+
+        h={}
+        for _ in d['host_organisms']:
+            if _ in h:
+                h[_]+=1
+            else:
+                h[_]= 1
+
+        top_org = [* sorted(s.items(), key=lambda x: x[1], reverse=True) ][0][0]
+
+        return TaxaProfile(
+            rcsb_id       = d["rcsb_id"],
+            classified_as = top_org,
+            src_orgs      = s,
+            host_orgs     = h,
+        )
 
     with open(path,'r') as infile:
         profile   = json.load(infile)
@@ -167,51 +208,11 @@ def profile_taxa(path:str)->dict:
             src_orgs  = [*src_orgs,*rna['src_organism_ids']]
             host_orgs = [*host_orgs,*rna['host_organism_ids']]
 
-        return {  
+        return classify_profile({  
             "rcsb_id"         : rcsb_id,
             "source_organisms": src_orgs,
-            "host_organisms"  : host_orgs }
+            "host_organisms"  : host_orgs })
 
-
-@dataclass
-class TaxaProfile(): 
-      rcsb_id      : str
-      classified_as: int
-      src_orgs     : Dict[int,int]
-      host_orgs    : Dict[int,int]
-
-
-# Dict[...] -->  TaxaProfile
-def classify_profile(d:dict)->TaxaProfile:
-    """Given a an organism id dictionary of the form(above), classifies a given structure.
-    {  
-            "rcsb_id"         : str,
-            "source_organisms": List[str],
-            "host_organisms"  : List[str] 
-            }
-    """
-    s={}
-    for _ in d['source_organisms']:
-        if _ in s:
-            s[_]+=1
-        else:
-            s[_]= 1
-
-    h={}
-    for _ in d['host_organisms']:
-        if _ in h:
-            h[_]+=1
-        else:
-            h[_]= 1
-
-    top_org = [* sorted(s.items(), key=lambda x: x[1], reverse=True) ][0][0]
-
-    return TaxaProfile(
-        rcsb_id       = d["rcsb_id"],
-        classified_as = top_org,
-        src_orgs      = s,
-        host_orgs     = h,
-    )
 
 
 #! You probably want something like   map (classify_profile(map(profile_taxa, profiles)))

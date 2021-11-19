@@ -9,7 +9,8 @@ import dotenv
 from enum import Enum
 import numpy as np
 import matplotlib.pyplot as plt
-
+from ete3 import NCBITaxa,  TreeStyle,  faces, AttrFace, TextFace, NodeStyle, CircleFace, ImgFace, RectFace,SeqMotifFace
+from ..taxonomy.generate_taxtree import TaxaProfile, profile_taxa
 
 
 #! E coli implementation
@@ -100,7 +101,8 @@ def get_noms(a: dict):
     for i in a:
         for name in a[i]['nomenclature']:
             if name in _:
-                print("DUPLICATE")
+                # print("DUPLICATE")
+                ...
             else:
                 _ = [*_, [name, len(a[i]['residues'])]]
     return _
@@ -142,16 +144,27 @@ for _ in os.listdir(STATIC_ROOT):
 
 
 def profile_ligandlikes_by_species(profile_path: str, sought_spec: int) -> List[LigandLike]:
+    """Return the a list of the ligand-like elements associated with a given ribosome structure profile.
+    Sought species is looked up in the tax tree to correct for structures which contain substrain ids.
+    """
+
+    tax_profile = profile_taxa(profile_path)
+    ncbi        = NCBITaxa()
+    # unroll full lineage of the given structure's source 
+    lng         = ncbi.get_lineage( tax_profile.classified_as )
+
     profile = {}
-    _ = []
+    _       = []
+
     with open(profile_path, 'rb') as infile:
 
-        profile = json.load(infile)
-        polymers = []
+        
+        profile     = json.load(infile)
+        polymers    = []
         nonpolymers = []
 
-        if sought_spec not in profile['src_organism_ids']:
-            return []
+        # verify that the sought species taxid is present in the lineage
+        if sought_spec not in lng:return []
 
         if profile['proteins'] != None:
             polymers = [*polymers, *profile['proteins']]
@@ -168,34 +181,34 @@ def profile_ligandlikes_by_species(profile_path: str, sought_spec: int) -> List[
     for poly in polymers:
         if bool(poly['ligand_like']) == True:
             _.append({
-                'description': poly['rcsb_pdbx_description'],
-                'category': lig_cat(poly['rcsb_pdbx_description']),
-                'parent': profile['rcsb_id'],
-                'chain': poly['auth_asym_id'],
+                'description'     : poly['rcsb_pdbx_description'],
+                'category'        : lig_cat(poly['rcsb_pdbx_description']),
+                'parent'          : profile['rcsb_id'],
+                'chain'           : poly['auth_asym_id'],
                 'src_organism_ids': poly['src_organism_ids'],
-                'path': os.path.join(STATIC_ROOT, profile['rcsb_id'].upper(), "POLYMER_{}.json".format(poly['auth_asym_id']))})
+                'path'            : os.path.join(STATIC_ROOT, profile['rcsb_id'].upper(), "POLYMER_{}.json".format(poly['auth_asym_id']))})
 
     for np in nonpolymers:
         if not "ion" in np['chemicalName'].lower():
             _.append({
                 'description': np['chemicalName'],
-                'category': lig_cat(np['chemicalName']),
-                'parent': profile['rcsb_id'],
-                'path': os.path.join(STATIC_ROOT, profile['rcsb_id'].upper(), "LIGAND_{}.json".format(np['chemicalId']))})
+                'category'   : lig_cat(np['chemicalName']),
+                'parent'     : profile['rcsb_id'],
+                'path'       : os.path.join(STATIC_ROOT, profile['rcsb_id'].upper(), "LIGAND_{}.json".format(np['chemicalId']))})
     return _
 
 
 category_counts = {
-    'mRNA': {"all": 0},
-    'tRNA': {},
-    'Factors': {},
+    'mRNA'       : {"all": 0},
+    'tRNA'       : {},
+    'Factors'    : {},
     'Antibiotics': {},
 }
 
 
 for ppath in profiles:
     ligandlike = profile_ligandlikes_by_species(ppath, SPECIES)
-    counts = [0, 0]
+    counts     = [0, 0]
 
     if len(ligandlike) > 0:
         for l in ligandlike:
@@ -223,7 +236,7 @@ for ppath in profiles:
                     category_counts['Factors'][category[1]] = 1
 
 
-pprint(category_counts)
+# pprint(category_counts)
 # labels  = 'Antibiotics', 'mRNA/tRNA/Factor', 'Both'
 # sizes   = [p_counts['antibiotic'], p_counts['both'], p_counts['mrna_trna_factor']]
 # explode = (0, 0.1, 0)
@@ -325,7 +338,6 @@ for i, p in enumerate(mypie2):
     })
 
     # if subgroup_names[i] not in [ *ECOLI_TARGETS, 'all', 'other']: 
-    print("Annotating", subgroup_names[i], subgroup_size[i])
     ax.annotate(
         subgroup_names[i],
         xy=(x, y),
@@ -401,3 +413,5 @@ plt.show()
 #     'colicin'      : 0,
 # }
 # s.cerevisea 4932
+
+print(f"Counted {globcount} in total for ", 300852)

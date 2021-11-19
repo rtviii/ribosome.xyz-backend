@@ -1,17 +1,9 @@
-from asyncio import gather
-from cgi import print_environ
 from dataclasses import dataclass
 import json
 from lib2to3.pytree import Node
 import os
-from pprint import pprint
-from re import I
-import sys
-from turtle import bgcolor, position
-from typing import Dict, List, Text, Tuple
 import dotenv
 import numpy as np
-import requests
 import pandas as pd
 from ete3 import NCBITaxa,  TreeStyle,  faces, AttrFace, TextFace, NodeStyle, CircleFace, ImgFace, RectFace,SeqMotifFace
 from .generate_taxtree import classify_profile, profile_taxa
@@ -46,16 +38,6 @@ def lift_rank(taxid:int)->int:
 		return node
 		
 	
-# for i in taxons:
-# 	print("\n")
-# 	print(i)
-# 	i = lift_rank(i)
-# 	print(ncbi.get_rank([ i ]))
-# 	rank = ncbi.get_rank([i])[i]
-# 	print(ncbi.get_lineage( i ))
-# 	print(ncbi.get_taxid_translator([ i ]))
-# 	print(lift_rank(i))
-
 taxprofiles = list(map(classify_profile,map(profile_taxa, profiles)))
 taxons      = list(map( lift_rank, map(lambda _: _.classified_as, taxprofiles)))
 
