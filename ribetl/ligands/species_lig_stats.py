@@ -9,28 +9,36 @@ import dotenv
 from enum import Enum
 import numpy as np
 import matplotlib.pyplot as plt
-from ete3 import NCBITaxa,  TreeStyle,  faces, AttrFace, TextFace, NodeStyle, CircleFace, ImgFace, RectFace,SeqMotifFace
+from ete3 import NCBITaxa,  TreeStyle,  faces, AttrFace, TextFace, NodeStyle, CircleFace, ImgFace, RectFace, SeqMotifFace
 from ..taxonomy.generate_taxtree import TaxaProfile, profile_taxa
+from matplotlib.patches import Patch
+from matplotlib.lines import Line2D
 
 
 #! E coli implementation
-ECOLI_TARGETS = [
-    "Apidaesin"    ,
-    "Midasin"      ,
-    "Viomycin"     ,
-    "Paromomycin"  ,
-    "Blasticidin"  ,
-    "Kirromycin"   ,
-    "Puromycin"    ,
-    "Virginiamycin",
-    "Titin"        ,
-    "Neomycin"     ,
-    "Spectinomycin",
-    "Colicin"      ,
-    "Hygromycin"   ,
-    "Erithromycin" ,
-    "Cathelicidin" ,
-]
+ECOLI_TARGETS = {
+'antibiotics':[
+    "Puromycin",
+    "Paromomycin",
+    # "Apidaesin",
+    # "Midasin",
+    # "Viomycin",
+    # "Blasticidin",
+    # "Kirromycin",
+    # "Virginiamycin",
+    # "Titin",
+    # "Neomycin",
+    # "Spectinomycin",
+    # "Colicin",
+    # "Hygromycin",
+    # "Erithromycin",
+    # "Cathelicidin",
+],
+"factors":['Elongation']
+}
+
+
+
 
 HUMAN_TARGETS = [
 ]
@@ -42,15 +50,16 @@ THERMUS_TARGETS = [
 ]
 
 
-FACTORS = [
-    'Rescue',
-    'Elongation',
-    'Initiation',
+# FACTORS_TEMPLATE = [
+#     'Rescue',
+#     'Elongation',
+#     'Initiation',
+#     'Recycling',
+#     'Release',
+#     'Transcription'
+# ]
 
-    'Recycling',
-    'Release',
-    'Transcription'
-]
+
 def lig_cat(description: str) -> List[str]:
 
     if "[(" in description.lower():
@@ -58,22 +67,20 @@ def lig_cat(description: str) -> List[str]:
 
     if len(re.findall(r"(\w*(?<!(cha|pro|dom|str|pla|tox))in\b|(\b\w*zyme\b))", description.lower())) > 0:
 
-        for t in ECOLI_TARGETS:
+        for t in ECOLI_TARGETS['antibiotics']:
             if t.lower() in description.lower():
                 return ['Antibiotics', t]
-        return ['Antibiotics', 'other']
-
+        return ['Antibiotics', 'Other Antibiotics']
 
     if len(re.findall(r"(factor)", description.lower())) > 0:
 
-        for f in FACTORS:
+        for f in ECOLI_TARGETS['factors']:
             if f.lower() in description.lower():
                 return ['Factors', f + " Factor"]
-        return ['Factors', 'other']
+        return ['Factors', 'Other Factors']
 
     if "mrna" in description.lower() or "messenger" in description.lower():
-
-        return ["mRNA", 'other']
+        return ["mRNA", 'Other mRNA']
 
     if "trna" in description.lower() or "transfer" in description.lower():
 
@@ -84,9 +91,9 @@ def lig_cat(description: str) -> List[str]:
         elif 'a-' in description.lower():
             ab_class = 'A-Site tRNA'
         elif 'fmet' in description.lower():
-            ab_class = 'Fmet tRNA'
+            ab_class = "fMet tRNA"
         elif 'phe' in description.lower():
-            ab_class = 'Phe tRNA'
+            ab_class = "Phe tRNA"
         else:
             ab_class = 'Other tRNA'
 
@@ -112,8 +119,8 @@ sys.path.append('/home/rxz/dev/riboxyzbackend/')
 dotenv.load_dotenv(dotenv_path='/home/rxz/dev/riboxyzbackend/rxz_backend/.env')
 
 STATIC_ROOT = os.environ.get("STATIC_ROOT")
-bsites      = []
-profiles    = []
+bsites = []
+profiles = []
 
 SPECIES = int(sys.argv[1])
 
@@ -149,22 +156,22 @@ def profile_ligandlikes_by_species(profile_path: str, sought_spec: int) -> List[
     """
 
     tax_profile = profile_taxa(profile_path)
-    ncbi        = NCBITaxa()
-    # unroll full lineage of the given structure's source 
-    lng         = ncbi.get_lineage( tax_profile.classified_as )
+    ncbi = NCBITaxa()
+    # unroll full lineage of the given structure's source
+    lng = ncbi.get_lineage(tax_profile.classified_as)
 
     profile = {}
-    _       = []
+    _ = []
 
     with open(profile_path, 'rb') as infile:
 
-        
-        profile     = json.load(infile)
-        polymers    = []
+        profile = json.load(infile)
+        polymers = []
         nonpolymers = []
 
         # verify that the sought species taxid is present in the lineage
-        if sought_spec not in lng:return []
+        if sought_spec not in lng:
+            return []
 
         if profile['proteins'] != None:
             polymers = [*polymers, *profile['proteins']]
@@ -181,35 +188,34 @@ def profile_ligandlikes_by_species(profile_path: str, sought_spec: int) -> List[
     for poly in polymers:
         if bool(poly['ligand_like']) == True:
             _.append({
-                'description'     : poly['rcsb_pdbx_description'],
-                'category'        : lig_cat(poly['rcsb_pdbx_description']),
-                'parent'          : profile['rcsb_id'],
-                'chain'           : poly['auth_asym_id'],
+                'description': poly['rcsb_pdbx_description'],
+                'category': lig_cat(poly['rcsb_pdbx_description']),
+                'parent': profile['rcsb_id'],
+                'chain': poly['auth_asym_id'],
                 'src_organism_ids': poly['src_organism_ids'],
-                'path'            : os.path.join(STATIC_ROOT, profile['rcsb_id'].upper(), "POLYMER_{}.json".format(poly['auth_asym_id']))})
+                'path': os.path.join(STATIC_ROOT, profile['rcsb_id'].upper(), "POLYMER_{}.json".format(poly['auth_asym_id']))})
 
     for np in nonpolymers:
         if not "ion" in np['chemicalName'].lower():
             _.append({
                 'description': np['chemicalName'],
-                'category'   : lig_cat(np['chemicalName']),
-                'parent'     : profile['rcsb_id'],
-                'path'       : os.path.join(STATIC_ROOT, profile['rcsb_id'].upper(), "LIGAND_{}.json".format(np['chemicalId']))})
+                'category': lig_cat(np['chemicalName']),
+                'parent': profile['rcsb_id'],
+                'path': os.path.join(STATIC_ROOT, profile['rcsb_id'].upper(), "LIGAND_{}.json".format(np['chemicalId']))})
     return _
 
 
 category_counts = {
-    'mRNA'       : {"all": 0},
-    'tRNA'       : {},
-    'Factors'    : {},
+    'mRNA': {"All mRNA": 0},
+    'tRNA': {},
+    'Factors': {},
     'Antibiotics': {},
 }
 
 
 for ppath in profiles:
     ligandlike = profile_ligandlikes_by_species(ppath, SPECIES)
-    counts     = [0, 0]
-
+    counts = [0, 0]
     if len(ligandlike) > 0:
         for l in ligandlike:
             path = l['path']
@@ -227,7 +233,7 @@ for ppath in profiles:
                     category_counts['tRNA'][category[1]] = 1
 
             if category[0] == 'mRNA':
-                category_counts['mRNA']['all'] += 1
+                category_counts['mRNA']['All mRNA'] += 1
 
             if category[0] == 'Factors':
                 if category[1] in category_counts['Factors']:
@@ -235,127 +241,154 @@ for ppath in profiles:
                 else:
                     category_counts['Factors'][category[1]] = 1
 
-
-# pprint(category_counts)
-# labels  = 'Antibiotics', 'mRNA/tRNA/Factor', 'Both'
-# sizes   = [p_counts['antibiotic'], p_counts['both'], p_counts['mrna_trna_factor']]
-# explode = (0, 0.1, 0)
-# # +
-# # labels  = 'Antibiotics', 'mRNA', 'tRNA', 'Factors'
-# # sizes   = [ category_counts['Antibiotics'], category_counts['mRNA'], category_counts['tRNA'],category_counts['Factors'] ]
-# # explode = (0, 0.1, 0,0)  # only "explode" the 2nd slice (i.e. 'Hogs')
-
-
-# fig1, ax1 = plt.subplots()
-# ax1.pie(sizes, explode=explode, labels=labels, autopct='%1.1f%%',
-#         shadow=True, startangle=90)
-# ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
-
-# plt.show()
-# !----------------------------------------------------------------------------------------------------------------------------------------------------------------------#
-
+# ※----------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 # Make data: I have 3 groups and 7 subgroups
-
-group_names    = ['mRNA',  'tRNA', 'Factors', 'Antibiotics']
-group_size     = []
+group_names = ['mRNA',  'tRNA', 'Factors', 'Antibiotics']
+group_size  = []
 
 subgroup_names  = []
 subgroup_size   = []
 subgroup_colors = []
 
-a, b, c, d = [ plt.cm.Blues,  plt.cm.Greens,plt.cm.Reds, plt.cm.Oranges ]
-ab_cs      = 'blue'
-mrna_cs    = 'green'
-trna_cs    = 'red'
-factors_cs = 'orange'
+mrna_cm,trna_cm,antibio_cm,factor_cm = [plt.cm.Purples,  plt.cm.Blues, plt.cm.Oranges, plt.cm.Greys]
+
+mrna_color       = 'royalblue'
+trna_color       = 'azure'
+factor_color     = 'bisque'
+antibiotic_color = 'lightgreen'
+
+
 
 
 for name, count in category_counts['mRNA'].items():
     subgroup_names.append(name)
     subgroup_size.append(count)
+    subgroup_colors.append(mrna_color)
 group_size.append(sum(category_counts['mRNA'].values()))
 
-aval =0.1
 for name, count in category_counts['tRNA'].items():
     subgroup_names.append(name)
     subgroup_size.append(count)
-    subgroup_colors.append(b(aval))
-    aval+=0.1
+
+    # a-site, e-site,phe,p-site,  other, fmet
+    x = {
+        'A-Site tRNA': '#e4eef1',
+        'E-Site tRNA': '#e2f9fb',
+        'Phe tRNA'   : '#bde0ec',
+        'P-Site tRNA': '#ddf6f6',
+        'Other tRNA' : 'mintcream',
+        'fMet tRNA'  : '#f0fefb',
+    }[name]
+    subgroup_colors.append(x)
 group_size.append(sum(category_counts['tRNA'].values()))
-    
-bval = 0.1
+
 for name, count in category_counts['Factors'].items():
     subgroup_names.append(name)
     subgroup_size.append(count)
-    subgroup_colors.append(c(bval))
-    bval+=0.1
+    subgroup_colors.append(factor_color)
 group_size.append(sum(category_counts['Factors'].values()))
 
-cval =0.1
 for name, count in category_counts['Antibiotics'].items():
+
+
+    ax= {
+        "Paromomycin"      : '#a9f698',
+        "Puromycin"        : '#a7f898',
+        "Other Antibiotics": '#b6efaf',
+
+    }[name]
     subgroup_names.append(name)
     subgroup_size.append(count)
-    subgroup_colors.append(d(cval))
-    cval+=0.1
+    subgroup_colors.append(ax)
 group_size.append(sum(category_counts['Antibiotics'].values()))
 
 # ※----------------------------------------------------------------------------------------------------------------------------------------------------------------------#
-    
+# //:∷∷∷∷:∷∷∷∷:∷∷∷∷:∷∷∷∷:∷∷∷∷:∷∷∷∷:∷∷∷∷:∷∷∷∷:∷∷∷∷:∷∷∷∷:∷∷∷∷:∷∷∷∷:∷∷∷∷:∷∷∷∷:∷∷∷∷:∷∷∷∷:∷∷∷∷:
+# //:∷∷∷∷:∷∷∷∷:∷∷∷∷:∷∷∷∷:∷∷∷∷:∷∷∷∷:∷∷∷∷:∷∷∷∷:∷∷∷∷:∷∷∷∷:∷∷∷∷:∷∷∷∷:∷∷∷∷:∷∷∷∷:∷∷∷∷:∷∷∷∷:∷∷∷∷:
+#! How do i manipulate individual labels and legend entries separately?
+# ※----------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 fig, ax = plt.subplots()
 ax.axis('equal')
 
 mypie, text = ax.pie(
     group_size,
-    radius        = 0.7,
-    labels        = group_names,
-    labeldistance = 0.7,
-    colors        = [ab_cs, mrna_cs, trna_cs, factors_cs ])
+    radius=0.7,
+    # labels        = group_names,
+    labeldistance=0.7,
+    colors=[
+        mrna_color,
+        trna_color,
+        factor_color,
+        antibiotic_color,
+        ])
 
 mypie2, text2 = ax.pie(
     subgroup_size,
-    radius        = 0.95,
-    labels        = subgroup_size,
-    labeldistance = 0.9,
-    colors        = subgroup_colors)
+    radius=0.95,
+    # labels        = subgroup_size,
+    labeldistance=0.9,
+    colors=subgroup_colors)
 
 bbox_props = dict(boxstyle="square,pad=0.3", fc="w", ec="k", lw=0.72)
-kw         = dict(arrowprops=dict(arrowstyle="-"),bbox=bbox_props, zorder=0, va="center")
+kw = dict(arrowprops=dict(arrowstyle="-"),
+          bbox=bbox_props, zorder=0, va="center")
 
-mypie2[0].set_visible(False)
+for wedge in [0,7,8]:mypie2[wedge].set_visible(False)
+# text2[0].set_visible(False)
 
 for i, p in enumerate(mypie2):
 
     # print(p)
     ang = (p.theta2 - p.theta1)/2. + p.theta1
 
-    y                   = np.sin(np.deg2rad(ang))
-    x                   = np.cos(np.deg2rad(ang))
+    y = np.sin(np.deg2rad(ang))
+    x = np.cos(np.deg2rad(ang))
 
     horizontalalignment = {-1: "right", 1: "left"}[int(np.sign(x))]
-    connectionstyle     = "angle,angleA=0,angleB={}".format(ang)
+    connectionstyle = "angle,angleA=0,angleB={}".format(ang)
 
     kw["arrowprops"].update({"connectionstyle": connectionstyle
-    })
+                             })
 
-    # if subgroup_names[i] not in [ *ECOLI_TARGETS, 'all', 'other']: 
-    ax.annotate(
-        subgroup_names[i],
-        xy=(x, y),
-        xytext=(1.5*np.sign(x),1.4*y),
-        horizontalalignment=horizontalalignment,
+    if subgroup_names[i] not in [
+
+'Other Factors', 'Elongation Factor', 'All mRNA'
+     ]:
+# '$\mathregular{tRNA_{Phe}}$'
+# '$\mathregular{tRNA_{fMet}}$'
+        ax.annotate(
+            subgroup_names[i],
+            xy=(x, y),
+            xytext=(1.5*np.sign(x), 1.4*y),
+            horizontalalignment=horizontalalignment,
+            fontsize=12,
             **kw)
 
+plt.setp(mypie, width=0.25, edgecolor='black')
+plt.setp(mypie2, width=0.15, edgecolor='black')
+plt.margins(2, 4)
 
-plt.setp    ( mypie , width=0.25, edgecolor='black')
-plt.setp    ( mypie2, width=0.15, edgecolor='black' )
 
-plt.margins ( 2,4 )
+# !-----------------------------------[ LEGEND ]-------------------------------------------#
 
-plt.legend(loc=(0.9, 0.1))
-handles, labels = ax.get_legend_handles_labels()
+
+legend_elements = [
+    Patch(facecolor=mrna_color      , edgecolor='black', label='mRNA'),
+    Patch(facecolor=trna_color      , edgecolor='black', label='tRNA'),
+    Patch(facecolor=factor_color    , edgecolor='black', label='Factors'),
+    Patch(facecolor=antibiotic_color, edgecolor='black', label='Antibiotics')
+]
+
+# fig, ax = plt.subplots()
+# ax.legend(handles=legend_elements, loc='center')
+
+# handles, labels = ax.get_legend_handles_labels()
+lgnd = plt.legend(handles=legend_elements, loc='center', fontsize=14)
+# plt.legend(fontsize=22)
+
+# !--------------------------------------------------------------------------------#
 
 plt.show()
-# !------------------------------------------------------------------------------#
 
 
 # ? taxids of interest
@@ -413,5 +446,3 @@ plt.show()
 #     'colicin'      : 0,
 # }
 # s.cerevisea 4932
-
-print(f"Counted {globcount} in total for ", 300852)
