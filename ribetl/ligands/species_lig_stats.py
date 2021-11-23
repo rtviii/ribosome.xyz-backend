@@ -330,7 +330,7 @@ for patch in mypie:
 mypie2, text2 = ax.pie(
     subgroup_size,
     radius=0.95,
-    # labels        = subgroup_size,
+    labels        = subgroup_size,
     labeldistance=0.9,
     colors=subgroup_colors)
 
@@ -357,12 +357,36 @@ for i, p in enumerate(mypie2):
     kw["arrowprops"].update({"connectionstyle": connectionstyle
                              })
 
-    if subgroup_names[i] not in [
 
+    if 'Phe'  in  subgroup_names[i]:
+        t = ax.annotate(
+            '$\mathregular{tRNA_{Phe}}$',
+            xy=(x, y),
+            xytext=(1.5*np.sign(x), 1.4*y),
+            horizontalalignment=horizontalalignment,
+            fontsize=16,
+            c='black',**kw)
+
+        t.set_bbox(dict(facecolor=subgroup_colors[i],  edgecolor='black'))
+        continue
+
+    if 'fMet' in  subgroup_names[i]:
+        t = ax.annotate(
+                '$\mathregular{tRNA_{fMet}}$',
+            xy=(x, y),
+            xytext=(1.5*np.sign(x), 1.4*y),
+            horizontalalignment=horizontalalignment,
+            fontsize=16,
+            c='black',**kw)
+        t.set_bbox(dict(facecolor=subgroup_colors[i],  edgecolor='black'))
+        continue
+
+    if subgroup_names[i] not in [
 'Other Factors', 'Elongation Factor', 'All mRNA'
      ]:
-# '$\mathregular{tRNA_{Phe}}$'
-# '$\mathregular{tRNA_{fMet}}$'
+
+
+
         t = ax.annotate(
             subgroup_names[i],
             xy=(x, y),
@@ -398,7 +422,10 @@ lgnd = plt.legend(handles=legend_elements, loc='center', fontsize=14)
 
 # !--------------------------------------------------------------------------------#
 
-plt.show()
+# plt.show()
+
+fig.set_size_inches(40,12)
+plt.savefig('ligand_piechart.svg', dpi=1200)
 
 
 # ? taxids of interest
