@@ -2,11 +2,12 @@ from dataclasses import dataclass
 import json
 from lib2to3.pytree import Node
 import os
+from typing import List
 import dotenv
 import numpy as np
 import pandas as pd
 from ete3 import NCBITaxa,  TreeStyle,  faces, AttrFace, TextFace, NodeStyle, CircleFace, ImgFace, RectFace,SeqMotifFace
-from .generate_taxtree import classify_profile, profile_taxa
+from .generate_taxtree import   TaxaProfile, profile_taxa
 BACTERIA        = 2
 ARCHAEA         = 2157
 EUKARYA         = 2759
@@ -23,9 +24,6 @@ ncbi = NCBITaxa()
 def node_lineage(node):
     return  ncbi.get_lineage( node.taxid )
 
-
-
-
 def lift_rank(taxid:int)->int:
 	"""Given a taxid, make sure that it's a SPECIES (as opposed to strain, subspecies, isolate, norank etc.)"""
 	if ncbi.get_rank([taxid])[taxid] == 'species':
@@ -38,9 +36,8 @@ def lift_rank(taxid:int)->int:
 		return node
 		
 	
-taxprofiles = list(map(classify_profile,map(profile_taxa, profiles)))
+taxprofiles:List[TaxaProfile] = list(map(profile_taxa, profiles))
 taxons      = list(map( lift_rank, map(lambda _: _.classified_as, taxprofiles)))
-
 ncbi        = NCBITaxa()
 t           = ncbi.get_topology(taxons)
 
@@ -85,12 +82,10 @@ def layout(n):
 		C.margin_bottom      = 5
 		
 		ligands_svg = '/home/rxz/dev/riboxyzbackend/ribetl/taxonomy/ligand_icon.svg'
-		imgf= ImgFace(ligands_svg, 30,30)
+		# imgf= ImgFace(ligands_svg, 30,30)
 
-
-
-		rna_rect                    = TextFace("87", fsize=8, fgcolor='PaleTurquoise')
-		factors_rect                = TextFace("25", fsize=8, fgcolor='PaleTurquoise')
+		rna_rect                      = TextFace("87", fsize=8, fgcolor='PaleTurquoise')
+		factors_rect                  = TextFace("25", fsize=8, fgcolor='PaleTurquoise')
 
 		rna_rect.margin_top           = 5
 		rna_rect.margin_right         = 5
@@ -99,54 +94,41 @@ def layout(n):
 		rna_rect.opacity              = 0.9
 		rna_rect.border.width         = 1
 		rna_rect.background.color     = "SteelBlue"
-
-		factors_rect.margin_top         = 5
-		factors_rect.margin_right       = 5
-		factors_rect.margin_left        = 5
-		factors_rect.margin_bottom      = 5
-
-		factors_rect.opacity            = 0.9
-		factors_rect.border.width         = 1
-		# factors_rect.inner_border.width = 1
-		# factors_rect.inner_border.type  = 1
-		# factors_rect.border.width       = 1
-		factors_rect.background.color   = "DimGray"
-		
-
-		rna_rect.hz_align               = 1
-		factors_rect.hz_align               = 3
+		factors_rect.margin_top       = 5
+		factors_rect.margin_right     = 5
+		factors_rect.margin_left      = 5
+		factors_rect.margin_bottom    = 5
+		factors_rect.opacity          = 0.9
+		factors_rect.border.width     = 1
+		factors_rect.background.color = "DimGray"
+		rna_rect.hz_align             = 1
+		factors_rect.hz_align         = 3
 
 		
 		
-		seq = ("-----------------------------------------------AQAK---IKGSKKAIKVFSSA---"
-		"APERLQEYGSIFTDA---GLQRRPRHRIQSK-------ALQEKLKDFPVCVSTKPEPEDDAEEGLGGLPSN"
-		"ISSVSSLLLFNTTENLYKKYVFLDPLAG----THVMLGAETEEKLFDAPLSISKREQLEQQVPENYFYVPD"
-		"LGQVPEIDVPSYLPDLPGIANDLMYIADLGPGIAPSAPGTIPELPTFHTEVAEPLKVGELGSGMGAGPGTP"
-		"AHTPSSLDTPHFVFQTYKMGAPPLPPSTAAPVGQGARQDDSSSSASPSVQGAPREVVDPSGGWATLLESIR"
-		"QAGGIGKAKLRSMKERKLEKQQQKEQEQVRATSQGGHL--MSDLFNKLVMRRKGISGKGPGAGDGPGGAFA"
-		"RVSDSIPPLPPPQQPQAEDED----")
+		# seq = ("-----------------------------------------------AQAK---IKGSKKAIKVFSSA---"
+		# "APERLQEYGSIFTDA---GLQRRPRHRIQSK-------ALQEKLKDFPVCVSTKPEPEDDAEEGLGGLPSN"
+		# "ISSVSSLLLFNTTENLYKKYVFLDPLAG----THVMLGAETEEKLFDAPLSISKREQLEQQVPENYFYVPD"
+		# "LGQVPEIDVPSYLPDLPGIANDLMYIADLGPGIAPSAPGTIPELPTFHTEVAEPLKVGELGSGMGAGPGTP"
+		# "AHTPSSLDTPHFVFQTYKMGAPPLPPSTAAPVGQGARQDDSSSSASPSVQGAPREVVDPSGGWATLLESIR"
+		# "QAGGIGKAKLRSMKERKLEKQQQKEQEQVRATSQGGHL--MSDLFNKLVMRRKGISGKGPGAGDGPGGAFA"
+		# "RVSDSIPPLPPPQQPQAEDED----")
 
 
-		seqFace = SeqMotifFace(seq, gapcolor="blue")
-
-		seqFace = SeqMotifFace(seq[40:100], seq_format="seq")
+		# seqFace = SeqMotifFace(seq, gapcolor="blue")
+		# seqFace = SeqMotifFace(seq[40:100], seq_format="seq")
 
 		faces.add_face_to_node(taxname                   ,                                 n,    column   =0      ,             )
 		faces.add_face_to_node(TextFace     ( f"{count}" , fsize = 14, fgcolor= 'black' ), n,    column   =1      , aligned=True)
 		# faces.add_face_to_node(C                         ,                                 n, 2, position ="float", aligned=True)
 		# faces.add_face_to_node(rna_rect                  ,                                 n, 3, position ="float", aligned=True)
 		# faces.add_face_to_node(factors_rect              ,                                 n, 4, position ="float", aligned=True)
-		faces.add_face_to_node(seqFace              ,                                 n, 2, position ="float", aligned=True)
-
-
-
+		# faces.add_face_to_node(seqFace              ,                                 n, 2, position ="float", aligned=True)
 
 ts                = TreeStyle()
-ts.mode           = "r"
+ts.mode           = "c"
 ts.layout_fn      = layout
 ts.show_leaf_name = False
-
-
 
 ts.show_branch_length  = False
 ts.show_branch_support = False
@@ -176,4 +158,6 @@ for n in t.traverse():
 	nstyle["fgcolor"]       = "blue"
 	n.set_style(nstyle)
 
+
 t.show(tree_style=ts)
+# t.render("tree.svg", tree_style=ts)
