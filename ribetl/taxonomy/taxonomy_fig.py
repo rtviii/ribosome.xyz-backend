@@ -7,7 +7,8 @@ import dotenv
 import numpy as np
 import pandas as pd
 from ete3 import NCBITaxa,  TreeStyle,  faces, AttrFace, TextFace, NodeStyle, CircleFace, ImgFace, RectFace,SeqMotifFace
-from .generate_taxtree import   TaxaProfile, profile_taxa
+from generate_taxtree import TaxaProfile, profile_taxa
+
 BACTERIA        = 2
 ARCHAEA         = 2157
 EUKARYA         = 2759
@@ -17,16 +18,17 @@ STATIC_ROOT = os.environ.get('STATIC_ROOT')
 
 structs       = [*filter(lambda x: os.path.isdir(os.path.join(STATIC_ROOT,x)) ,os.listdir(STATIC_ROOT))]
 profiles      = list(map(lambda _: os.path.join(STATIC_ROOT,_,f"{_}.json"),structs))
-
 org_id_arrays = []
-ncbi = NCBITaxa()
+ncbi          = NCBITaxa()
 
 def node_lineage(node):
     return  ncbi.get_lineage( node.taxid )
 
 def lift_rank(taxid:int)->int:
+
 	"""Given a taxid, make sure that it's a SPECIES (as opposed to strain, subspecies, isolate, norank etc.)"""
 	if ncbi.get_rank([taxid])[taxid] == 'species':
+
 		return taxid
 	else:
 		lin = iter(ncbi.get_lineage(taxid))
@@ -49,14 +51,6 @@ def layout(n):
 		if s == tid: count+=1
 
 	if tid in taxons:
-		taxname = TextFace( 
-			f"{taxid_to_linnaean(tid)}" ,
-			fsize =10,
-			fstyle='italic',
-			fgcolor= 'black' )
-
-		taxname.margin_left  = 15
-		taxname.margin_right = 15
 
 
 
@@ -118,30 +112,56 @@ def layout(n):
 		# seqFace = SeqMotifFace(seq, gapcolor="blue")
 		# seqFace = SeqMotifFace(seq[40:100], seq_format="seq")
 
-		faces.add_face_to_node(taxname                   ,                                 n,    column   =0      ,             )
-		faces.add_face_to_node(TextFace     ( f"{count}" , fsize = 14, fgcolor= 'black' ), n,    column   =1      , aligned=True)
+		taxnamenode = TextFace( 
+			f"{taxid_to_linnaean(tid)}" ,
+			fsize    = 14,
+			penwidth = 2,
+			fstyle   = 'italic',
+			fgcolor  = 'black' )
+
+
+		taxnamenode.margin_top    = 20
+		taxnamenode.margin_bottom = 10
+		taxnamenode.margin_left   = 10
+		taxnamenode.margin_right  = 10
+		faces.add_face_to_node(taxnamenode, n,column=2 , aligned=True)
+
+		textface_node               = TextFace(f"{count}" , fsize = 16, fgcolor= 'black' )
+		textface_node.rotation      = 90
+		textface_node.margin_top    = 10
+		textface_node.margin_bottom = 14
+		# textface_node.margin_left   = 10
+		# textface_node.margin_right  = 10
+		faces.add_face_to_node(textface_node, n,    column   =1, aligned=True)
+
 		# faces.add_face_to_node(C                         ,                                 n, 2, position ="float", aligned=True)
 		# faces.add_face_to_node(rna_rect                  ,                                 n, 3, position ="float", aligned=True)
 		# faces.add_face_to_node(factors_rect              ,                                 n, 4, position ="float", aligned=True)
 		# faces.add_face_to_node(seqFace              ,                                 n, 2, position ="float", aligned=True)
 
-ts                = TreeStyle()
-ts.mode           = "c"
-ts.layout_fn      = layout
-ts.show_leaf_name = False
-
+ts                     = TreeStyle()
+ts.mode                = "r"
+ts.layout_fn           = layout
 ts.show_branch_length  = False
 ts.show_branch_support = False
+ts.show_scale          = False
+ts.show_leaf_name      = False
+ts.draw_guiding_lines  = True
+ts.rotation            = 270
+ts.rotation            = -90
 
 for n in t.traverse():
 	nstyle = NodeStyle()
 
 	if BACTERIA in node_lineage(n):
-		nstyle["bgcolor"]              = "PaleGreen"
+		# nstyle["bgcolor"]              = "PaleGreen"
+		nstyle["bgcolor"]              ="#DCFCDE"
 	if ARCHAEA in node_lineage(n):
-		nstyle["bgcolor"]              = "PowderBlue"
+		# nstyle["bgcolor"]              = "PowderBlue"
+		nstyle["bgcolor"]              = "#DDF2FA"
 	if EUKARYA in node_lineage(n):
-		nstyle["bgcolor"] = "OldLace"
+		# nstyle["bgcolor"] = "OldLace"
+		nstyle["bgcolor"] = "#FAF8DD"
 
 	#      nstyle['shape'] = 'circle'
 	nstyle["shape"]        = "square"
@@ -151,8 +171,8 @@ for n in t.traverse():
 
 	# nstyle["vt_line_color"] = 10
 	# nstyle["hz_line_color"] = 10
-	nstyle["hz_line_width"]  = 2
-	nstyle["vt_line_width"]  = 2
+	nstyle["hz_line_width"]  = 1
+	nstyle["vt_line_width"]  = 1
 
 	nstyle["fgcolor"]       = "blue"
 	nstyle["fgcolor"]       = "blue"
@@ -160,4 +180,4 @@ for n in t.traverse():
 
 
 t.show(tree_style=ts)
-# t.render("tree.svg", tree_style=ts)
+# t.render("tree_flipped.svg", tree_style=ts)

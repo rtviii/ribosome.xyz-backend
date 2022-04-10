@@ -1,10 +1,5 @@
-from asyncio import gather
-from cgi import print_environ
-from dataclasses import dataclass
-import json
 import os
 from pprint import pprint
-import sys
 from typing import Dict, List, Tuple
 import dotenv
 import numpy as np
@@ -21,9 +16,8 @@ profiles      = list(map(lambda _: os.path.join(STATIC_ROOT,_,f"{_}.json"),struc
 
 org_id_arrays = []
 
-ligands    = pd.read_csv('ribetl/taxonomy/ligands.csv')
-ligandlike = pd.read_csv('ribetl/taxonomy/ligandlike.csv')
-
+ligands       = pd.read_csv('ribetl/taxonomy/ligands.csv')
+ligandlike    = pd.read_csv('ribetl/taxonomy/ligandlike.csv')
 
 factor_descs  = ligandlike['description'].to_list()
 factor_taxids = ligandlike['ids'].to_list()

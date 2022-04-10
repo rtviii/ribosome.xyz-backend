@@ -1,126 +1,119 @@
+
+
+
+
 export interface RibosomeStructure {
-  rcsb_id               : string;
-  expMethod             : string;
-  resolution            : number;
+  rcsb_id: string;
+  expMethod: string;
+  resolution: number;
 
-  pdbx_keywords     : string | null;
-  pdbx_keywords_text: string |null;
+  pdbx_keywords: string | null;
+  pdbx_keywords_text: string | null;
 
-  rcsb_external_ref_id  : string[];
+  rcsb_external_ref_id: string[];
   rcsb_external_ref_type: string[];
   rcsb_external_ref_link: string[];
 
   // citation
-  citation_year        : number;
-  citation_rcsb_authors: string[]
-  citation_title       : string
+  citation_year: number;
+  citation_rcsb_authors: string[];
+  citation_title: string;
 
-  citation_pdbx_doi    : string
+  citation_pdbx_doi: string;
   // keywords
   // custom
-  src_organism_ids   : number[];
-  src_organism_names : string[];
+  src_organism_ids: number[];
+  src_organism_names: string[];
 
-  host_organism_ids   : number[];
-  host_organism_names : string[];
+  host_organism_ids: number[];
+  host_organism_names: string[];
 
-  proteins : Protein[]       ;
-  rnas     : RNA            [] | null;
-  ligands  : Ligand          [] | null;
-
+  proteins: Protein[];
+  rnas: RNA[] | null;
+  ligands: Ligand[] | null;
 }
 
+export interface RNA {
+  asym_ids: string[];
 
+  auth_asym_id: string;
+  nomenclature: RNAClass[];
+  parent_rcsb_id: string;
 
+  src_organism_names: string[];
+  host_organism_names: string[];
+  src_organism_ids: number[];
+  host_organism_ids: number[];
 
-
-
-export interface RNA { 
-
-
-  asym_ids                        : string[],
-
-  auth_asym_id                   : string,
-  nomenclature                    : RNAClass[]
-  parent_rcsb_id                  : string       ;
-
-  src_organism_names : string[],
-  host_organism_names: string[],
-  src_organism_ids   : number[],
-  host_organism_ids  : number[],
-
-
-  rcsb_pdbx_description           : string | null;
+  rcsb_pdbx_description: string | null;
   // entity_polymer
-  entity_poly_strand_id              : string;
-  entity_poly_seq_one_letter_code    : string;
+  entity_poly_strand_id: string;
+  entity_poly_seq_one_letter_code: string;
   entity_poly_seq_one_letter_code_can: string;
-  entity_poly_seq_length             : number;
-  entity_poly_polymer_type           : string;
-  entity_poly_entity_type            : string;
+  entity_poly_seq_length: number;
+  entity_poly_polymer_type: string;
+  entity_poly_entity_type: string;
 
-  // whether this is an elongation factor,etc 
-  ligand_like:boolean
- }
-
+  // whether this is an elongation factor,etc
+  ligand_like: boolean;
+}
 
 export interface Protein {
+  asym_ids: string[];
+  auth_asym_id: string;
 
-  asym_ids    : string[],
-  auth_asym_id: string,
+  parent_rcsb_id: string;
+  pfam_accessions: string[];
+  pfam_comments: string[];
+  pfam_descriptions: string[];
 
-  parent_rcsb_id    : string;
-  pfam_accessions   : string[]
-  pfam_comments     : string[]
-  pfam_descriptions : string[]
-
-  src_organism_names : string[],
-  host_organism_names: string[],
-  src_organism_ids   : number[],
-  host_organism_ids  : number[],
+  src_organism_names: string[];
+  host_organism_names: string[];
+  src_organism_ids: number[];
+  host_organism_ids: number[];
 
   // whether this is an elongation factor, etc.
-  ligand_like:boolean
+  ligand_like: boolean;
 
-  uniprot_accession                  : string[]
+  uniprot_accession: string[];
 
-  rcsb_pdbx_description              : string | null;
+  rcsb_pdbx_description: string | null;
 
-  entity_poly_strand_id              : string;
-  entity_poly_seq_one_letter_code    : string;
+  entity_poly_strand_id: string;
+  entity_poly_seq_one_letter_code: string;
   entity_poly_seq_one_letter_code_can: string;
-  entity_poly_seq_length             : number;
-  entity_poly_polymer_type           : string;
-  entity_poly_entity_type            : string;
+  entity_poly_seq_length: number;
+  entity_poly_polymer_type: string;
+  entity_poly_entity_type: string;
 
-  nomenclature                       : ProteinClass[];
+  nomenclature: ProteinClass[];
 }
 
 export interface Ligand {
-  chemicalId         : string;
-  chemicalName       : string;
-  formula_weight     : number;
-  pdbx_description   : string;
+  chemicalId: string;
+  chemicalName: string;
+  formula_weight: number;
+  pdbx_description: string;
   number_of_instances: number;
 }
 
 // This comes from interpro mapping (in cumulative archive)
 export interface InterProFamily {
-  family_id  : string;
-  type       : string;
+  family_id: string;
+  type: string;
   description: string;
 }
 
 // This comes from interpro mapping (in cumulative archive)
 export interface GOClass {
-  class_id  : string;
+  class_id: string;
   annotation: string;
 }
 
 // This comes from interpro mapping (in cumulative archive)
 export interface PFAMFamily {
-  family_id  : string;
-  annotation : string;
+  family_id: string;
+  annotation: string;
   family_type: string;
 }
 
@@ -128,20 +121,18 @@ export interface NomenclatureClass {
   class_id: ProteinClass;
 }
 
-
-
-export type RNAClass = 
-"5SrRNA"|
-"5.8SrRNA"|
-"12SrRNA"|
-"16SrRNA"|
-"21SrRNA"|
-"23SrRNA"|
-"25SrRNA"|
-"28SrRNA"|
-"35SrRNA"|
-"mRNA"|
-"tRNA"
+export type RNAClass =
+  | "5SrRNA"
+  | "5.8SrRNA"
+  | "12SrRNA"
+  | "16SrRNA"
+  | "21SrRNA"
+  | "23SrRNA"
+  | "25SrRNA"
+  | "28SrRNA"
+  | "35SrRNA"
+  | "mRNA"
+  | "tRNA";
 
 export type ProteinClass =
   | "eL39"

@@ -6,8 +6,6 @@ from pprint import pprint
 from typing import List
 import re
 import dotenv
-import numpy as np
-
 
 BACTERIA = 2
 ARCHAEA  = 2157
@@ -15,19 +13,19 @@ EUKARYA  = 2759
 
 COMPONENTS = [
     # ... Ribosomal Proteins 
-    # ... RNA Categories
-    "P-Site tRNA" ,
-    "E-Site tRNA" ,
-    "A-Site tRNA" ,
-    "fMet tRNA"   ,
-    "Phe tRNA"    ,
-    "tRNA"        ,
-    "mRNA"        ,
-    "Rescue Factor"       ,
-    "Elongation Factor"   ,
-    "Initiation Factor"   ,
-    "Recycling Factor"    ,
-    "Release Factor"      ,
+    # ... rRNA Categories
+    "P-Site tRNA"          ,
+    "E-Site tRNA"          ,
+    "A-Site tRNA"          ,
+    "fMet tRNA"            ,
+    "Phe tRNA"             ,
+    "tRNA"                 ,
+    "mRNA"                 ,
+    "Rescue Factor"        ,
+    "Elongation Factor"    ,
+    "Initiation Factor"    ,
+    "Recycling Factor"     ,
+    "Release Factor"       ,
     "Transcription Factor",
     "Antibiotic"
 ]
@@ -138,20 +136,8 @@ for p in profiles:
         else:
             BOTH +=1
 
-
-print(BOTH, SSU, LSU)
+print("Have both subunits ", BOTH, " | SSU Only: ", SSU, "| LSU Only:", LSU)
 print(BOTH + SSU + LSU)
-print(i)
-print("skiupped", s)
+print("Skipped", s)
 
 
-
-
-    
-
-    
-    
-    
-
-
-# if abs(small-large):

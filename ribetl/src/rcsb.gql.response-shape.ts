@@ -1,3 +1,7 @@
+
+
+
+
 export interface Polymer_Entity {
   entry:{
     rcsb_id:string
@@ -28,7 +32,7 @@ export interface Polymer_Entity {
         rcsb_id: string;
     }[] | null;
 
-    rcsb_polymer_entity: 
+    rcsb_polymer_entity:
     {
       pdbx_description: string;
     };

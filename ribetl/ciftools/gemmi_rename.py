@@ -33,4 +33,3 @@ for i in make_nom_dict(structprofile).items():
 
 doc.write_file(cifmodified)
 print("\033[91m Wrote {} \033[0m".format(cifmodified))
-

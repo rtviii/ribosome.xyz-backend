@@ -18,6 +18,8 @@ import {
 import _ from "lodash";
 
 
+
+
 // Renamed, added so far:  host organisms, host ids, srcids srcnames
 const query_template = (pdbid: string) => {
   const GQL_QUERY_SHAPE = `{
@@ -116,8 +118,8 @@ const matchRPNomenclature = (
   if (finds !== null) {
     var firstcap = finds[0]
     var name     = (
-      firstcap[0].toLowerCase() 
-    + firstcap[1].toUpperCase() 
+      firstcap[0].toLowerCase()
+    + firstcap[1].toUpperCase()
     + firstcap.slice(2)
     ) as ProteinClass
     return [name]
@@ -148,7 +150,6 @@ const matchRPNomenclature = (
 
 const matchRNANomenclature = (polymer: Polymer_Entity): RNAClass[] => {
 
-
   const rna_reg: Record<RNAClass, RegExp> = {
     "5SrRNA": /\b(5s)/gi,
     "5.8SrRNA": /\b(5\.8s)/gi,
@@ -161,13 +162,13 @@ const matchRNANomenclature = (polymer: Polymer_Entity): RNAClass[] => {
     "35SrRNA" : /\b(35s)/gi,
     "mRNA"    : /(mrna)|\b(messenger)\b/gi,
     "tRNA"    : /(trna)|\b(transfer)\b/gi,
-    }
-  
+  }
+
   var rnatypes = Object.keys(rna_reg) as RNAClass[]
   for (var c of rnatypes){
     var matches = rna_reg[c].exec(polymer.rcsb_polymer_entity.pdbx_description)
     if (matches){
-      return [ c as RNAClass ] 
+      return [ c as RNAClass ]
     }
   }
   return []
@@ -179,7 +180,7 @@ interface Organisms {
  src_organism_names  :string[]
  host_organism_ids   :number[]
  host_organism_names :string[]
-  
+
 }
 const inferOrganismsFromPolymers= ( proteins:Protein[] ):Organisms => {
 
@@ -239,8 +240,8 @@ const is_ligand_like = (plm:Polymer_Entity, nomenclature: Array<RNAClass|Protein
   // ? Look for enzymes, factors and antibiotics
   var reg =  /(\w*(?<!(cha|pro|dom|stra|pl\w*))in\b)|(\b\w*zyme\b)|(factor)/gi;
   const matches=  plm.rcsb_polymer_entity.pdbx_description.match(reg)
-  if (matches!== null && 
-    !(matches.map(_=>_.toLowerCase()).includes('protein')) && 
+  if (matches!== null &&
+    !(matches.map(_=>_.toLowerCase()).includes('protein')) &&
     !(plm.rcsb_polymer_entity.pdbx_description.toLowerCase().includes('protein'))&&
     !(plm.rcsb_polymer_entity.pdbx_description.toLowerCase().includes('rrna'))
     ){
@@ -257,8 +258,8 @@ const reshape_PolyEntity_to_rRNA =(plm:Polymer_Entity):RNA[] =>{
     var host_organism_ids   : number []= plm.rcsb_entity_host_organism ? uniq(plm.rcsb_entity_host_organism.map(org => org.ncbi_taxonomy_id )) : [];
     var host_organism_names : string []= plm.rcsb_entity_host_organism ? uniq( plm.rcsb_entity_host_organism.map(org => org.scientific_name  ) ) : [];
     var nomenclature =  matchRNANomenclature(plm)
-  
-    
+
+
    return plm.rcsb_polymer_entity_container_identifiers.auth_asym_ids.map(auth_asym_id =>(
 {
     nomenclature  : nomenclature,
@@ -284,7 +285,7 @@ const reshape_PolyEntity_to_rRNA =(plm:Polymer_Entity):RNA[] =>{
 
 
 
-   
+
 }
 const reshape_PolyEntity_to_RibosomalProtein = (plm:Polymer_Entity):Protein[] =>{
       if (plm.pfams) {
@@ -299,7 +300,7 @@ const reshape_PolyEntity_to_RibosomalProtein = (plm:Polymer_Entity):Protein[] =>
           plm.pfams.map(pfam => pfam.rcsb_pfam_accession)
         );
 
-      } 
+      }
       else {
         var pfam_comments    : string[] = [];
         var pfam_descriptions: string[] = [];
@@ -341,7 +342,7 @@ const reshape_PolyEntity_to_RibosomalProtein = (plm:Polymer_Entity):Protein[] =>
     entity_poly_polymer_type           : plm                  .entity_poly.rcsb_entity_polymer_type
   }
       ))
-   
+
 }
 
 export const processPDBRecord = async (
@@ -350,7 +351,7 @@ export const processPDBRecord = async (
   return await axios.get(query_template(pdbid))
   .then(response => {
 
-    
+
     var pdbRecord: PDBGQLResponse = response.data.data                                                                                       ;
 
     var            proteins       = pdbRecord.entry.polymer_entities   .filter(poly => poly.entity_poly.rcsb_entity_polymer_type === "Protein");
