@@ -2,21 +2,28 @@ from dataclasses import dataclass
 import json
 from lib2to3.pytree import Node
 import os
+from platform import architecture
 from pprint import pprint
+from tokenize import Special
 from typing import List
 import dotenv
 import numpy as np
 import pandas as pd
 from ete3 import NCBITaxa,  TreeStyle,  faces, AttrFace, TextFace, NodeStyle, CircleFace, ImgFace, RectFace,SeqMotifFace
+from sqlalchemy import false
 from generate_taxtree import TaxaProfile, profile_taxa
 
 BACTERIA = 2
 ARCH  = 2157
 EUKARYA  = 2759
 
-# BACTERIA_other        = 9992
-# ARCHAEA_other        = 9992157
-# EUKARYA_other        = 9992759
+
+global bact_other_counter;
+bact_other_counter = 0
+global euk_other_counter;
+euk_other_counter =0
+global arch_other_counter;
+arch_other_counter =0
 
 dotenv.load_dotenv(dotenv_path='/home/rxz/dev/riboxyzbackend/rxz_backend/.env')
 STATIC_ROOT = os.environ.get('STATIC_ROOT')
@@ -28,8 +35,7 @@ ncbi          = NCBITaxa()
 
 
 
-MAIN_IDS=['S. oleracea', 'T. brucei', 'S. scrofa', 'H. sapiens', 'O. cuniculus', 'K. lactis', 'S. cerevisiae', 'C. thermophilum', 'E. coli', 
-        'A. baumanii', 'P. aeruginosa', 'B. subtilis', 'F. faecalis', 'T. thermophilus', 'D. radiodurans','M. smegmatis', 'S. aureus']
+MAIN_IDS=[ 'H. sapiens', 'O. cuniculus',  'S. cerevisiae',  'E. coli',  'T. thermophilus',  'S. aureus']
 
 
 def node_lineage(node):
@@ -37,6 +43,44 @@ def node_lineage(node):
     return ncbi.get_lineage(node.taxid )
 
 def taxid_to_linnaean(spec_taxid:int):_ = str(ncbi.get_taxid_translator([spec_taxid])[spec_taxid]).split(" "); return _[0][0] + ". "+ _[1]
+
+
+
+
+def taxon_remove_if_not_main(t):
+	"""get taxon from list, see if it's in the main subset. if not increment the [kingdom]_other counter and pop from list"""
+	ncbi    = NCBITaxa()
+	lineage = list( ncbi.get_lineage(t) );
+	# species_tuple = list(filter(lambda kv: kv[1]=='species' ,ncbi.get_rank(lineage).items()))[0][0]
+
+	if taxid_to_linnaean(t) in MAIN_IDS:
+		return False
+
+	else:
+		if len(lineage) < 3:
+			return False
+		kingdom = lineage[2]
+
+		if kingdom == BACTERIA:
+			global bact_other_counter
+			bact_other_counter = 1
+			return True
+
+		if kingdom == EUKARYA:
+			global euk_other_counter
+			euk_other_counter+=1
+			return True
+			
+		if kingdom == ARCH:
+			global arch_other_counter
+			arch_other_counter +=1
+			return True
+		print("error, should reach here")
+		exit(2)
+
+
+
+
 
 def lift_rank(taxid:int)->int:
 	"""Given a taxid, make sure that it's a SPECIES (as opposed to strain, subspecies, isolate, norank etc.)"""
@@ -51,12 +95,27 @@ def lift_rank(taxid:int)->int:
 			node = next(lin)
 		return node
 		
-def tail_species_to_other(taxid:int ):
-	...
 	
 taxprofiles:List[TaxaProfile] = list(map(profile_taxa, profiles))
+taxons        = list(map( lift_rank, map(lambda _: _.classified_as, taxprofiles)))
 
-taxons      = list(map( lift_rank, map(lambda _: _.classified_as, taxprofiles)))
+
+print("TAXONS:",taxons)
+     
+print("Got taxons: ", len(taxons))
+for (i,t) in enumerate(taxons):
+	print(i,t)
+	if taxon_remove_if_not_main(t):
+
+		print("Removing taxon {}: {}".format(t, taxid_to_linnaean(t)))
+			
+		del taxons[i]
+	# print(t)
+
+print("Got taxons after clean ", len(taxons))
+print(arch_other_counter)
+print(euk_other_counter)
+print(bact_other_counter)
 
 ncbi          = NCBITaxa()
 ncbi_topology = ncbi.get_topology(taxons)
@@ -64,65 +123,18 @@ ncbi_topology = ncbi.get_topology(taxons)
 
 
 
-print("----------------------++")
-
-# def node_get_upto_kingdom(node):
-	# ncbi    = NCBITaxa()
-	# nodeid  = node.taxid;
-	# lineage = list( ncbi.get_lineage(nodeid) );
-	# print("Got lineage", lineage)
-	# if len(lineage) < 3:
-	# 	return node
-	# kingdom = lineage[2]
-
-	# if kingdom == BACTERIA:
-	# 	print("adding bacteria other", BACTERIA_other)
-	# 	lineage_extended = [*lineage, BACTERIA_other]
-	# 	node.taxid = BACTERIA_other
-	# if kingdom == EUKARYA:
-	# 	print("adding bacteria other", EUKARYA_other)
-	# 	lineage_extended = [*lineage, EUKARYA_other]
-	# 	node.taxid = EUKARYA_other
-	# if kingdom == ARCHAEA:
-	# 	print("adding bacteria other", ARCHAEA_other)
-	# 	lineage_extended = [*lineage, ARCHAEA_other]
-	# 	node.taxid = ARCHAEA_other
-
-
-		
-	# return node 
-     
 
 	
+print("----------------------++")
 
 
- 
 
-def find_main_nodes(node):
-	nodeid = node.taxid
-	lineage = ncbi.get_lineage(nodeid)
-	names   = ncbi.translate_to_names(lineage)
-
-	for ( tid,n ) in zip(lineage,names):
-		if list( ncbi.get_rank([ tid ]).values() )[0] == 'species':
-			linaen = taxid_to_linnaean(tid)
-			print(linaen, tid)
-			if linaen in MAIN_IDS:
-				print("Detected main node ", node.taxid)
-				...
-			else:
-				...
 
        
 		
 
 # for i in [1, 131567, 2759, 33154, 33208, 6072, 33213, 33511, 7711, 89593, 7742, 7776, 117570, 117571, 8287, 1338369, 32523, 32524, 40674, 32525, 9347, 1437010, 314146, 314147, 9989, 1963758, 337687, 10066, 39107, 10088, 862507, 10090]:
 #     print(ncbi.get_rank([ i ]))
-#     tid_ = list(ncbi.get_rank([ i ]).keys())
-#     print(ncbi.get_common_names(tid_))
-#     print()
-print("----------------------++")
-
 
 
 def layout(n):
@@ -213,8 +225,8 @@ for n in ncbi_topology.traverse():
 	nstyle["fgcolor"]       = "blue"
 
 
-	print(n.taxid)
-	print(ncbi.get_lineage(n.taxid))
+	# print(n.taxid)
+	# print(ncbi.get_lineage(n.taxid))
 	n.set_style(nstyle)
 
 
