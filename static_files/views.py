@@ -61,7 +61,8 @@ def ranged_align(request):
     if 0 not in [r1start,r1end]:
         ranged_alignment_script = os.environ.get('RANGED_ALIGNMENT_SCRIPT')
         print("Ranged align script:", ranged_alignment_script)
-        os.system("python3 /home/rxz/dev/riboxyzbackend/static_files/ranged_align.py {} {} {} {} {}-{}".format(struct1,struct2, auth_asym_id1, auth_asym_id2, rstart,rend))
+        os.system("python3 /home/rxz/dev/riboxyzbackend/static_files/ranged_align.py {} {} {} {} {}-{} {}-{}"\
+                  .format(struct1,struct2, auth_asym_id1, auth_asym_id2, r1start,r1end, r2start,r2end))
 
     alignedfile=os.environ["TEMP_CHAIN"]
     print("Produced alignment file:", alignedfile)

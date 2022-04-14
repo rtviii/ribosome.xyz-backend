@@ -1,0 +1,88 @@
+Last called ranged_align.py at 2022-04-14 with args :
+	src_struct       = 3J7Z
+	tgt_struct       = 4UG0
+	src_auth_asym_id = E
+	tgt_auth_asym_id = LC
+	r1start , r1end 	 = 10-41
+	r2start , r2end 	 = 13-54
+	 21:18:52.070367.log
+Last called ranged_align.py at 2022-04-14 with args :
+	src_struct       = 3J7Z
+	tgt_struct       = 4UG0
+	src_auth_asym_id = E
+	tgt_auth_asym_id = LC
+	r1start , r1end 	 = 73-117
+	r2start , r2end 	 = 136-200
+	 21:19:04.726374.log
+Last called ranged_align.py at 2022-04-14 with args :
+	src_struct       = 3J7Z
+	tgt_struct       = 4UG0
+	src_auth_asym_id = E
+	tgt_auth_asym_id = LC
+	r1start , r1end 	 = 73-117
+	r2start , r2end 	 = 136-200
+	 21:19:04.836700.log
+Last called ranged_align.py at 2022-04-14 with args :
+	src_struct       = 3J7Z
+	tgt_struct       = 4UG0
+	src_auth_asym_id = E
+	tgt_auth_asym_id = LC
+	r1start , r1end 	 = 129-164
+	r2start , r2end 	 = 248-377
+	 21:19:46.542105.log
+Last called ranged_align.py at 2022-04-14 with args :
+	src_struct       = 3J7Z
+	tgt_struct       = 4UG0
+	src_auth_asym_id = E
+	tgt_auth_asym_id = LC
+	r1start , r1end 	 = 129-164
+	r2start , r2end 	 = 248-377
+	 21:19:46.652444.log
+Last called ranged_align.py at 2022-04-14 with args :
+	src_struct       = 3J7Z
+	tgt_struct       = 4UG0
+	src_auth_asym_id = E
+	tgt_auth_asym_id = LC
+	r1start , r1end 	 = 129-164
+	r2start , r2end 	 = 367-408
+	 21:19:52.878322.log
+Last called ranged_align.py at 2022-04-14 with args :
+	src_struct       = 3J7Z
+	tgt_struct       = 4UG0
+	src_auth_asym_id = E
+	tgt_auth_asym_id = LC
+	r1start , r1end 	 = 129-197
+	r2start , r2end 	 = 367-427
+	 21:19:59.199871.log
+Last called ranged_align.py at 2022-04-14 with args :
+	src_struct       = 3J7Z
+	tgt_struct       = 4UG0
+	src_auth_asym_id = E
+	tgt_auth_asym_id = LC
+	r1start , r1end 	 = 88-151
+	r2start , r2end 	 = 98-220
+	 21:20:07.644190.log
+Last called ranged_align.py at 2022-04-14 with args :
+	src_struct       = 3J7Z
+	tgt_struct       = 4UG0
+	src_auth_asym_id = E
+	tgt_auth_asym_id = LC
+	r1start , r1end 	 = 64-132
+	r2start , r2end 	 = 138-264
+	 21:47:20.719663.log
+Last called ranged_align.py at 2022-04-14 with args :
+	src_struct       = 3J7Z
+	tgt_struct       = 4UG0
+	src_auth_asym_id = E
+	tgt_auth_asym_id = LC
+	r1start , r1end 	 = 14-71
+	r2start , r2end 	 = 21-82
+	 21:47:26.958632.log
+Last called ranged_align.py at 2022-04-14 with args :
+	src_struct       = 3J7Z
+	tgt_struct       = 4UG0
+	src_auth_asym_id = E
+	tgt_auth_asym_id = LC
+	r1start , r1end 	 = 28-79
+	r2start , r2end 	 = 99-261
+	 21:47:47.854291.log
