@@ -40,26 +40,25 @@ def _neoget(CYPHER_STRING:str):
     with driver.session() as session:
         return session.read_transaction(parametrized_query)
 
-
-
-
 @api_view(['GET','POST'])
 def ranged_align(request):
     params = dict(request.GET)
-
     print("-------------------+------------------")
     print("GOT PARAMS", params)
     print("-------------------+------------------")
 
-    rstart = int(params['rstart'][0])
-    rend   = int(params['rend'][0])
+    r1start = int(params['r1start'][0])
+    r1end   = int(params['r1end'][0])
+
+    r2start = int(params['r2start'][0])
+    r2end   = int(params['r2end'][0])
 
     struct1       = params['struct1'][0].upper()
     struct2       = params['struct2'][0].upper()
     auth_asym_id1 = params['auth_asym_id1'][0]
     auth_asym_id2 = params['auth_asym_id2'][0]
 
-    if 0 not in [rstart,rend]:
+    if 0 not in [r1start,r1end]:
         ranged_alignment_script = os.environ.get('RANGED_ALIGNMENT_SCRIPT')
         print("Ranged align script:", ranged_alignment_script)
         os.system("python3 /home/rxz/dev/riboxyzbackend/static_files/ranged_align.py {} {} {} {} {}-{}".format(struct1,struct2, auth_asym_id1, auth_asym_id2, rstart,rend))
@@ -78,7 +77,6 @@ def ranged_align(request):
     struct1,auth_asym_id1,struct2,auth_asym_id2)
 
     return response
-
 
 @api_view(['GET','POST'])
 def align_3d(request):
@@ -281,7 +279,6 @@ def cif_chain_by_class(request):
     response = HttpResponse(FileWrapper(doc), content_type='chemical/x-mmcif')
     response['Content-Disposition'] = 'attachment; filename="{}"'.format(filename)
     return response
-
 
 @api_view(['GET', 'POST'])
 def tunnel(request):

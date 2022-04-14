@@ -1,8 +1,8 @@
-Last called align.py at 2021-11-06 00:05:43.290809 with args :
+Last called align.py at 2022-04-14 20:55:28.774254 with args :
 
-handle1    =/home/rxz/dev/riboxyzbackend/ribetl/static/5AFI/CHAINS/5AFI_STRAND_E.cif
+handle1    =/home/rxz/dev/riboxyzbackend/ribetl/static/3J7Z/CHAINS/3J7Z_STRAND_E.cif
 handle2    =/home/rxz/dev/riboxyzbackend/ribetl/static/4UG0/CHAINS/4UG0_STRAND_LC.cif
-pymol_name1=5AFI_E
+pymol_name1=3J7Z_E
 pymol_name2=4UG0_LC
 
 

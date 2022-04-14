@@ -99,11 +99,6 @@ def ranged_super_class(
 	return (src_chain_path, source_range, tgt_chain_path, target_range )
 
 
-
-
-
-
-
 def ranged_super(
 	src_struct      : str,
 	src_auth_asym_id: str,

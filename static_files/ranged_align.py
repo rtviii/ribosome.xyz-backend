@@ -1,37 +1,35 @@
-import ribetl.ciftools.super as super
 import datetime
 import os
 import sys
 from dotenv import load_dotenv
 from pymol import cmd
+import ribetl.ciftools.super as super
 
 
-# ? -----
 load_dotenv(dotenv_path='/home/rxz/dev/riboxyzbackend/rxz_backend/.env')
 STATIC_ROOT = os.environ.get('STATIC_ROOT')
 
-
 def root_self(rootname: str = ''):
     """Returns the rootpath for the project if it's unique in the current folder tree."""
-    root = os.path.abspath(__file__)[:os.path.abspath(
-        __file__).find(rootname)+len(rootname)]
+    root = os.path.abspath(__file__)[:os.path.abspath(__file__).find(rootname)+len(rootname)]
     sys.path.append(root)
 
 
+# ? This whole shebang is needed to make the script aware of its environment regardless of the server.
 root_self('riboxyzbackend')
-# ? -----  This whole shebang is needed to make the script aware of its environment regardless of the server.
 
 # super.ranged_super aligns chains via biopython's seqalign and returns the correct individual ranges
 # (derived from the user-requested ranged  i.e. [20,50] -> (19-48) for chain1 and [25-65] in chain2)
 
 # log
-os.system(f"""echo \"Last called ranged_align.py at {datetime.datetime.now()} with args :
+os.system(f"""echo \"Last called ranged_align.py at {str( datetime.datetime.now() ).split(" ")[0]} with args :
 	src_struct       = {sys.argv[1].upper()}
 	tgt_struct       = {sys.argv[2].upper()}
 	src_auth_asym_id = {sys.argv[3]}
 	tgt_auth_asym_id = {sys.argv[4]}
-	rstart , rend 	 = {sys.argv[5]}
-	\" >> alignment.log""")
+	r1start , r1end 	 = {sys.argv[5]}
+	r2start , r2end 	 = {sys.argv[6]}
+	\" >> alignment{datetime.datetime.now()}.log""")
 
 
 # parse args with pain
@@ -39,12 +37,12 @@ src_struct = sys.argv[1].upper()
 tgt_struct = sys.argv[2].upper()
 src_auth_asym_id = sys.argv[3]
 tgt_auth_asym_id = sys.argv[4]
-rstart,                 rend = [* map(int, sys.argv[5].split("-"))]
+r1start, r1end = [* map(int, sys.argv[5].split("-"))]
+r2start, r2end = [* map(int, sys.argv[6].split("-"))]
 
 
 # get chain paths (in static) and correct ranged to clip out
-[c1, r1, c2, r2] = super.ranged_super(
-    src_struct, src_auth_asym_id, tgt_struct, tgt_auth_asym_id, (int(rstart), int(rend)))
+[c1, r1, c2, r2] = super.ranged_super(src_struct, src_auth_asym_id, tgt_struct, tgt_auth_asym_id, (int(rstart), int(rend)))
 
 
 os.system(f"""echo \"
