@@ -42,7 +42,13 @@ def node_lineage(node):
     # print(node.taxid," is lineage ", ncbi.get_lineage(node.taxid ));
     return ncbi.get_lineage(node.taxid )
 
-def taxid_to_linnaean(spec_taxid:int):_ = str(ncbi.get_taxid_translator([spec_taxid])[spec_taxid]).split(" "); return _[0][0] + ". "+ _[1]
+def taxid_to_linnaean(spec_taxid:int):
+	print("got taxid", spec_taxid)
+	_ = str(ncbi.get_taxid_translator([spec_taxid])[spec_taxid]).split(" ")
+	if len(_) <2:
+		print("[{}] is not a species likely.".format(_))
+		return _
+	return _[0][0] + ". "+ _[1]
 
 
 
@@ -199,6 +205,10 @@ ncbi_topology.search_nodes(taxid=131567)[0].add_child(name='Arch_manual')
 for n in ncbi_topology.traverse():
 	# find_main_nodes(n)
 	nstyle = NodeStyle()
+
+ 
+	if 'taxid' in n.__dict__:
+		print(taxid_to_linnaean(n.taxid))
 	
 	if 'manual' in n.name:
 		continue
