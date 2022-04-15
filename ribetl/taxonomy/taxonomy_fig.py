@@ -14,7 +14,7 @@ from sqlalchemy import false
 from generate_taxtree import TaxaProfile, profile_taxa
 
 BACTERIA = 2
-ARCH  = 2157
+ARCH     = 2157
 EUKARYA  = 2759
 
 
@@ -136,19 +136,13 @@ print("----------------------++")
 
 
 
-       
-		
-
-# for i in [1, 131567, 2759, 33154, 33208, 6072, 33213, 33511, 7711, 89593, 7742, 7776, 117570, 117571, 8287, 1338369, 32523, 32524, 40674, 32525, 9347, 1437010, 314146, 314147, 9989, 1963758, 337687, 10066, 39107, 10088, 862507, 10090]:
-#     print(ncbi.get_rank([ i ]))
-
 
 def layout(n):
 
 	if 'manual' in n.name:
 
 		taxnamenode = TextFace( 
-			f"Manual X" ,
+			f"Species 1\nSpecies2\n..." ,
 			fsize    = 16,
 			penwidth = 2,
 			fstyle   = 'italic',
@@ -158,7 +152,7 @@ def layout(n):
 		taxnamenode.rotation      = -50
 		faces.add_face_to_node(taxnamenode, n,column=2 , aligned=True)
 
-		textface_node               = TextFace(f"COUHNt" , fsize = 16, fgcolor= 'black' )
+		textface_node               = TextFace(f"24" , fsize = 16, fgcolor= 'black' )
 		textface_node.rotation      = -90
 		textface_node.margin_top    = 10
 		textface_node.margin_bottom = 14
@@ -203,15 +197,17 @@ ncbi_topology.search_nodes(taxid=EUKARYA)[0].add_child(name='Euk_manual')
 ncbi_topology.search_nodes(taxid=131567)[0].add_child(name='Arch_manual')
 
 for n in ncbi_topology.traverse():
+
+	if 'taxid' not in n.__dict__:
+		continue
 	# find_main_nodes(n)
 	nstyle = NodeStyle()
 
- 
-	if 'taxid' in n.__dict__:
-		print(taxid_to_linnaean(n.taxid))
+	# if 'taxid' in n.__dict__:
+	# 	print(taxid_to_linnaean(n.taxid))
 	
-	if 'manual' in n.name:
-		continue
+	# if 'manual' in n.name:
+	# 	continue
 	if BACTERIA in node_lineage(n):
 		nstyle["bgcolor"] ="#DCFCDE"
 	if EUKARYA in node_lineage(n):
