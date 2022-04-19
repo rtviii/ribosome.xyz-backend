@@ -1,0 +1,54 @@
+
+ranged_super.py returned 
+	paths     : 
+	chain1    : /home/rxz/dev/riboxyzbackend/ribetl/static/3J7Z/CHAINS/3J7Z_STRAND_E.cif,
+	chain2    : /home/rxz/dev/riboxyzbackend/ribetl/static/4UG0/CHAINS/4UG0_STRAND_LC.cif,
+	source_range: [ 33, [73] ],
+	target_range: [ 35, [154] ],
+
+	
+
+ranged_super.py returned 
+	paths     : 
+	chain1    : /home/rxz/dev/riboxyzbackend/ribetl/static/3J7Z/CHAINS/3J7Z_STRAND_E.cif,
+	chain2    : /home/rxz/dev/riboxyzbackend/ribetl/static/4UG0/CHAINS/4UG0_STRAND_LC.cif,
+	source_range: [ 33, [73] ],
+	target_range: [ 35, [105] ],
+
+	
+
+ranged_super.py returned 
+	paths     : 
+	chain1    : /home/rxz/dev/riboxyzbackend/ribetl/static/3J7Z/CHAINS/3J7Z_STRAND_E.cif,
+	chain2    : /home/rxz/dev/riboxyzbackend/ribetl/static/4UG0/CHAINS/4UG0_STRAND_LC.cif,
+	source_range: [ 110, [143] ],
+	target_range: [ 142, [208] ],
+
+	
+
+ranged_super.py returned 
+	paths     : 
+	chain1    : /home/rxz/dev/riboxyzbackend/ribetl/static/3J7Z/CHAINS/3J7Z_STRAND_E.cif,
+	chain2    : /home/rxz/dev/riboxyzbackend/ribetl/static/4UG0/CHAINS/4UG0_STRAND_LC.cif,
+	source_range: [ 175, [201] ],
+	target_range: [ 96, [137] ],
+
+	
+
+ranged_super.py returned 
+	paths     : 
+	chain1    : /home/rxz/dev/riboxyzbackend/ribetl/static/3J7Z/CHAINS/3J7Z_STRAND_E.cif,
+	chain2    : /home/rxz/dev/riboxyzbackend/ribetl/static/4UG0/CHAINS/4UG0_STRAND_LC.cif,
+	source_range: [ 90, [201] ],
+	target_range: [ 96, [272] ],
+
+	
+
+ranged_super.py returned 
+	paths     : 
+	chain1    : /home/rxz/dev/riboxyzbackend/ribetl/static/3J7Z/CHAINS/3J7Z_STRAND_S.cif,
+	chain2    : /home/rxz/dev/riboxyzbackend/ribetl/static/4UG0/CHAINS/4UG0_STRAND_LP.cif,
+	source_range: [ 38, [73] ],
+	target_range: [ 64, [123] ],
+
+	
