@@ -13,6 +13,11 @@ BACTERIA        = 2
 ARCHAEA         = 2157
 EUKARYA         = 2759
 
+
+
+INCLUDE_ONLY =[]
+
+
 dotenv.load_dotenv(dotenv_path='/home/rxz/dev/riboxyzbackend/rxz_backend/.env')
 STATIC_ROOT = os.environ.get('STATIC_ROOT')
 
