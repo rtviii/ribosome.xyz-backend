@@ -1,0 +1,27 @@
+
+ranged_super.py returned 
+	paths     : 
+	chain1    : /home/rxz/dev/riboxyzbackend/ribetl/static/1VY5/CHAINS/1VY5_STRAND_BR.cif,
+	chain2    : /home/rxz/dev/riboxyzbackend/ribetl/static/1VY7/CHAINS/1VY7_STRAND_DR.cif,
+	source_range: [ 43, [81] ],
+	target_range: [ 0, [117] ],
+
+	
+
+ranged_super.py returned 
+	paths     : 
+	chain1    : /home/rxz/dev/riboxyzbackend/ribetl/static/1VY5/CHAINS/1VY5_STRAND_BR.cif,
+	chain2    : /home/rxz/dev/riboxyzbackend/ribetl/static/1VY7/CHAINS/1VY7_STRAND_DR.cif,
+	source_range: [ 43, [81] ],
+	target_range: [ 0, [19] ],
+
+	
+
+ranged_super.py returned 
+	paths     : 
+	chain1    : /home/rxz/dev/riboxyzbackend/ribetl/static/1VY5/CHAINS/1VY5_STRAND_BR.cif,
+	chain2    : /home/rxz/dev/riboxyzbackend/ribetl/static/1VY7/CHAINS/1VY7_STRAND_DR.cif,
+	source_range: [ 22, [67] ],
+	target_range: [ 15, [51] ],
+
+	

@@ -1,0 +1,24 @@
+Last called ranged_align.py at 2022-04-26 with args :
+	src_struct       = 1VY5
+	tgt_struct       = 1VY7
+	src_auth_asym_id = BR
+	tgt_auth_asym_id = DR
+	r1start , r1end 	 = 43-81
+	r2start , r2end 	 = 0-117
+	 00:39:14.071312.log
+Last called ranged_align.py at 2022-04-26 with args :
+	src_struct       = 1VY5
+	tgt_struct       = 1VY7
+	src_auth_asym_id = BR
+	tgt_auth_asym_id = DR
+	r1start , r1end 	 = 43-81
+	r2start , r2end 	 = 0-19
+	 00:39:17.632887.log
+Last called ranged_align.py at 2022-04-26 with args :
+	src_struct       = 1VY5
+	tgt_struct       = 1VY7
+	src_auth_asym_id = BR
+	tgt_auth_asym_id = DR
+	r1start , r1end 	 = 22-67
+	r2start , r2end 	 = 15-51
+	 00:39:29.391184.log

@@ -5,6 +5,7 @@ from .views import *
 urlpatterns = [
       path('get_struct/'              , get_struct              ),
       path('get_full_struct/'         , get_full_structure      ),
+      path('get_RibosomeStructure/'         , get_RibosomeStructure      ),
     # path('get_homologs/'            , get_homologs            ) ,
       path('cypher/'                  , custom_cypher           ) ,
       path('anything/'                , anything                ) ,
