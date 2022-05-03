@@ -81,7 +81,8 @@ def layout(n):
             count += 1
 
     if tid in taxons:
-        taxnamenode   = TextFace(f"{taxid_to_linnaean(tid)}",fsize=22,penwidth=2,fstyle='italic',fgcolor='black')
+        taxnamenode   = TextFace(f"{taxid_to_linnaean(tid)}",fsize=22,penwidth=2,fstyle='italic',fgcolor='black', 
+                                 bold=True if taxid_to_linnaean(tid) in ['E. coli', 'T. thermophilus', 'H. sapiens', 'S. cerevisiae'] else False)
         textface_node = TextFace(f"{count}", fsize=22, fgcolor='black')
 
         # taxnamenode.margin_top    = 20
@@ -168,4 +169,4 @@ for n in t.traverse():
 
 
 # t.show(tree_style=ts)
-t.render("taxtree_lite.svg", tree_style=ts)
+t.render("taxtree_lite_hl.svg", tree_style=ts)
