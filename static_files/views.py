@@ -25,10 +25,10 @@ from ribetl.ciftools.bsite_mixed import BindingSite
 from os.path import join as opj
 
 
-uri         =  os.environ.get( 'NEO4J_URI' )
-authglobal  =  (os.environ.get( 'NEO4J_USER' ),os.environ.get( 'NEO4J_PASSWORD' ))
-current_db  =  os.environ.get( 'NEO4J_CURRENTDB' )
-STATIC_ROOT =os.environ.get("STATIC_ROOT")
+uri         = os.environ.get( 'NEO4J_URI' )
+authglobal  = (os.environ.get( 'NEO4J_USER' ),os.environ.get( 'NEO4J_PASSWORD' ))
+current_db  = os.environ.get( 'NEO4J_CURRENTDB' )
+STATIC_ROOT = os.environ.get("STATIC_ROOT")
 #-⋯⋯⋅⋱⋰⋆⋅⋅⋄⋅⋅∶⋅⋅⋄▫▪▭┈┅✕⋅⋅⋄⋅⋅✕∶⋅⋅⋄⋱⋰⋯⋯⋯⋯⋅⋱⋰⋆⋅⋅⋄⋅⋅∶⋅⋅⋄▫▪▭┈┅✕⋅⋅⋄⋅⋅✕∶⋅⋅⋄⋱⋰⋯⋯⋯⋅⋱⋰⋆⋅⋅⋄⋅⋅∶⋅⋅⋄▫▪▭┈┅✕⋅⋅⋄⋅⋅✕∶⋅⋅⋄⋱⋰⋯⋯⋯
 
 def _neoget(CYPHER_STRING:str):

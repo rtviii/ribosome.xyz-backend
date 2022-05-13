@@ -98,7 +98,6 @@ def ranged_super_class(
 	print("Aligning:\n{}\nvs\n{}".format(src_chain_path, tgt_chain_path))
 	return (src_chain_path, source_range, tgt_chain_path, target_range )
 
-
 def ranged_super(
 	src_struct      : str,
 	src_auth_asym_id: str,

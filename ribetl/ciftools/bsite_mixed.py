@@ -45,7 +45,8 @@ AMINO_ACIDS = {
     'TYR': 0,
     'VAL': 0,
     'SEC': 0,
-    'PYL': 0}
+    'PYL': 0
+    }
 
 NUCLEOTIDES = ['A', 'T', 'C', 'G', 'U']
 
@@ -186,8 +187,6 @@ def get_poly_nbrs(
 
     """KDTree search the neighbors of a given list of residues(which constitue a ligand)
     and return unique having tagged them with a ban identifier proteins within 5 angstrom of these residues. """
-
-
 
     pdbid         = struct.get_id().upper()
     ns            = NeighborSearch(list(struct.get_atoms()))

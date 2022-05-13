@@ -35,6 +35,7 @@ class SeqMatch:
 		"""A container for origin and target sequences when matching the resiudes of a ligand binding site
 		to another protein's sequence through BioSeq's Align
 		 """
+
 		#* Computed indices of the ligand-facing in the source sequence.
 		self.src     :str      = sourceseq
 		self.src_ids:List[int] = source_residues
@@ -110,10 +111,9 @@ class SeqMatch:
 		return _
 
 
-
 #! Include sequence into the ligand profiles
 #! exclude the ligand itself from the transposition
-#* match matchable chains from target to prediction
+#! match matchable chains from target to prediction
 
 #? Protocol: 
 #? for every chain in origin, grab same nomenclature in tgt
@@ -160,12 +160,13 @@ def init_transpose_ligand(
 	target_profile:dict,
 	binding_site : BindingSite
 	)->dict            : 
+
 	origin_chains = {
 	}
 	target_chains = {
 	}
 
-	#* For every chain in a ligand file, if it has nomenclature, append its residues, strand and sequence
+	#? For every chain in a ligand file, if it has nomenclature, append its residues, strand and sequence
 	for chain in binding_site.data:
 
 		if len(binding_site[chain]['nomenclature'] ) <1:
@@ -188,7 +189,7 @@ def init_transpose_ligand(
 
 	for nom in origin_chains:
 
-		#* goal is to look up the chain in the target struct __by nomenclature__
+		# goal is to look up the chain in the target struct __by nomenclature__
 		matches =  [*filter(lambda tgt_poly: nom in tgt_poly['nomenclature'], target_polymers)]
 		if len( matches )  < 1:
 			continue
@@ -226,14 +227,14 @@ def init_transpose_ligand(
 
 		prediction[name] = {
 			"source":{
-				"src"    : src,
-				"src_ids": src_ids,
-				"auth_asym_id" : origin_chains[name]['auth_asym_id']
+				"src"         : src,
+				"src_ids"     : src_ids,
+				"auth_asym_id": origin_chains[name]['auth_asym_id']
 			},
 			"target":{
-				"tgt"    : tgt,
-				"tgt_ids": tgt_ids,
-				'auth_asym_id' : target_chains[name]['auth_asym_id']
+				"tgt"         : tgt,
+				"tgt_ids"     : tgt_ids,
+				'auth_asym_id': target_chains[name]['auth_asym_id']
 			},
 			"alignment" :{
 				"aln_ids": aln_ids,

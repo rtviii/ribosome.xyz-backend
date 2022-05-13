@@ -78,6 +78,52 @@ def get_all_ligandlike(request):
 
 #? ---------------------------STRUCTS
 
+# -+=-=-=-=-=-=-=-=-
+
+@api_view(['GET'])
+def get_RibosomeStructure(request): #<------------- This ought to return an object that conforms to a Ribosome Structure type defined in redux/types
+    params = dict(request.GET)
+    pdbid  = str.upper(params['pdbid'][0])
+    cypher = """
+    match (n:RibosomeStructure{{rcsb_id:"{pdbid}"}})
+    optional match (rr:RNA)-[]-(n)
+    with n, collect(rr) as rrna
+    optional match (rp:Protein)-[]-(n)
+    with n, rrna,  collect(rp) as rps
+    optional match (l:Ligand)-[]-(n)
+    with n, rrna, rps, collect(l) as ligs
+    return {{
+        
+                expMethod             : n.expMethod             ,
+                resolution            : n.resolution            ,
+
+                pdbx_keywords         : n.pdbx_keywords         ,
+                pdbx_keywords_text    : n.pdbx_keywords_text    ,
+
+                rcsb_external_ref_id  : n.rcsb_external_ref_id  ,
+                rcsb_external_ref_type: n.rcsb_external_ref_type,
+                rcsb_external_ref_link: n.rcsb_external_ref_link,
+
+                citation_year         : n.citation_year         ,
+                citation_rcsb_authors : n.citation_rcsb_authors ,
+                citation_title        : n.citation_title        ,
+                citation_pdbx_doi     : n.citation_pdbx_doi     ,
+
+                src_organism_ids      : n.src_organism_ids      ,
+                src_organism_names    : n.src_organism_names    ,
+
+                host_organism_ids     : n.host_organism_ids     ,
+                host_organism_names   : n.host_organism_names   ,
+
+                proteins : rps,
+                rnas     : rrna,
+                ligands  : ligs}}
+        
+        
+
+    """.format_map({"pdbid":pdbid})
+    return Response(_neoget(cypher))
+
 @api_view(['GET']) 
 def get_ligands_by_struct(request):
     CYPHER_STRING="""match (n:RibosomeStructure)-[]-(l:Ligand)
@@ -97,13 +143,10 @@ def get_struct(request):
     with n, rrna,  collect(rp) as rps
     optional match (l:Ligand)-[]-(n)
     with n, rrna, rps, collect(l) as ligs
-    return {{structure: n, ligands: ligs,rnas: rrna, rps: rps}}
+    return {{structure: n, ligands: ligs,rnas: rrna, proteins: rps}}
     """.format_map({"pdbid":pdbid})
-
-
-
-
     return Response(_neoget(cypher))
+
 
 @api_view(['GET', 'POST'])
 def match_structs(request):
@@ -120,9 +163,35 @@ def match_structs(request):
     return n.rcsb_id""".format_map({"targets":targets})
     return Response(_neoget(cypher))
 
+    
+@api_view(['GET'])
+def get_full_structure(request):
+    params = dict(request.GET)
+    pdbid  = str.upper(params['pdbid'][0])
+    CYPHER_STRING="""
+    match (rib:RibosomeStructure {{rcsb_id:'{}'}}) 
+        unwind rib as rb
+        optional match (l:Ligand)-[]-(rb)
+        with collect(l.chemicalId) as ligs, rb
+        optional match (rps:Protein)-[]-(rb)
+        with ligs, rb, collect({{auth_asym_id:rps.auth_asym_id, nomenclature:rps.nomenclature, entity_poly_seq_one_letter_code: rps.entity_poly_seq_one_letter_code}}) as rps
+        optional match (rnas:RNA)-[]-(rb)
+        with ligs, rb, rps, collect({{auth_asym_id: rnas.auth_asym_id, nomenclature: rnas.nomenclature, entity_poly_seq_one_letter_code:rnas.entity_poly_seq_one_letter_code}}) as struct_rnas
+        return {{
+            struct : rb         ,
+            ligands: ligs       ,
+            rps    : rps        ,
+            rnas   : struct_rnas
+            }}
+        """.format(pdbid)
+
+    qres = _neoget(CYPHER_STRING)
+    return Response(qres)
+    
+    
+
 @api_view(['GET'])
 def get_all_structs(request):
-    
     CYPHER_STRING="""
     match (ribs:RibosomeStructure) 
         unwind ribs as rb
@@ -244,7 +313,6 @@ def nomclass_visualize(request):
     
     return Response(_neoget(CYPHER_STRING))
 
-
 @api_view(['GET'])
 def proteins_number(request):
     CYPHER_STRING="""match (n:Protein) return count(n);"""
@@ -299,7 +367,6 @@ def get_rna_class(request):
 def anything(request):
     return Response("This a testing endpoint")
 
-
 @api_view(['GET'])
 def nomenclature(request):
     params        = dict(request.GET)
@@ -331,10 +398,6 @@ def nomenclature(request):
 
         return Response(all_maps)
 
-
-
-    
-@api_view(['GET','POST'])
 def tax_ids(request):
     CYPHER_STRING="""
     match (r:RibosomeStructure) 
@@ -358,8 +421,6 @@ def tax_ids(request):
             d[_['organism']].append(_['struct'])
     return Response(d)
 
-
-
 @api_view(['GET','POST'])
 def custom_cypher(request):
     params        = dict(request.GET)
@@ -368,3 +429,12 @@ def custom_cypher(request):
     k = _neoget(CYPHER_STRING)
     print("->>>>>>>>>>>>>",k)
     return Response()
+
+#? ------------------------------ General 
+
+# @api_view(['GET', 'POST'])
+# def cif_chain(request):
+#     params   = dict(request.GET)
+#     structid = str(params['structid'])[0]
+#     chainid  = str(params['chainid'])[0]
+
