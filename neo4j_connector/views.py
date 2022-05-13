@@ -78,8 +78,6 @@ def get_all_ligandlike(request):
 
 #? ---------------------------STRUCTS
 
-
-
 # -+=-=-=-=-=-=-=-=-
 
 @api_view(['GET'])
@@ -148,10 +146,6 @@ def get_struct(request):
     return {{structure: n, ligands: ligs,rnas: rrna, proteins: rps}}
     """.format_map({"pdbid":pdbid})
     return Response(_neoget(cypher))
-
-
-
-
 
 
 @api_view(['GET', 'POST'])
