@@ -9,12 +9,10 @@ from datetime import date,datetime
 
 
 os.system(f"""echo \"Last called align.py at {datetime.now()} with args :
-
 handle1    ={sys.argv[1]}
 handle2    ={sys.argv[2]}
 pymol_name1={sys.argv[3]}
 pymol_name2={sys.argv[4]}
-
 \" > alignment.log""")
 
 handle1    =sys.argv[1]
