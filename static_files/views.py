@@ -1,19 +1,11 @@
-from cgi import parse_multipart
-from ctypes import Union
-from genericpath import isfile
 from multiprocessing import ProcessError
 from os import error
 from pathlib import Path
-from typing import Union
-import sys
-from django.template import response
 from dotenv import load_dotenv
-from io import StringIO, BytesIO
 from neo4j import GraphDatabase
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 import os
-import tempfile
 import json
 from django.http import FileResponse, HttpResponse
 from wsgiref.util import FileWrapper
@@ -22,7 +14,8 @@ from neo4j import  Result, GraphDatabase
 import subprocess
 from ribetl.ciftools import transpose_ligand
 from ribetl.ciftools.bsite_mixed import BindingSite
-from os.path import join as opj
+
+from rxz_backend.settings import PROJECT_PATH
 
 
 uri         = os.environ.get( 'NEO4J_URI' )
@@ -53,24 +46,15 @@ def ranged_align(request):
     r2start = int(params['r2start'][0])
     r2end   = int(params['r2end'][0])
 
-
-
     struct1       = params['struct1'][0].upper()
     struct2       = params['struct2'][0].upper()
     auth_asym_id1 = params['auth_asym_id1'][0]
     auth_asym_id2 = params['auth_asym_id2'][0]
 
-    # if 0 not in [r1start,r1end]:
-    ranged_alignment_script = os.environ.get('RANGED_ALIGNMENT_SCRIPT')
-    print("Ranged align script:", ranged_alignment_script)
-    os.system("python3 /home/rxz/dev/riboxyzbackend/static_files/ranged_align.py {} {} {} {} {}-{} {}-{}"\
-                .format(struct1,struct2, auth_asym_id1, auth_asym_id2, r1start,r1end, r2start,r2end))
-    # else:
-    #     print("Not addressing the 0 case.")
+    RANGED_ALIGNMENT_SCRIPT= os.path.join(str( PROJECT_PATH ), 'static_files','ranged_align.py')
+    os.system("python3 {} {} {} {} {} {}-{} {}-{}".format(RANGED_ALIGNMENT_SCRIPT,struct1,struct2, auth_asym_id1, auth_asym_id2, r1start,r1end, r2start,r2end))
 
-    alignedfile=os.environ["TEMP_CHAIN"]
-    print("Produced alignment file:", alignedfile)
-
+    alignedfile = os.environ["TEMP_CHAIN"]
     try:
         doc = open(alignedfile, 'rb')
     except: 
