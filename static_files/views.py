@@ -53,16 +53,20 @@ def ranged_align(request):
     r2start = int(params['r2start'][0])
     r2end   = int(params['r2end'][0])
 
+
+
     struct1       = params['struct1'][0].upper()
     struct2       = params['struct2'][0].upper()
     auth_asym_id1 = params['auth_asym_id1'][0]
     auth_asym_id2 = params['auth_asym_id2'][0]
 
-    if 0 not in [r1start,r1end]:
-        ranged_alignment_script = os.environ.get('RANGED_ALIGNMENT_SCRIPT')
-        print("Ranged align script:", ranged_alignment_script)
-        os.system("python3 /home/rxz/dev/riboxyzbackend/static_files/ranged_align.py {} {} {} {} {}-{} {}-{}"\
-                  .format(struct1,struct2, auth_asym_id1, auth_asym_id2, r1start,r1end, r2start,r2end))
+    # if 0 not in [r1start,r1end]:
+    ranged_alignment_script = os.environ.get('RANGED_ALIGNMENT_SCRIPT')
+    print("Ranged align script:", ranged_alignment_script)
+    os.system("python3 /home/rxz/dev/riboxyzbackend/static_files/ranged_align.py {} {} {} {} {}-{} {}-{}"\
+                .format(struct1,struct2, auth_asym_id1, auth_asym_id2, r1start,r1end, r2start,r2end))
+    # else:
+    #     print("Not addressing the 0 case.")
 
     alignedfile=os.environ["TEMP_CHAIN"]
     print("Produced alignment file:", alignedfile)
@@ -74,8 +78,7 @@ def ranged_align(request):
         return Response(-1)
 
     response = HttpResponse(FileWrapper(doc), content_type='chemical/x-mmcif')
-    response['Content-Disposition'] = 'attachment; filename="{}-{}_{}-{}.cif"'.format(
-    struct1,auth_asym_id1,struct2,auth_asym_id2)
+    response['Content-Disposition'] = 'attachment; filename="{}-{}_{}-{}.cif"'.format(struct1,auth_asym_id1,struct2,auth_asym_id2)
 
     return response
 

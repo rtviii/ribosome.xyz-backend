@@ -1,0 +1,216 @@
+Last called ranged_align.py at 2022-06-17 with args :
+	src_struct       = 1VY7
+	tgt_struct       = 3J7P
+	src_auth_asym_id = BF
+	tgt_auth_asym_id = C
+	r1start , r1end 	 = 59-170
+	r2start , r2end 	 = 73-278
+	 16:55:42.580677.log
+Last called ranged_align.py at 2022-06-17 with args :
+	src_struct       = 1VY7
+	tgt_struct       = 3J7P
+	src_auth_asym_id = BF
+	tgt_auth_asym_id = C
+	r1start , r1end 	 = 59-170
+	r2start , r2end 	 = 73-367
+	 16:55:47.265089.log
+Last called ranged_align.py at 2022-06-17 with args :
+	src_struct       = 1VY7
+	tgt_struct       = 3J7P
+	src_auth_asym_id = BF
+	tgt_auth_asym_id = C
+	r1start , r1end 	 = 59-210
+	r2start , r2end 	 = 73-367
+	 16:55:51.372475.log
+Last called ranged_align.py at 2022-06-17 with args :
+	src_struct       = 1VY7
+	tgt_struct       = 3J7P
+	src_auth_asym_id = BF
+	tgt_auth_asym_id = C
+	r1start , r1end 	 = 59-179
+	r2start , r2end 	 = 73-367
+	 16:55:56.774271.log
+Last called ranged_align.py at 2022-06-17 with args :
+	src_struct       = 1VY7
+	tgt_struct       = 3J7P
+	src_auth_asym_id = BF
+	tgt_auth_asym_id = C
+	r1start , r1end 	 = 59-210
+	r2start , r2end 	 = 73-367
+	 16:55:59.993782.log
+Last called ranged_align.py at 2022-06-17 with args :
+	src_struct       = 1VY7
+	tgt_struct       = 3J7P
+	src_auth_asym_id = BF
+	tgt_auth_asym_id = C
+	r1start , r1end 	 = 46-210
+	r2start , r2end 	 = 73-367
+	 16:56:02.979938.log
+Last called ranged_align.py at 2022-06-17 with args :
+	src_struct       = 1VY7
+	tgt_struct       = 3J7P
+	src_auth_asym_id = BF
+	tgt_auth_asym_id = C
+	r1start , r1end 	 = 17-210
+	r2start , r2end 	 = 73-367
+	 16:56:06.282464.log
+Last called ranged_align.py at 2022-06-17 with args :
+	src_struct       = 1VY7
+	tgt_struct       = 3J7P
+	src_auth_asym_id = BF
+	tgt_auth_asym_id = C
+	r1start , r1end 	 = 33-210
+	r2start , r2end 	 = 73-367
+	 16:56:10.405416.log
+Last called ranged_align.py at 2022-06-17 with args :
+	src_struct       = 1VY7
+	tgt_struct       = 3J7P
+	src_auth_asym_id = BF
+	tgt_auth_asym_id = C
+	r1start , r1end 	 = 79-210
+	r2start , r2end 	 = 73-367
+	 16:56:13.252975.log
+Last called ranged_align.py at 2022-06-17 with args :
+	src_struct       = 1VY7
+	tgt_struct       = 3J7P
+	src_auth_asym_id = BF
+	tgt_auth_asym_id = C
+	r1start , r1end 	 = 79-142
+	r2start , r2end 	 = 73-367
+	 16:56:17.807636.log
+Last called ranged_align.py at 2022-06-17 with args :
+	src_struct       = 1VY7
+	tgt_struct       = 3J7P
+	src_auth_asym_id = BF
+	tgt_auth_asym_id = C
+	r1start , r1end 	 = 79-115
+	r2start , r2end 	 = 73-367
+	 16:56:21.013496.log
+Last called ranged_align.py at 2022-06-17 with args :
+	src_struct       = 1VY7
+	tgt_struct       = 3J7P
+	src_auth_asym_id = BF
+	tgt_auth_asym_id = C
+	r1start , r1end 	 = 79-115
+	r2start , r2end 	 = 119-367
+	 16:56:42.599495.log
+Last called ranged_align.py at 2022-06-17 with args :
+	src_struct       = 1VY7
+	tgt_struct       = 3J7P
+	src_auth_asym_id = BF
+	tgt_auth_asym_id = C
+	r1start , r1end 	 = 79-115
+	r2start , r2end 	 = 61-367
+	 16:56:47.560454.log
+Last called ranged_align.py at 2022-06-17 with args :
+	src_struct       = 1VY7
+	tgt_struct       = 3J7P
+	src_auth_asym_id = BF
+	tgt_auth_asym_id = C
+	r1start , r1end 	 = 79-115
+	r2start , r2end 	 = 38-367
+	 16:56:50.652965.log
+Last called ranged_align.py at 2022-06-17 with args :
+	src_struct       = 1VY7
+	tgt_struct       = 3J7P
+	src_auth_asym_id = BF
+	tgt_auth_asym_id = C
+	r1start , r1end 	 = 79-115
+	r2start , r2end 	 = 38-228
+	 16:56:53.099891.log
+Last called ranged_align.py at 2022-06-17 with args :
+	src_struct       = 1VY7
+	tgt_struct       = 3J7P
+	src_auth_asym_id = BF
+	tgt_auth_asym_id = C
+	r1start , r1end 	 = 79-115
+	r2start , r2end 	 = 0-367
+	 16:56:56.537137.log
+Last called ranged_align.py at 2022-06-17 with args :
+	src_struct       = 1VY7
+	tgt_struct       = 3J7P
+	src_auth_asym_id = BF
+	tgt_auth_asym_id = C
+	r1start , r1end 	 = 37-210
+	r2start , r2end 	 = 0-367
+	 16:57:05.411432.log
+Last called ranged_align.py at 2022-06-17 with args :
+	src_struct       = 1VY7
+	tgt_struct       = 3J7P
+	src_auth_asym_id = BF
+	tgt_auth_asym_id = C
+	r1start , r1end 	 = 0-210
+	r2start , r2end 	 = 0-367
+	 16:58:29.132531.log
+Last called ranged_align.py at 2022-06-17 with args :
+	src_struct       = 1VY7
+	tgt_struct       = 3J7P
+	src_auth_asym_id = BF
+	tgt_auth_asym_id = C
+	r1start , r1end 	 = 153-210
+	r2start , r2end 	 = 0-367
+	 16:58:33.117820.log
+Last called ranged_align.py at 2022-06-17 with args :
+	src_struct       = 1VY7
+	tgt_struct       = 3J7P
+	src_auth_asym_id = BF
+	tgt_auth_asym_id = C
+	r1start , r1end 	 = 0-210
+	r2start , r2end 	 = 0-367
+	 16:58:36.851994.log
+Last called ranged_align.py at 2022-06-17 with args :
+	src_struct       = 1VY7
+	tgt_struct       = 3J7P
+	src_auth_asym_id = BF
+	tgt_auth_asym_id = C
+	r1start , r1end 	 = 0-210
+	r2start , r2end 	 = 0-80
+	 16:58:39.769289.log
+Last called ranged_align.py at 2022-06-17 with args :
+	src_struct       = 3J9Y
+	tgt_struct       = 6V3D
+	src_auth_asym_id = P
+	tgt_auth_asym_id = O
+	r1start , r1end 	 = 0-115
+	r2start , r2end 	 = 0-122
+	 17:00:26.131127.log
+Last called ranged_align.py at 2022-06-17 with args :
+	src_struct       = 3J9Y
+	tgt_struct       = 6V3D
+	src_auth_asym_id = P
+	tgt_auth_asym_id = O
+	r1start , r1end 	 = 15-54
+	r2start , r2end 	 = 0-122
+	 17:00:31.454850.log
+Last called ranged_align.py at 2022-06-17 with args :
+	src_struct       = 3J9Y
+	tgt_struct       = 6V3D
+	src_auth_asym_id = P
+	tgt_auth_asym_id = O
+	r1start , r1end 	 = 15-54
+	r2start , r2end 	 = 72-122
+	 17:00:34.307444.log
+Last called ranged_align.py at 2022-06-17 with args :
+	src_struct       = 3J9Y
+	tgt_struct       = 6V3D
+	src_auth_asym_id = P
+	tgt_auth_asym_id = O
+	r1start , r1end 	 = 0-115
+	r2start , r2end 	 = 0-122
+	 17:00:39.331366.log
+Last called ranged_align.py at 2022-06-17 with args :
+	src_struct       = 3J9M
+	tgt_struct       = 4LEL
+	src_auth_asym_id = s
+	tgt_auth_asym_id = Y9
+	r1start , r1end 	 = 0-439
+	r2start , r2end 	 = 0-37
+	 17:11:38.960186.log
+Last called ranged_align.py at 2022-06-17 with args :
+	src_struct       = 3J9M
+	tgt_struct       = 4LEL
+	src_auth_asym_id = I
+	tgt_auth_asym_id = YP
+	r1start , r1end 	 = 0-261
+	r2start , r2end 	 = 0-150
+	 17:11:49.762439.log
