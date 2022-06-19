@@ -40,6 +40,7 @@ def get_all_ligands(request):
         not l.chemicalName  contains "ION" 
         and not l.chemicalName contains "CLUSTER"
         and not l.chemicalName contains "["
+        and r.expMethod <> "X-RAY DIFFRACTION"
         return {{  
         polymer    : false,
         description: l.chemicalName,
@@ -61,6 +62,7 @@ def get_all_ligands(request):
 def get_all_ligandlike(request):
     CYPHER_STRING = """
         match (l {{ligand_like:true}})-[]-(r:RibosomeStructure) 
+        where r.expMethod <> "X-RAY DIFFRACTION"
         return {{
             polymer     : true,
             description : l.rcsb_pdbx_description,
