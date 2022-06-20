@@ -9,6 +9,8 @@ import itertools
 import dotenv
 import numpy as np
 from Bio.PDB import MMCIF2Dict, MMCIFIO
+
+from rxz_backend.settings import DOTENV_PATH
 flatten = itertools.chain.from_iterable
 import ribetl.ciftools.bsite_mixed as bsite
 import gemmi
@@ -26,7 +28,7 @@ def make_nom_dict(profile):
 
 if __name__ == "__main__":
 
-	dotenv.load_dotenv(dotenv_path='/home/rxz/dev/riboxyzbackend/rxz_backend/.env')
+	dotenv.load_dotenv(dotenv_path=DOTENV_PATH)
 	STATIC_ROOT = os.environ.get("STATIC_ROOT")
 	PDBID       = sys.argv[1].upper()
 	io          = MMCIFIO()

@@ -20,6 +20,8 @@ import itertools
 from asyncio import run
 import itertools
 from dotenv import load_dotenv
+
+from rxz_backend.settings import DOTENV_PATH
 from .bsite_mixed import BindingSite, open_structure
 from .transpose_ligand import  SeqMatch 
 
@@ -167,7 +169,7 @@ def ranged_super(
 
 
 if __name__ =="__main__":
-	load_dotenv(dotenv_path='/home/rxz/dev/riboxyzbackend/rxz_backend/.env')
+	load_dotenv(dotenv_path=DOTENV_PATH)
 	STATIC_ROOT = os.environ.get('STATIC_ROOT')
 
 	prs = argparse.ArgumentParser()
@@ -190,7 +192,7 @@ if __name__ =="__main__":
 	print(ranged_super(src_struct,chain_source,tgt_struct,chain_target,(rstart,rend)))
 
 if __name__ =="__main__":
-	load_dotenv(dotenv_path='/home/rxz/dev/riboxyzbackend/rxz_backend/.env')
+	load_dotenv(dotenv_path=DOTENV_PATH)
 	STATIC_ROOT = os.environ.get('STATIC_ROOT')
 
 	prs = argparse.ArgumentParser()
