@@ -3,28 +3,6 @@ import os
 import sys
 from pymol import cmd
 
-
-
-# super.ranged_super aligns chains via biopython's seqalign and returns the correct individual ranges
-
-# os.system(f"""echo \"Last called ranged_align.py at {str( datetime.datetime.now() ).split(" ")[0]} with args :
-# 	src_struct       = {sys.argv[1].upper()}
-# 	tgt_struct       = {sys.argv[2].upper()}
-# 	src_auth_asym_id = {sys.argv[3]}
-# 	tgt_auth_asym_id = {sys.argv[4]}
-# 	r1start , r1end 	 = {sys.argv[5]}
-# 	r2start , r2end 	 = {sys.argv[6]}
-# 	\" >> alignment{datetime.datetime.now()}.log""")
-
-# os.system(f"""echo \"
-# ranged_super.py returned 
-# 	paths     : 
-# 	chain1    : {c1},
-# 	chain2    : {c2},
-# 	source_range: [ {r1start}, {r1end} ],
-# 	target_range: [ {r2start}, {r2end} ],
-# 	\" >> alignment{str(datetime.datetime.now()).split(" ")[0]}.log""")
-
 # parse args with pain
 src_struct = sys.argv[1].upper()
 tgt_struct = sys.argv[2].upper()

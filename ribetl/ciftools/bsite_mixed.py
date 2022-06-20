@@ -18,7 +18,10 @@ from dataclasses import dataclass, field
 from asyncio import run
 import itertools
 import numpy as np
+from rxz_backend.settings import DOTENV_PATH, PROJECT_PATH
+
 flatten = itertools.chain.from_iterable
+
 
 def get_dict(path:str,)->dict:
 	return MMCIF2Dict.MMCIF2Dict(path)
@@ -291,7 +294,7 @@ def getLigandResIds(ligchemid: str, struct: Structure) -> List[Residue]:
 
 if __name__ == "__main__":
 
-    load_dotenv(dotenv_path='/home/rxz/dev/riboxyzbackend/rxz_backend/.env')
+    load_dotenv(dotenv_path=DOTENV_PATH)
     STATIC_ROOT = os.environ.get('STATIC_ROOT')
     def root_self(rootname: str = ''):
         """Returns the rootpath for the project if it's unique in the current folder tree."""

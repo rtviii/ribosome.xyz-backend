@@ -5,9 +5,10 @@ import dotenv
 from gemmi import cif
 import gemmi
 import ribetl.ciftools.bsite_mixed as bsite
+from rxz_backend.settings import DOTENV_PATH
 
 PDBID       = sys.argv[1].upper()
-dotenv.load_dotenv(dotenv_path='/home/rxz/dev/riboxyzbackend/rxz_backend/.env')
+dotenv.load_dotenv(dotenv_path=DOTENV_PATH)
 STATIC_ROOT = os.environ.get('STATIC_ROOT')
 
 

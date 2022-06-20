@@ -1,7 +1,4 @@
-from multiprocessing import ProcessError
 from os import error
-from pathlib import Path
-from dotenv import load_dotenv
 from neo4j import GraphDatabase
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -11,17 +8,16 @@ from django.http import FileResponse, HttpResponse
 from wsgiref.util import FileWrapper
 import zipfile
 from neo4j import  Result, GraphDatabase
-import subprocess
 from ribetl.ciftools import transpose_ligand
 from ribetl.ciftools.bsite_mixed import BindingSite
 
 from rxz_backend.settings import PROJECT_PATH
 
 
-uri         = os.environ.get( 'NEO4J_URI' )
-authglobal  = (os.environ.get( 'NEO4J_USER' ),os.environ.get( 'NEO4J_PASSWORD' ))
-current_db  = os.environ.get( 'NEO4J_CURRENTDB' )
-STATIC_ROOT = os.environ.get("STATIC_ROOT")
+uri         =  os.environ.get( 'NEO4J_URI'                                           )
+authglobal  = (os.environ.get( 'NEO4J_USER'      ),os.environ.get( 'NEO4J_PASSWORD' ))
+current_db  =  os.environ.get( 'NEO4J_CURRENTDB'                                     )
+STATIC_ROOT =  os.environ.get( "STATIC_ROOT"                                         )
 #-⋯⋯⋅⋱⋰⋆⋅⋅⋄⋅⋅∶⋅⋅⋄▫▪▭┈┅✕⋅⋅⋄⋅⋅✕∶⋅⋅⋄⋱⋰⋯⋯⋯⋯⋅⋱⋰⋆⋅⋅⋄⋅⋅∶⋅⋅⋄▫▪▭┈┅✕⋅⋅⋄⋅⋅✕∶⋅⋅⋄⋱⋰⋯⋯⋯⋅⋱⋰⋆⋅⋅⋄⋅⋅∶⋅⋅⋄▫▪▭┈┅✕⋅⋅⋄⋅⋅✕∶⋅⋅⋄⋱⋰⋯⋯⋯
 
 def _neoget(CYPHER_STRING:str):
@@ -63,69 +59,6 @@ def ranged_align(request):
 
     response = HttpResponse(FileWrapper(doc), content_type='chemical/x-mmcif')
     response['Content-Disposition'] = 'attachment; filename="{}-{}_{}-{}.cif"'.format(struct1,auth_asym_id1,struct2,auth_asym_id2)
-
-    return response
-
-@api_view(['GET','POST'])
-def align_3d(request):
-    params = dict(request.GET)
-
-    print("-------------------+------------------")
-    print("GOT PARAMS", params)
-    print("-------------------+------------------")
-
-    struct1       = params['struct1'][0].upper()
-    struct2       = params['struct2'][0].upper()
-
-    auth_asym_id1 = params['auth_asym_id1'][0]
-    auth_asym_id2 = params['auth_asym_id2'][0]
-
-
-
-    name1   = "{}_STRAND_{}.cif".format(struct1,auth_asym_id1)
-    name2   = "{}_STRAND_{}.cif".format(struct2,auth_asym_id2)
-    handle1   = Path(os.path.join(os.environ.get("STATIC_ROOT"), struct1,"CHAINS", name1))
-    handle2   = Path(os.path.join(os.environ.get("STATIC_ROOT"), struct2,"CHAINS", name2))
-
-    handle1 = Path(os.path.join(os.environ.get("STATIC_ROOT"), struct1,"CHAINS", name1))
-    handle2 = Path(os.path.join(os.environ.get("STATIC_ROOT"), struct2,"CHAINS", name2))
-
-    if None in [handle1,handle2]:
-        print("Failed to find handles:", handle1, handle2)
-        return Response(-1)
-
-    print("Found handles:", handle1, handle2)
-    for x in [handle1,handle2]:
-        if  not x.is_file():
-            raise FileNotFoundError(f"File {x} is not found in {STATIC_ROOT}")
-
-    protein_alignment_script = os.environ.get('PROTEIN_ALIGNMENT_SCRIPT')
-    try:
-        subprocess.call([
-            protein_alignment_script,
-            handle1,
-            handle2,
-            struct1+"_"+auth_asym_id1,
-            struct2+"_"+auth_asym_id2
-         ])
-
-    except:
-        raise ProcessError
-
-    # os.system(f'{protein_alignment_script} {handle1} {handle2} {struct1+"_"+struct2} {struct2+"_"+strand2}')
-
-    alignedfile=os.environ["TEMP_CHAIN"]
-    print("Produced alignment file:", alignedfile)
-
-    try:
-        doc = open(alignedfile, 'rb')
-    except: 
-        print(f"Could not find {alignedfile}. Exited")
-        return Response(-1)
-
-    response = HttpResponse(FileWrapper(doc), content_type='chemical/x-mmcif')
-    response['Content-Disposition'] = 'attachment; filename="{}-{}_{}-{}.cif"'.format(
-    struct1,auth_asym_id1,struct2,auth_asym_id2)
 
     return response
 

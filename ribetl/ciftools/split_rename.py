@@ -9,12 +9,14 @@ import itertools
 import dotenv
 import numpy as np
 from Bio.PDB import MMCIF2Dict, MMCIFIO
+
+from rxz_backend.settings import DOTENV_PATH
 flatten = itertools.chain.from_iterable
 import ribetl.ciftools.bsite_mixed as bsite
 import gemmi 
 n1      = np.array
 
-dotenv.load_dotenv(dotenv_path='/home/rxz/dev/riboxyzbackend/rxz_backend/.env')
+dotenv.load_dotenv(dotenv_path=DOTENV_PATH)
 STATIC_ROOT = os.environ.get('STATIC_ROOT')
 
 def get_dict(path:str,)->dict:
