@@ -190,26 +190,3 @@ if __name__ =="__main__":
 	rstart    ,rend = [* map(int,args.residue_range        .split("-")) ]
 
 	print(ranged_super(src_struct,chain_source,tgt_struct,chain_target,(rstart,rend)))
-
-if __name__ =="__main__":
-	load_dotenv(dotenv_path=DOTENV_PATH)
-	STATIC_ROOT = os.environ.get('STATIC_ROOT')
-
-	prs = argparse.ArgumentParser()
-
-
-	prs.add_argument('-s' , '--source_struct' , type=str, required=True)
-	prs.add_argument('-t' , '--target_struct' , type=str, required=True)
-	prs.add_argument('-cs', '--chain_source'  , type=str, required=True)
-	prs.add_argument('-ct', '--chain_target'  , type=str, required=True)
-	prs.add_argument('-r' , '--residue_range' , type=str, required=True)
-
-	args = prs.parse_args()
-
-	src_struct      =            args.source_struct.upper()
-	tgt_struct      =            args.target_struct.upper()
-	chain_source      =            args.chain_source
-	chain_target      =            args.chain_target
-	rstart    ,rend = [* map(int,args.residue_range        .split("-")) ]
-
-	print(ranged_super(src_struct,chain_source,tgt_struct,chain_target,(rstart,rend)))
