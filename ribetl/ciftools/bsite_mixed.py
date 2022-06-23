@@ -17,8 +17,6 @@ import itertools
 from dataclasses import dataclass, field
 from asyncio import run
 import itertools
-import numpy as np
-from rxz_backend.settings import DOTENV_PATH, PROJECT_PATH
 
 flatten = itertools.chain.from_iterable
 
@@ -294,22 +292,23 @@ def getLigandResIds(ligchemid: str, struct: Structure) -> List[Residue]:
 
 if __name__ == "__main__":
 
-    load_dotenv(dotenv_path=DOTENV_PATH)
+    load_dotenv(dotenv_path='/home/rxz/dev/riboxyzbackend/rxz_backend/.env')
     STATIC_ROOT = os.environ.get('STATIC_ROOT')
-    def root_self(rootname: str = ''):
-        """Returns the rootpath for the project if it's unique in the current folder tree."""
-        root = os.path.abspath(__file__)[:os.path.abspath(
-            __file__).find(rootname)+len(rootname)]
-        sys.path.append(root)
-    root_self('ribetl')
+
+    # def root_self(rootname: str = ''):
+    #     """Returns the rootpath for the project if it's unique in the current folder tree."""
+    #     root = os.path.abspath(__file__)[:os.path.abspath(
+    #         __file__).find(rootname)+len(rootname)]
+    #     sys.path.append(root)
+    # root_self('ribetl')
 
     parser = argparse.ArgumentParser()
     parser .add_argument('-s', '--structure', type=str, required=True)
     args  = parser.parse_args()
     PDBID = args.structure.upper()
 
-    _structure_cif_handle :Structure = open_structure(PDBID,'cif')
-    struct_profile_handle:dict      = open_structure(PDBID,'json')
+    _structure_cif_handle :Structure = open_structure(PDBID,'cif')  # type: ignore
+    struct_profile_handle:dict       = open_structure(PDBID,'json')  # type: ignore
 
     liglike_polys = get_liglike_polymers(struct_profile_handle)
     ligands       = get_lig_ids(PDBID, struct_profile_handle)
