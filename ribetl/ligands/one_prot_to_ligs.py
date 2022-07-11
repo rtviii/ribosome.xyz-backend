@@ -135,11 +135,10 @@ conss ={
 
 
 consensus_sequence = conss[nomid]
-substrate = np.zeros(shape=(candidates_len,len(consensus_sequence)))
-i         = 0
+substrate          = np.zeros(shape=(candidates_len,len(consensus_sequence)))
+i                  = 0
 
 residue_hits_all = [*sorted(residue_hits_all, key=lambda x: x[0])]
-
 fig, ax = plt.subplots(figsize=(24,10))
 yheight = 4
 # ax.text(-15, 4, 'unicode: Institut für Festkörperphysik', fontsize='4', color='blue')

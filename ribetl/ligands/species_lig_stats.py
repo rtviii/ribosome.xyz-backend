@@ -207,9 +207,9 @@ def profile_ligandlikes_by_species(profile_path: str, sought_spec: int) -> List[
 
 
 category_counts = {
-    'mRNA': {"All mRNA": 0},
-    'tRNA': {},
-    'Factors': {},
+    'mRNA'       : {"All mRNA": 0},
+    'tRNA'       : {},
+    'Factors'    : {},
     'Antibiotics': {},
 }
 

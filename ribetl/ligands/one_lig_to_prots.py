@@ -43,15 +43,8 @@ for x in glob.glob(STATIC_ROOT + f"/*/LIGAND_{chemid}*.json"):
 		data = json.load(infile)	
 		PAR_bsites.append(BindingSite(data))
 
-
-
-
-
-
 # pprint(PAR_bsites[0].data)
 # pprint(get_noms(PAR_bsites[0].data))
-
-
 
 count ={
 }

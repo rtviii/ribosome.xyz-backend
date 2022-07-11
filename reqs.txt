@@ -1,0 +1,11 @@
+asgiref==3.5.2
+backports.zoneinfo==0.2.1
+biopython==1.79
+Django==4.0.6
+django-cors-headers==3.13.0
+djangorestframework==3.13.1
+neo4j==4.4.5
+numpy==1.23.1
+python-dotenv==0.20.0
+pytz==2022.1
+sqlparse==0.4.2

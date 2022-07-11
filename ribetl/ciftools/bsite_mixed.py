@@ -17,8 +17,8 @@ import itertools
 from dataclasses import dataclass, field
 from asyncio import run
 import itertools
-import numpy as np
-from rxz_backend.settings import DOTENV_PATH, PROJECT_PATH
+
+from numpy import poly
 
 flatten = itertools.chain.from_iterable
 
@@ -147,16 +147,6 @@ def get_polymer_residues(auth_asym_id: str, struct: Structure) -> List[Residue]:
     c: Chain = struct[0][auth_asym_id]
     return [*c.get_residues()]
 
-def parse_polymer_nbhd(poly: PolymerRef, structure: Structure):
-    STATIC_ROOT = os.environ.get('STATIC_ROOT')
-    outfile_json = os.path.join(STATIC_ROOT, poly.parent_rcsb_id.upper(), f'POLYMER_{poly.auth_asym_id}.json')
-    if (os.path.isfile(outfile_json)):
-        print("Exists already: ", outfile_json)
-        return 
-
-    residues: List[Residue] = get_polymer_residues(poly.auth_asym_id, structure)
-    bs: BindingSite = get_poly_nbrs(residues, structure, poly.auth_asym_id)
-    bs.to_json(outfile_json)
 
 def get_liglike_polymers(struct_profile:dict) -> List[PolymerRef]:
     """Given an rcsb id, open the profile for the corresponding structure
@@ -280,12 +270,6 @@ def get_ligand_nbrs(
 
     return BindingSite(nbr_dict)
 
-def parse_and_save_ligand(ligid: str, rcsbid: str, structure: Structure):
-    STATIC_ROOT  = os.environ.get('STATIC_ROOT')
-    outfile_json = os.path.join(STATIC_ROOT, rcsbid.upper(), f'LIGAND_{ligid}.json')
-    residues: List[Residue] = getLigandResIds(ligid, structure)
-    bs      : BindingSite   = get_ligand_nbrs(residues, structure, ligid)
-    bs.to_json(outfile_json)
 
 def getLigandResIds(ligchemid: str, struct: Structure) -> List[Residue]:
     ligandResidues: List[Residue] = list(
@@ -294,30 +278,52 @@ def getLigandResIds(ligchemid: str, struct: Structure) -> List[Residue]:
 
 if __name__ == "__main__":
 
-    load_dotenv(dotenv_path=DOTENV_PATH)
+    load_dotenv(dotenv_path='/home/rxz/dev/riboxyzbackend/rxz_backend/.env')
     STATIC_ROOT = os.environ.get('STATIC_ROOT')
-    def root_self(rootname: str = ''):
-        """Returns the rootpath for the project if it's unique in the current folder tree."""
-        root = os.path.abspath(__file__)[:os.path.abspath(
-            __file__).find(rootname)+len(rootname)]
-        sys.path.append(root)
-    root_self('ribetl')
+
+    # def root_self(rootname: str = ''):
+    #     """Returns the rootpath for the project if it's unique in the current folder tree."""
+    #     root = os.path.abspath(__file__)[:os.path.abspath(
+    #         __file__).find(rootname)+len(rootname)]
+    #     sys.path.append(root)
+    # root_self('ribetl')
 
     parser = argparse.ArgumentParser()
-    parser .add_argument('-s', '--structure', type=str, required=True)
+    parser.add_argument('-s', '--structure', type=str, required=True)
+    parser.add_argument('--save', action='store_true')
     args  = parser.parse_args()
     PDBID = args.structure.upper()
 
-    _structure_cif_handle :Structure = open_structure(PDBID,'cif')
-    struct_profile_handle:dict      = open_structure(PDBID,'json')
+    _structure_cif_handle :Structure = open_structure(PDBID,'cif')  # type: ignore
+    struct_profile_handle:dict       = open_structure(PDBID,'json')  # type: ignore
 
     liglike_polys = get_liglike_polymers(struct_profile_handle)
     ligands       = get_lig_ids(PDBID, struct_profile_handle)
 
+    STATIC_ROOT  = os.environ.get('STATIC_ROOT')
     for polyref in liglike_polys:
-        parse_polymer_nbhd(polyref, _structure_cif_handle)
+        
+        print(f"Polymer {polyref.auth_asym_id}")
+        outfile_json = os.path.join(str( STATIC_ROOT ), polyref.parent_rcsb_id.upper(), f'POLYMER_{polyref.auth_asym_id}.json')
+        if (os.path.isfile(outfile_json)):
+            print("Exists already: ", outfile_json)
+
+        residues: List[Residue] = get_polymer_residues(polyref.auth_asym_id, _structure_cif_handle)
+        bsp: BindingSite = get_poly_nbrs(residues, _structure_cif_handle, polyref.auth_asym_id)
+        if args.save:
+            bsp.to_json(outfile_json)
+
 
     for l in ligands:
-        parse_and_save_ligand(l[0].upper(), PDBID, _structure_cif_handle)
+        print(f"Ligand {l[0]}")
+        outfile_json = os.path.join(str( STATIC_ROOT ), PDBID.upper(), f'LIGAND_{l[0].upper()}.json')
+        if (os.path.isfile(outfile_json)):
+            print("Exists already: ", outfile_json)
+        residues: List[Residue] = getLigandResIds(l[0].upper(), _structure_cif_handle)
+        bsl      : BindingSite   = get_ligand_nbrs(residues, _structure_cif_handle, l[0].upper())
+        if args.save:
+            bsl.to_json(outfile_json)
+
+        # parse_and_save_ligand(l[0].upper(), PDBID, _structure_cif_handle)
 
 
