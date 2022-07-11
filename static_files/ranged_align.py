@@ -1,7 +1,11 @@
 import datetime
 import os
 import sys
-from pymol import cmd
+import sys
+sys.path.append("/usr/lib/python3/dist-packages")
+import pymol
+cmd = pymol.cmd
+
 
 # parse args with pain
 src_struct = sys.argv[1].upper()
