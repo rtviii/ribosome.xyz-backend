@@ -26,8 +26,6 @@ print("Environment injected from:", dotenv_path)
 print("STATIC ROOT:", STATIC_ROOT)
 
 
-
-
 @cmd.extend
 def see_lig_pred(LIG,SRC,TGT):
 	cmd.delete('all')
@@ -95,6 +93,10 @@ def see_ligand(LIG,SRC):
 	LIG, SRC = [_.upper() for _ in [LIG, SRC]]
 	source_path     = os.path.join(STATIC_ROOT, SRC,f"{SRC}.cif")
 	lig_path     = os.path.join(STATIC_ROOT, SRC,f"LIGAND_{LIG}.json")
+
+
+
+	print(f"| >>>>>  Piping data from filehandle {lig_path}")
 
 	cmd.load(source_path)
 	with  open(lig_path, 'rb') as infile:

@@ -132,6 +132,7 @@ def get_ligand_nbhd(request):
     is_polymer    = str( params['is_polymer'][0] )
     filehandle    = os.path .join(STATIC_ROOT, src_struct, "{}_{}.json".format("POLYMER" if is_polymer.lower() == 'true' else "LIGAND", ligandlike_id))
 
+    print(f"Returning data from file {filehandle}")
     try:
         with open(filehandle, 'rb') as infile:
             data = json.load(infile)
