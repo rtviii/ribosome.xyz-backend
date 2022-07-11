@@ -9,7 +9,6 @@ urlpatterns = [
     path('ligand_prediction/'   , ligand_prediction   ) ,
     path('download_structure/'  , download_structure  ) ,
     path('cif_chain_by_class/'  , cif_chain_by_class  ) ,
-    path('tunnel/'              , tunnel              ) ,
     path('ranged_align/'        , ranged_align            ) ,
     path('downloadArchive/'     , downloadArchive     ) ,
 ]

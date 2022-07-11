@@ -35,7 +35,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'neo4j_connector',
-    'static_files'
+    'static_files',
+    'utils'
 ]
 
 MIDDLEWARE = [

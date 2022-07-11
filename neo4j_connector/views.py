@@ -3,11 +3,13 @@ from numpy import log
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from neo4j import  Result, GraphDatabase
+import time
 import os
 #-⋯⋯⋅⋱⋰⋆⋅⋅⋄⋅⋅∶⋅⋅⋄▫▪▭┈┅✕⋅⋅⋄⋅⋅✕∶⋅⋅⋄⋱⋰⋯⋯⋯⋯⋅⋱⋰⋆⋅⋅⋄⋅⋅∶⋅⋅⋄▫▪▭┈┅✕⋅⋅⋄⋅⋅✕∶⋅⋅⋄⋱⋰⋯⋯⋯⋅⋱⋰⋆⋅⋅⋄⋅⋅∶⋅⋅⋄▫▪▭┈┅✕⋅⋅⋄⋅⋅✕∶⋅⋅⋄⋱⋰⋯⋯⋯
 uri        =  os.getenv( 'NEO4J_URI'                                      )
 authglobal = (os.getenv( 'NEO4J_USER'      ),os.getenv( 'NEO4J_PASSWORD' ))
 current_db =  os.getenv( 'NEO4J_CURRENTDB'                                )
+
 
 #-⋯⋯⋅⋱⋰⋆⋅⋅⋄⋅⋅∶⋅⋅⋄▫▪▭┈┅✕⋅⋅⋄⋅⋅✕∶⋅⋅⋄⋱⋰⋯⋯⋯⋯⋅⋱⋰⋆⋅⋅⋄⋅⋅∶⋅⋅⋄▫▪▭┈┅✕⋅⋅⋄⋅⋅✕∶⋅⋅⋄⋱⋰⋯⋯⋯⋅⋱⋰⋆⋅⋅⋄⋅⋅∶⋅⋅⋄▫▪▭┈┅✕⋅⋅⋄⋅⋅✕∶⋅⋅⋄⋱⋰⋯⋯⋯
 
@@ -16,7 +18,6 @@ def _neoget(CYPHER_STRING:str):
     def parametrized_query(tx, **kwargs):
         result:Result = tx.run(CYPHER_STRING, **kwargs)
         return result.value()
-
     with driver.session() as session:
         return session.read_transaction(parametrized_query)
 
@@ -194,24 +195,38 @@ def get_full_structure(request):
 
 @api_view(['GET'])
 def get_all_structs(request):
+    start = time.time()
+    print("Begun fetching all structures.")
     CYPHER_STRING="""
     match (ribs:RibosomeStructure) 
         unwind ribs as rb
+
         optional match (l:Ligand)-[]-(rb)
         with collect(l.chemicalId) as ligs, rb
+
         optional match (rps:Protein)-[]-(rb)
-        with ligs, rb, collect({{auth_asym_id:rps.auth_asym_id, nomenclature:rps.nomenclature, entity_poly_seq_one_letter_code: rps.entity_poly_seq_one_letter_code}}) as rps
+        with ligs, rb, collect({{
+            auth_asym_id                   : rps.auth_asym_id,
+            nomenclature                   : rps.nomenclature,
+            entity_poly_seq_one_letter_code: rps.entity_poly_seq_one_letter_code
+            }}) as rps
+
         optional match (rnas:RNA)-[]-(rb)
-        with ligs, rb, rps, collect({{auth_asym_id: rnas.auth_asym_id, nomenclature: rnas.nomenclature, entity_poly_seq_one_letter_code:rnas.entity_poly_seq_one_letter_code}}) as struct_rnas
+        with ligs, rb, rps, collect({{
+            auth_asym_id                   : rnas.auth_asym_id,
+            nomenclature                   : rnas.nomenclature,
+            entity_poly_seq_one_letter_code: rnas.entity_poly_seq_one_letter_code
+            }}) as struct_rnas
+
         return {{
             struct : rb         ,
             ligands: ligs       ,
             rps    : rps        ,
             rnas   : struct_rnas
-            }}
+            }} 
         """.format()
-
     qres = _neoget(CYPHER_STRING)
+    print("Returning all structures. Query took {} s".format(time.time()-start) )
     return Response(qres)
 #? ---------------------------PROTEINS
 
