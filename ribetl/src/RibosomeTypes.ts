@@ -29,8 +29,8 @@ export interface RibosomeStructure {
   host_organism_names: string[];
 
   proteins: Protein[];
-  rnas: RNA[] | null;
-  ligands: Ligand[] | null;
+  rnas    : RNA[] | null;
+  ligands : Ligand[] | null;
 }
 
 export interface RNA {
