@@ -2,32 +2,53 @@
 import axios from "axios";
 
 var rcsb_search_api = "https://search.rcsb.org/rcsbsearch/v2/query"
-const params = { "query": 
-{   "type": "group",
-    "logical_operator": "and", 
-    "nodes": [
-        {   "type": "group",
-            "logical_operator": "and",
-            "nodes": [
-                      { "type": "group", "logical_operator": "and", "nodes": [{ "type": "terminal", "service": "text", "parameters": { "operator": "contains_phrase", "negation": false, "value": "RIBOSOME", "attribute": "struct_keywords.pdbx_keywords" } }]},
-                      { "type": "group", "logical_operator": "and", "nodes": [{ "type": "terminal", "service": "text", "parameters": { "operator": "greater", "negation": false, "value": 25, "attribute": "rcsb_entry_info.polymer_entity_count_protein" } }] },
-                      { "type": "group", "logical_operator": "and", "nodes": [{ "type": "terminal", "service": "text", "parameters": { "operator": "less", "negation": false, "value": 4, "attribute": "rcsb_entry_info.resolution_combined" } }] }
-                    ], 
-            "label": "text" }
-            ], 
-"label"        :   "query-builder" },
-"return_type"  :   "entry"        ,
-"request_options": {
-    "return_all_hits": true,
-    "results_verbosity": "compact"
-}
+const params = {
+    "query":
+    {
+        "type": "group",
+        "logical_operator": "and",
+        "nodes": [
+            {
+                "type": "group",
+                "logical_operator": "and",
+                "nodes": [
+                    { "type": "group", "logical_operator": "and", "nodes": [{ "type": "terminal", "service": "text", "parameters": { "operator": "contains_phrase", "negation": false, "value": "RIBOSOME", "attribute": "struct_keywords.pdbx_keywords" } }] },
+                    { "type": "group", "logical_operator": "and", "nodes": [{ "type": "terminal", "service": "text", "parameters": { "operator": "greater", "negation": false, "value": 25, "attribute": "rcsb_entry_info.polymer_entity_count_protein" } }] },
+                    { "type": "group", "logical_operator": "and", "nodes": [{ "type": "terminal", "service": "text", "parameters": { "operator": "less", "negation": false, "value": 4, "attribute": "rcsb_entry_info.resolution_combined" } }] }
+                ],
+                "label": "text"
+            }
+        ],
+        "label": "query-builder"
+    },
+    "return_type": "entry",
+    "request_options": {
+        "return_all_hits": true,
+        "results_verbosity": "compact"
+    }
 };
 let query = rcsb_search_api + "?json=" + encodeURIComponent(JSON.stringify(params))
-axios.get(query).then(r => console.log(r.data.result_set)).catch(e => console.log(e))
+// axios.get(query).then(r => console.log(r.data.result_set)).catch(e => console.log(e))
+
+let cypherstring  = "match (struct:RibosomeStructure) return struct.rcsb_id"
+    cypherstring  = encodeURIComponent(cypherstring);
+
+let ribxz_query   = `http://localhost:8000/neo4j/cypher/?cypher=${cypherstring}`
+
+Promise.all([axios.get(ribxz_query),axios.get(query)]).then(r => { 
+    var ribxz_structs:string[] = r[0].data
+    var rcsb_structs:string[]  = r[1].data.result_set
+    var intersection           = rcsb_structs.filter(e => !ribxz_structs.includes(e))
+    console.log("Structs absent from ribosome.xyz: ", intersection)
+}).catch(e=>{
+        console.log("Failed to fetch." ,e)
+    })
 
 
 
-let our_structs = 
+
+
+
 
 
 
