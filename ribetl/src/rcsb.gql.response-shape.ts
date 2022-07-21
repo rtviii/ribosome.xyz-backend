@@ -1,7 +1,3 @@
-
-
-
-
 export interface Polymer_Entity {
   entry:{
     rcsb_id:string
