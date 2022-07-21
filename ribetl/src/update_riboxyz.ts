@@ -108,9 +108,9 @@ const process_new_structure= async (struct_id: string, envfilepath: string) => {
     const NEO4J_DB_NAME = 'ribolocal'
     struct_id = struct_id.toUpperCase()
     let ribosome = await processPDBRecord(struct_id)
-    save_struct_profile(ribosome) 
+    await save_struct_profile(ribosome) 
     console.log(`Saved structure profile ${struct_id}.json`);
-    download_unpack_place(struct_id)
+    await download_unpack_place(struct_id)
     console.log(`Saved structure cif file ${struct_id}.cif`);
     shell.exec(`${process.env.PYTHONPATH} /home/rxz/dev/riboxyzbackend/ribetl/src/split_rename.py -s ${struct_id} -env ${envfilepath}`)// renaming chains
     shell.exec(`${process.env.PYTHONPATH} /home/rxz/dev/riboxyzbackend/ribetl/src/bsite_mixed.py -s ${struct_id} -env ${envfilepath} --save`)// binding sites
@@ -118,10 +118,6 @@ const process_new_structure= async (struct_id: string, envfilepath: string) => {
     shell.exec(`export RIBOXYZ_DB_NAME="${NEO4J_DB_NAME}"; /home/rxz/dev/riboxyzbackend/ribetl/src/proteins.sh ${ path.join(process.env.STATIC_ROOT as string, struct_id, `${struct_id}.json`)}`)// binding sites
     shell.exec(`export RIBOXYZ_DB_NAME="${NEO4J_DB_NAME}"; /home/rxz/dev/riboxyzbackend/ribetl/src/rna.sh ${      path.join(process.env.STATIC_ROOT as string, struct_id, `${struct_id}.json`)}`)// binding sites
     shell.exec(`export RIBOXYZ_DB_NAME="${NEO4J_DB_NAME}"; /home/rxz/dev/riboxyzbackend/ribetl/src/ligands.sh ${  path.join(process.env.STATIC_ROOT as string, struct_id, `${struct_id}.json`)}`)// binding sites
-    // cypher
-
-
-
 }
 
 const main = async () => {
@@ -137,13 +133,12 @@ const main = async () => {
     
     require('dotenv').config({ path: args['envfile'] });
 
-    // if (args.all){
-    //     let missing = await missing_structures()
-    //     missing.forEach(async (struct_id) => {
-    //         await process_new_structure(struct_id)
-    //     })
-
-    // }
+    if (args.all){
+        let missing = await missing_structures()
+        missing.forEach(async (struct_id) => {
+            await process_new_structure(struct_id, args.envfile)
+        })
+    }
 
 
     if (args.structure) {
