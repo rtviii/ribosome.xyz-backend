@@ -8,7 +8,11 @@ import itertools
 import dotenv
 import numpy as np
 from Bio.PDB import MMCIF2Dict, MMCIFIO, FastMMCIFParser
-from rxz_backend.settings import DOTENV_PATH
+try: 
+    from rxz_backend.settings import DOTENV_PATH 
+except:
+    ...
+
 flatten = itertools.chain.from_iterable
 import gemmi 
 n1      = np.array

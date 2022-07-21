@@ -38,9 +38,9 @@ const missing_structures = async () => {
             "results_verbosity": "compact"
         }
     };
-    let query = rcsb_search_api + "?json=" + encodeURIComponent(JSON.stringify(params))
+    let query        = rcsb_search_api + "?json=" + encodeURIComponent(JSON.stringify(params))
     let cypherstring = "match (struct:RibosomeStructure) return struct.rcsb_id"
-    cypherstring = encodeURIComponent(cypherstring);
+        cypherstring = encodeURIComponent(cypherstring);
 
     let ribxz_query = `http://localhost:8000/neo4j/cypher/?cypher=${cypherstring}`
 
@@ -59,12 +59,11 @@ const missing_structures = async () => {
     }).catch(e => { console.log(`Rejected : ${e}`); return [] })
 }
 
-const place_unpack_download = async (struct_id: string) => {
+const download_unpack_place = async (struct_id: string) => {
     const BASE_URL = "http://files.rcsb.org/download/"
-    const FORMAT = ".cif.gz"
+    const FORMAT   = ".cif.gz"
 
-    for (var structid of rcsb_structs_to_download) {
-        structid = structid.toUpperCase()
+        const structid = struct_id.toUpperCase()
         let url = BASE_URL + structid + FORMAT
         let compressed: Buffer = await axios.get(url, { responseType: 'arraybuffer' }).then(r => { return r.data })
             .catch(e => { console.log(`Structure ${structid} failed: `, e); return []; })
@@ -84,11 +83,9 @@ const place_unpack_download = async (struct_id: string) => {
             console.log(`Created directory ${destination_chains}.`);
         }
         fs.writeFileSync(structfile, decompressed)
-    }
 }
 
-
-export const writeupdateStruct = (r: RibosomeStructure) => {
+const save_struct_profile = (r: RibosomeStructure) => {
     var rcsb_id = r.rcsb_id;
     var target_filename = path.join(
         process.env.STATIC_ROOT as string,
@@ -104,30 +101,57 @@ export const writeupdateStruct = (r: RibosomeStructure) => {
 };
 
 
+
+
+
+const process_new_structure= async (struct_id: string, envfilepath: string) => {
+    let ribosome = await processPDBRecord(struct_id)
+    save_struct_profile(ribosome) 
+    console.log(`Saved structure profile ${struct_id}.json`);
+    download_unpack_place(struct_id)
+    console.log(`Saved structure cif file ${struct_id}.cif`);
+    shell.exec(`${process.env.PYTHONPATH} /home/rxz/dev/riboxyzbackend/ribetl/src/split_rename.py -s ${struct_id} -env ${envfilepath}`)// renaming chains
+    
+    
+    // binding sites
+
+    // cypher
+
+
+
+}
+
 const main = async () => {
     // https://github.com/yargs/yargs/blob/main/docs/typescript.md
     const args = yargs(process.argv.slice(2)).options({
         envfile  : { type: 'string', demandOption: true                },
         structure: { type: "string", demandOption: false, alias: "s" , },
+        pythonpath: { type: "string", demandOption: false, alias: "pypath" , },
     }).boolean('all').parseSync();
     
+    const DEFAULT_PYTHON_PATH    = "/home/rxz/dev/riboxyzbackend/venv/bin/python3"
+         process.env.PYTHONPATH = args.pythonpath || DEFAULT_PYTHON_PATH
     
     require('dotenv').config({ path: args['envfile'] });
 
-    if (args.all){
+    // if (args.all){
+    //     let missing = await missing_structures()
+    //     missing.forEach(async (struct_id) => {
+    //         await process_new_structure(struct_id)
+    //     })
 
-    }
+    // }
 
-    if (args.struct) {
+
+    if (args.structure) {
         if (args.structure.length < 4) {
             console.log("Enter a valid RCSB PDB ID to build from RCSB's gql api.");
             process.exit(2);
         }
-        console.log(`Processing ${args.struct}`);
+        console.log(`Processing ${args.structure}`);
 
         try {
-            var struct: RibosomeStructure = await processPDBRecord(args.struct);
-            writeupdateStruct(struct);
+             await process_new_structure(args.structure, args.envfile);
         } catch (e: any) {
             console.log("Failed: \n\n");
             console.log("+++++++++++++++++");

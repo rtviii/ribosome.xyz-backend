@@ -21,6 +21,8 @@ export const writeupdateStruct = (r: RibosomeStructure) => {
 };
 
 
+
+
 (async () => {
 })();
 
