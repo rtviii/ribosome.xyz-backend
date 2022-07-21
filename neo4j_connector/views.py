@@ -441,11 +441,10 @@ def tax_ids(request):
 @api_view(['GET','POST'])
 def custom_cypher(request):
     params        = dict(request.GET)
-    CYPHER_STRING = params['cypher'][0]
+    CYPHER_STRING = str( params['cypher'][0] ).strip('\"')
     print("GOT STRING", CYPHER_STRING)
     k = _neoget(CYPHER_STRING)
-    print("->>>>>>>>>>>>>",k)
-    return Response()
+    return Response(k)
 
 #? ------------------------------ General 
 

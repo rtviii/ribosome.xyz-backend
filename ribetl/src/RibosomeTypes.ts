@@ -3,34 +3,33 @@
 
 
 export interface RibosomeStructure {
-  rcsb_id: string;
-  expMethod: string;
+  rcsb_id   : string;
+  expMethod : string;
   resolution: number;
 
-  pdbx_keywords: string | null;
+  pdbx_keywords     : string | null;
   pdbx_keywords_text: string | null;
 
-  rcsb_external_ref_id: string[];
+  rcsb_external_ref_id  : string[];
   rcsb_external_ref_type: string[];
   rcsb_external_ref_link: string[];
 
   // citation
-  citation_year: number;
+  citation_year        : number;
   citation_rcsb_authors: string[];
-  citation_title: string;
-
-  citation_pdbx_doi: string;
+  citation_title       : string;
+  citation_pdbx_doi    : string;
   // keywords
   // custom
-  src_organism_ids: number[];
+  src_organism_ids  : number[];
   src_organism_names: string[];
 
   host_organism_ids: number[];
   host_organism_names: string[];
 
   proteins: Protein[];
-  rnas: RNA[] | null;
-  ligands: Ligand[] | null;
+  rnas    : RNA[] | null;
+  ligands : Ligand[] | null;
 }
 
 export interface RNA {

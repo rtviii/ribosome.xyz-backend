@@ -275,11 +275,9 @@ def getLigandResIds(ligchemid: str, struct: Structure) -> List[Residue]:
 
 if __name__ == "__main__":
 
-
     parser = argparse. ArgumentParser(description='Split structure into constituent polymers and inject new nomencalture into the .cif file')
-    parser.add_argument ("-s"     , "--structure", type=   str    , help   ="RCSB ID of structure to process"                               )
+    parser.add_argument ("-s"     , "--structure", type=   str    , required=True,help   ="RCSB ID of structure to process"                               )
     parser.add_argument ("-env"   , "--dotenv_path", type= str    , help   ="Fallback dotenv path. Needed to locate the static files folder")
-    parser.add_argument ('-s'     , '--structure', type=   str   , required=True                                                            )
     parser.add_argument ('--save' ,                        action          ='store_true'                                                    )
     
     args  = parser.parse_args()
@@ -290,14 +288,15 @@ if __name__ == "__main__":
     STATIC_ROOT = os.environ.get('STATIC_ROOT')
 
 
-
     _structure_cif_handle :Structure = open_structure(PDBID,'cif')  # type: ignore
     struct_profile_handle:dict       = open_structure(PDBID,'json')  # type: ignore
 
     liglike_polys = get_liglike_polymers(struct_profile_handle)
     ligands       = get_lig_ids(PDBID, struct_profile_handle)
 
+    STATIC_ROOT  = os.environ.get('STATIC_ROOT')
     for polyref in liglike_polys:
+        
         print(f"Polymer {polyref.auth_asym_id}")
         outfile_json = os.path.join(str( STATIC_ROOT ), polyref.parent_rcsb_id.upper(), f'POLYMER_{polyref.auth_asym_id}.json')
         if (os.path.isfile(outfile_json)):
@@ -319,5 +318,6 @@ if __name__ == "__main__":
         if args.save:
             bsl.to_json(outfile_json)
 
+        # parse_and_save_ligand(l[0].upper(), PDBID, _structure_cif_handle)
 
 

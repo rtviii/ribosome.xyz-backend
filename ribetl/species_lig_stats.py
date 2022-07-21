@@ -127,11 +127,11 @@ SPECIES = int(sys.argv[1])
 
 
 class LigandCategory(Enum):
-    tRNA = 'tRNA'
-    mRNA = 'mRNA'
-    Factor = 'Factor'
+    tRNA        = 'tRNA'
+    mRNA        = 'mRNA'
+    Factor      = 'Factor'
     Antibiotics = 'Antibiotics'
-    Mixed = 'Mixed'
+    Mixed       = 'Mixed'
 
 
 class LigandLike(TypedDict):
