@@ -105,6 +105,7 @@ const save_struct_profile = (r: RibosomeStructure) => {
 
 
 const process_new_structure= async (struct_id: string, envfilepath: string) => {
+    const NEO4J_DB_NAME = 'ribolocal'
     struct_id = struct_id.toUpperCase()
     let ribosome = await processPDBRecord(struct_id)
     save_struct_profile(ribosome) 
@@ -113,6 +114,10 @@ const process_new_structure= async (struct_id: string, envfilepath: string) => {
     console.log(`Saved structure cif file ${struct_id}.cif`);
     shell.exec(`${process.env.PYTHONPATH} /home/rxz/dev/riboxyzbackend/ribetl/src/split_rename.py -s ${struct_id} -env ${envfilepath}`)// renaming chains
     shell.exec(`${process.env.PYTHONPATH} /home/rxz/dev/riboxyzbackend/ribetl/src/bsite_mixed.py -s ${struct_id} -env ${envfilepath} --save`)// binding sites
+    shell.exec(`export RIBOXYZ_DB_NAME="${NEO4J_DB_NAME}"; /home/rxz/dev/riboxyzbackend/ribetl/src/structure.sh ${path.join(process.env.STATIC_ROOT as string, struct_id, `${struct_id}.json`)}`)// binding sites
+    shell.exec(`export RIBOXYZ_DB_NAME="${NEO4J_DB_NAME}"; /home/rxz/dev/riboxyzbackend/ribetl/src/proteins.sh ${ path.join(process.env.STATIC_ROOT as string, struct_id, `${struct_id}.json`)}`)// binding sites
+    shell.exec(`export RIBOXYZ_DB_NAME="${NEO4J_DB_NAME}"; /home/rxz/dev/riboxyzbackend/ribetl/src/rna.sh ${      path.join(process.env.STATIC_ROOT as string, struct_id, `${struct_id}.json`)}`)// binding sites
+    shell.exec(`export RIBOXYZ_DB_NAME="${NEO4J_DB_NAME}"; /home/rxz/dev/riboxyzbackend/ribetl/src/ligands.sh ${  path.join(process.env.STATIC_ROOT as string, struct_id, `${struct_id}.json`)}`)// binding sites
     // cypher
 
 
