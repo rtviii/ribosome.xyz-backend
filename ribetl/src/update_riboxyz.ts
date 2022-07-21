@@ -105,16 +105,14 @@ const save_struct_profile = (r: RibosomeStructure) => {
 
 
 const process_new_structure= async (struct_id: string, envfilepath: string) => {
+    struct_id = struct_id.toUpperCase()
     let ribosome = await processPDBRecord(struct_id)
     save_struct_profile(ribosome) 
     console.log(`Saved structure profile ${struct_id}.json`);
     download_unpack_place(struct_id)
     console.log(`Saved structure cif file ${struct_id}.cif`);
     shell.exec(`${process.env.PYTHONPATH} /home/rxz/dev/riboxyzbackend/ribetl/src/split_rename.py -s ${struct_id} -env ${envfilepath}`)// renaming chains
-    
-    
-    // binding sites
-
+    shell.exec(`${process.env.PYTHONPATH} /home/rxz/dev/riboxyzbackend/ribetl/src/bsite_mixed.py -s ${struct_id} -env ${envfilepath} --save`)// binding sites
     // cypher
 
 
