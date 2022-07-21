@@ -2,11 +2,8 @@
 import axios from "axios";
 import { gzip, ungzip } from 'node-gzip'
 import fs from 'fs'
-var http = require('http');
-import { createGzip, unzip } from 'zlib'
-
-
-
+import yargs from 'yargs'
+import path from "path";
 
 
 
@@ -60,45 +57,42 @@ const missing_structures = async () => {
 }
 
 const place_unpack_downloads = async (rcsb_structs_to_download: string[]) => {
-
-
     const BASE_URL = "http://files.rcsb.org/download/"
-    const FORMAT = ".cif.gz"
+    const FORMAT   = ".cif.gz"
 
-    for (var structid of rcsb_structs_to_download.slice(0, 5)) {
-        let url = BASE_URL + structid.toUpperCase() + FORMAT
-        let compressed:Buffer = await axios.get(url, {responseType:'arraybuffer'}).then(r => {return r.data})
-            .catch(e => {console.log(`Structure ${structid} failed: `, e); return [];})
-
-        let decompressed = await  ungzip(compressed);
-        fs.writeFileSync(`./${structid}.cif`, decompressed)
-
-        // let _ = unzip(compressed, (err: any, data) => { console.log("decompressed data", data); fs.writeFileSync(`./${structid}.cif`, data.toString()) });
+    for (var structid of rcsb_structs_to_download) {
+        structid= structid.toUpperCase()
+        let url = BASE_URL + structid + FORMAT
+        let compressed: Buffer = await axios.get(url, { responseType: 'arraybuffer' }).then(r => { return r.data })
+            .catch(e => { console.log(`Structure ${structid} failed: `, e); return []; })
+        let decompressed = await ungzip(compressed);
 
 
+
+        let destination = path.join(
+            process.env["STATIC_ROOT"] as string,
+            `${structid}`,
+            `${structid}.cif`)
+
+        fs.writeFileSync(, decompressed)
     }
-    // let gzips = await Promise.all(pending_downloads);
-    // console.log(`Got gzips : ${gzips}`)
-    // let uncompressed = await Promise.all(gzips.map(async gz => await ungzip(gz)) as Promise<Buffer>[])
-
-    // uncompressed.forEach( (v)=>{
-
-    // }
-    // )
-
-
-
-    // return fs.writeFile(`./${structid}.cif`, await ungzip(r.data), function (err) {
-    //     if (err) return console.log(err);
-    //     console.log(`written to file ${structid}`);
-    // });
 }
 
 
 
-const update_ribosome_xyz = async () => {
-    await place_unpack_downloads(await missing_structures())
+const main = async () => {
+
+
+    // https://github.com/yargs/yargs/blob/main/docs/typescript.md
+    const argv = yargs(process.argv.slice(2)).options({
+        envfile: { type: 'string', demandOption: true },
+    }).parseSync();
+    require('dotenv').config({ path: argv[ 'envfile' ]});
+
+
+
+    const STATIC_ROOT = process.env["STATIC_ROOT"]
+    
+
 }
-
-
-update_ribosome_xyz().then()
+main()
