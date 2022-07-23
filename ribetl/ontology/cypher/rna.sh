@@ -55,5 +55,4 @@ create (newrna)-[:rna_of]->(s);
 match (n:RNA) where n.nomenclature[0] is not null
 merge (nc:RNAClass{class_id:n.nomenclature[0]})
 merge (n)-[:belongs_to]-(nc)" | cypher-shell  --database $RIBOXYZ_DB_NAME
-
 # You must set the database name in the script : "export RIBOXYZ_DB_NAME= XXX"

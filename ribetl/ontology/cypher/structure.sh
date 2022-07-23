@@ -1,6 +1,8 @@
 #!/usr/bin/bash
 
 
+# For remote access:
+# echo "match (n) return count(n)" | cypher-shell -a neo4j+s://ribosome.xyz:7687 --format plain -u 'rt' -p 'rrr' --database 'riboauth'
 
 if [ $# -lt $((1))  ];
 then
@@ -26,6 +28,9 @@ else
 	exit $((1))
 fi
 
+# reassign cypher script to a variable
+
+# pipe into with default address being localhost cypher-shell -a neo4j+s://ribosome.xyz:7687 --format plain -u 'rt' -p 'rrr' --database 'riboauth'
 
 echo "call apoc.load.json(\"file:///static/$structid/$file\") yield value
 with                                                       value.rcsb_id as pdbid,

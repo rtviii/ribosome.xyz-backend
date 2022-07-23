@@ -106,8 +106,8 @@ const save_struct_profile = (r: RibosomeStructure) => {
 
 const process_new_structure= async (struct_id: string, envfilepath: string) => {
     const NEO4J_DB_NAME = 'ribolocal'
-    struct_id = struct_id.toUpperCase()
-    let ribosome = await processPDBRecord(struct_id)
+          struct_id     = struct_id.toUpperCase()
+    let   ribosome      = await processPDBRecord(struct_id)
     await save_struct_profile(ribosome) 
     console.log(`Saved structure profile ${struct_id}.json`);
     await download_unpack_place(struct_id)
@@ -116,8 +116,8 @@ const process_new_structure= async (struct_id: string, envfilepath: string) => {
     shell.exec(`${process.env.PYTHONPATH} /home/rxz/dev/riboxyzbackend/ribetl/src/bsite_mixed.py -s ${struct_id} -env ${envfilepath} --save`)// binding sites
     shell.exec(`export RIBOXYZ_DB_NAME="${NEO4J_DB_NAME}"; /home/rxz/dev/riboxyzbackend/ribetl/src/structure.sh ${path.join(process.env.STATIC_ROOT as string, struct_id, `${struct_id}.json`)}`)// binding sites
     shell.exec(`export RIBOXYZ_DB_NAME="${NEO4J_DB_NAME}"; /home/rxz/dev/riboxyzbackend/ribetl/src/proteins.sh ${ path.join(process.env.STATIC_ROOT as string, struct_id, `${struct_id}.json`)}`)// binding sites
-    shell.exec(`export RIBOXYZ_DB_NAME="${NEO4J_DB_NAME}"; /home/rxz/dev/riboxyzbackend/ribetl/src/rna.sh ${      path.join(process.env.STATIC_ROOT as string, struct_id, `${struct_id}.json`)}`)// binding sites
-    shell.exec(`export RIBOXYZ_DB_NAME="${NEO4J_DB_NAME}"; /home/rxz/dev/riboxyzbackend/ribetl/src/ligands.sh ${  path.join(process.env.STATIC_ROOT as string, struct_id, `${struct_id}.json`)}`)// binding sites
+    shell.exec(`export RIBOXYZ_DB_NAME="${NEO4J_DB_NAME}"; /home/rxz/dev/riboxyzbackend/ribetl/src/rna.sh     ${path.join(process.env.STATIC_ROOT as string, struct_id, `${struct_id}.json`)}`)// binding sites
+    shell.exec(`export RIBOXYZ_DB_NAME="${NEO4J_DB_NAME}"; /home/rxz/dev/riboxyzbackend/ribetl/src/ligands.sh ${path.join(process.env.STATIC_ROOT as string, struct_id, `${struct_id}.json`)}`)// binding sites
 }
 
 const main = async () => {
