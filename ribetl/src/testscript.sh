@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 set -e
-set -u
+# set -u
 set -o pipefail
 
 # For remote access:
@@ -32,18 +32,17 @@ set -o pipefail
 # fi
 
 
-unset -v remote
-unset -v filepath
+# unset -v remote
+# unset -v filepath
+DEFAULT_NEO4J_ADDRESS="127.0.0.1:7687"
 
-while getopts 'f:r:' OPTION; do
+while getopts 'f:a:' OPTION; do
   case "$OPTION" in
     f)
-      filepath="$OPTARG"
-      echo "received $filepath"
+      FILEPATH="$OPTARG"
       ;;
-    r)
-      remote="$OPTARG"
-      echo "received $remote"
+    a)
+      NEO4J_ADDRESS="$OPTARG"
       ;;
     ?)
       echo "script usage: $0 [-f] [path to strucutres' json profile] [-r] [neo4j remote server i.e. localhost:7678]" >&2
@@ -52,12 +51,30 @@ while getopts 'f:r:' OPTION; do
   esac
 done
 
-shift "$(($OPTIND -1))"
-
-if [ -z "$filepath" ] ; then
-        echo 'Provide path to .json profile of the structure. Exiting' >&2
-        exit 1
+if [ -f $FILEPATH ];
+then
+	file=$(basename -- $FILEPATH)
+	extension=${file##*.}
+	if [ $extension != "json" ];
+	then
+		echo "The profile file must be a .json. Exiting."
+		exit $((2))
+	fi
+	structid=${file::4}
+	structid=${structid^^}
+        echo "Processing $structid"
+else
+	echo "$FILEPATH is not an acceptable file"
+	exit $((1))
 fi
 
-# echo "X into shell1"
-# echo "X into shell2"
+if [ -z $NEO4J_ADDRESS ];
+then
+  NEO4J_ADDRESS="$DEFAULT_NEO4J_ADDRESS"
+fi
+
+echo "Ended up with address : $NEO4J_ADDRESS"
+
+
+# # echo "X into shell1"
+# # echo "X into shell2" in zsh
