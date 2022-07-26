@@ -7,6 +7,7 @@ import path from "path";
 import shell from "shelljs";
 import { processPDBRecord } from "./requestGqlProfile";
 import { RibosomeStructure } from "./RibosomeTypes";
+import { exit } from "process";
 
 
 
@@ -44,9 +45,26 @@ const missing_structures = async () => {
 
     let ribxz_query = `http://localhost:8000/neo4j/cypher/?cypher=${cypherstring}`
 
+
+
+    let dbquery = new Promise((resolve,reject)=>{
+        
+    let x = shell.exec("echo \"match (struct:RibosomeStructure) return struct.rcsb_id\" | cypher-shell -a \"neo4j://localhost:7687\" --format plain -u 'rt' -p 'rrr' --database 'ribolocal'",
+    function(err,stdout, stderr){
+        if (err!=null){
+            reject(err)
+        }
+        const dbstructs = ( stdout as string).replace(/"/g, '').split("\n").filter(r => r.length === 4)
+        resolve(dbstructs)
+    })
+
+    })
+
+
+
     return Promise.all([axios.get(ribxz_query), axios.get(query)]).then(r => {
         var ribxz_structs: string[] = r[0].data
-        var rcsb_structs: string[] = r[1].data.result_set
+        var rcsb_structs: string[]  = r[1].data.result_set
 
         var missing_from_ribxz = rcsb_structs.filter(struct => {
             if (!ribxz_structs.includes(struct)) {
@@ -58,6 +76,7 @@ const missing_structures = async () => {
         return missing_from_ribxz
     }).catch(e => { console.log(`Rejected : ${e}`); return [] })
 }
+
 
 const download_unpack_place = async (struct_id: string) => {
     const BASE_URL = "http://files.rcsb.org/download/"
@@ -121,26 +140,37 @@ const process_new_structure= async (struct_id: string, envfilepath: string) => {
 }
 
 const main = async () => {
-
     // https://github.com/yargs/yargs/blob/main/docs/typescript.md
     const args = yargs(process.argv.slice(2)).options({
         envfile   : { type: 'string', demandOption: true                },
         structure : { type: "string", demandOption: false, alias: "s" , },
         pythonpath: { type: "string", demandOption: false, alias: "pypath" , },
-        dryrun    : { type: "boolean", demandOption: false, alias: "dryrun" , },
+        neo4jhost : { type: "string", demandOption: false, alias: "neo4jhost" , },
+        dryrun    : { type: "boolean", demandOption: false,  alias: "dryrun" , },
     })
     .boolean('all')
     .parseSync();
     
     const DEFAULT_PYTHON_PATH    = "/home/rxz/dev/riboxyzbackend/venv/bin/python3"
-         process.env.PYTHONPATH = args.pythonpath || DEFAULT_PYTHON_PATH
+          process.env.PYTHONPATH = args.pythonpath || DEFAULT_PYTHON_PATH
     
     require('dotenv').config({ path: args['envfile'] });
+
+    if (args.neo4jhost){
+        console.log("Got alternative neo4j host: ", args.neo4jhost)
+        console.log("Before : {}", process.env.NEO4J_URI)
+        // console.log("Before : {}", process.env.NEO4J_HOST)
+        
+        // process.env.NEO4J_HOST = args.neo4jhost
+    }
 
     if (args.dryrun){
         console.log("Dry run. No changes will be made to the database.")
         let missing = await missing_structures()
+        process.exit(1)
         missing.forEach(m=>console.log(m))
+
+    
     }
 
     if (args.all){
