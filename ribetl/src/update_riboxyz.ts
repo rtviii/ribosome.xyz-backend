@@ -121,23 +121,35 @@ const process_new_structure= async (struct_id: string, envfilepath: string) => {
 }
 
 const main = async () => {
+
     // https://github.com/yargs/yargs/blob/main/docs/typescript.md
     const args = yargs(process.argv.slice(2)).options({
-        envfile  : { type: 'string', demandOption: true                },
-        structure: { type: "string", demandOption: false, alias: "s" , },
+        envfile   : { type: 'string', demandOption: true                },
+        structure : { type: "string", demandOption: false, alias: "s" , },
         pythonpath: { type: "string", demandOption: false, alias: "pypath" , },
-    }).boolean('all').parseSync();
+        dryrun    : { type: "boolean", demandOption: false, alias: "dryrun" , },
+    })
+    .boolean('all')
+    .parseSync();
     
     const DEFAULT_PYTHON_PATH    = "/home/rxz/dev/riboxyzbackend/venv/bin/python3"
          process.env.PYTHONPATH = args.pythonpath || DEFAULT_PYTHON_PATH
     
     require('dotenv').config({ path: args['envfile'] });
 
+    if (args.dryrun){
+        console.log("Dry run. No changes will be made to the database.")
+        let missing = await missing_structures()
+        missing.forEach(m=>console.log(m))
+    }
+
     if (args.all){
         let missing = await missing_structures()
+        console.log(`Attempting to process ${missing.length} structures` )
         missing.forEach(async (struct_id) => {
             await process_new_structure(struct_id, args.envfile)
         })
+        process.exit(1)
     }
 
 

@@ -259,7 +259,6 @@ ligands (){
 }
 
 
-
 DEFAULT_NEO4J_ADDRESS="127.0.0.1:7687"
 while getopts 'd:f:a:' OPTION; do
   case "$OPTION" in
