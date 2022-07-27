@@ -8,10 +8,21 @@ set -o pipefail
 
 
 usage (){
-      echo "script usage: $0  /
-      [-f] [path to strucutres' json profile] /
-      [-r] [neo4j remote server i.e. localhost:7678] /
-      [-d] [database name i.e. 'ribolocal'] /" >&2
+      echo "
+
+      _____________
+
+      The following env vars must be set:
+      NEO4J_CURENTDB=<password>
+      NEO4J_URI=<server>
+
+      ______________
+      
+      $0  /
+      [-f] [path to a structure profile(.json)] /
+      [-a] [Neo4j remote server i.e. localhost:7678] /
+      [-d] [Database name i.e. 'ribolocal'] /
+      " >&2
       exit 1
 }
 
@@ -33,7 +44,7 @@ structure() {
   fi
 
 
-  echo "Attempting to add structure $structid core to neo4j."
+  echo "Commiting structure $structid core to $NEO4J_URI."
   echo "call apoc.load.json(\"file:///static/$structid/$file\") yield value
   with                                                       value.rcsb_id as pdbid,
                                                             value.expMethod as exp,
@@ -83,7 +94,8 @@ structure() {
           struct.rcsb_external_ref_type                  = CASE WHEN ref_type              = null then \"null\" else ref_type END,
           struct.rcsb_external_ref_link                  = CASE WHEN ref_link              = null then \"null\" else ref_link END,
           struct.citation_pdbx_doi                       = CASE WHEN cit_doi              = null then \"null\" else ref_link END,
-          struct.citation_year                          = CASE WHEN cit_year              = null then \"null\" else cit_year END" | cypher-shell -a "$NEO4J_ADDRESS" --format plain -u 'rt' -p 'rrr' --database $DATABASE_NAME
+          struct.citation_year                          = CASE WHEN cit_year              = null then \"null\" else cit_year END" | \
+          cypher-shell -a "$NEO4J_URI" --format plain -u $NEO4J_USER -p $NEO4J_PASSWORD --database $NEO4J_CURENTDB
 
 }
 
@@ -106,7 +118,7 @@ rnas (){
   fi
 
 
-  echo "Attempting to add RNA of $structid to neo4j."
+  echo "Commiting RNA of $structid to $NEO4J_URI."
   echo "call apoc.load.json(\"file:///static/$structid/$file\") yield value
   with value 
       unwind                                 value .rnas as rna
@@ -141,7 +153,9 @@ rnas (){
 
   match (n:RNA) where n.nomenclature[0] is not null
   merge (nc:RNAClass{class_id:n.nomenclature[0]})
-  merge (n)-[:belongs_to]-(nc)" | cypher-shell -a "$NEO4J_ADDRESS" --format plain -u 'rt' -p 'rrr' --database $DATABASE_NAME
+  merge (n)-[:belongs_to]-(nc)" | \
+  cypher-shell -a "$NEO4J_URI" --format plain -u $NEO4J_USER -p $NEO4J_PASSWORD --database $NEO4J_CURENTDB
+
 
 
 
@@ -166,7 +180,7 @@ proteins(){
   fi
 
 
-  echo "Attempting to add proteins of $structid to neo4j."
+  echo "Commiting proteins of $structid to $NEO4J_URI."
   echo "call apoc.load.json(\"file:///static/$structid/$file\") yield value
 
   with value, value.rcsb_id as struct
@@ -220,7 +234,8 @@ proteins(){
 
   match (n:Protein) where n.nomenclature[0] is not null
   merge (nc:ProteinClass {class_id:n.nomenclature[0]})
-  merge (n)-[:member_of]->(nc)" | cypher-shell -a "$NEO4J_ADDRESS" --format plain -u 'rt' -p 'rrr' --database $DATABASE_NAME
+  merge (n)-[:member_of]->(nc)" | \
+  cypher-shell -a "$NEO4J_URI" --format plain -u $NEO4J_USER -p $NEO4J_PASSWORD --database $NEO4J_CURENTDB
 }
 
 ligands (){
@@ -240,7 +255,7 @@ ligands (){
     exit $((1))
   fi
 
-  echo "Attempting to add ligands of $structid to neo4j."
+  echo "Commiting ligands of $structid to $NEO4J_URI."
   echo "call apoc.load.json(\"file:///static/$structid/$file\") yield value
   with value.rcsb_id as struct, value
        unwind           value.ligands as lig
@@ -255,7 +270,23 @@ ligands (){
   with newligand, value
   match (s:RibosomeStructure {rcsb_id: value.rcsb_id})
   merge            (newligand)<-[:contains_ligand]-(s)
-  return s.rcsb_id, newligand.chemicalId " | cypher-shell -a "$NEO4J_ADDRESS" --format plain -u 'rt' -p 'rrr' --database $DATABASE_NAME
+  return s.rcsb_id, newligand.chemicalId " | \
+  cypher-shell -a "$NEO4J_URI" --format plain -u $NEO4J_USER -p $NEO4J_PASSWORD --database $NEO4J_CURENTDB
+
+}
+
+
+check_if_exists (){
+  ifexists_cypher="match (n:RibosomeStructure{rcsb_id:\"$1\"}) return (n)"
+  response=$( echo $ifexists_cypher | cypher-shell -a "$NEO4J_URI" --format plain -u $NEO4J_USER -p $NEO4J_PASSWORD --database $NEO4J_CURENTDB )
+  if [[ ${#response} -gt 1 ]] ; then
+    echo "Something with the rcsb_id $1 already exists in the database. Failing on purpose.."
+    echo "Used query: $ifexists_cypher"
+    echo $ifexists_cypher
+    exit 1
+  fi
+
+
 }
 
 
@@ -263,7 +294,7 @@ DEFAULT_NEO4J_ADDRESS="127.0.0.1:7687"
 while getopts 'd:f:a:' OPTION; do
   case "$OPTION" in
     d)
-      DATABASE_NAME="$OPTARG"
+      NEO4J_CURENTDB="$OPTARG"
       ;;
     f)
       FILEPATH="$OPTARG"
@@ -283,7 +314,7 @@ while getopts 'd:f:a:' OPTION; do
       echo "Got filepath $FILEPATH"
       ;;
     a)
-      NEO4J_ADDRESS="$OPTARG"
+      NEO4J_URI="$OPTARG"
       ;;
     ?)
     usage
@@ -291,28 +322,31 @@ while getopts 'd:f:a:' OPTION; do
   esac
 done
 
-if [[ -z $NEO4J_ADDRESS ]]; then NEO4J_ADDRESS="$DEFAULT_NEO4J_ADDRESS"; fi
 
-if [[ -z $FILEPATH ]] || [[ -z $DATABASE_NAME ]]
+if [[ -z $FILEPATH ]] || [[ -z $NEO4J_CURENTDB ]] || [[ -z $NEO4J_URI ]] 
 then 
   usage 
 else 
-  echo "all well";
+
+  if [ -f $FILEPATH ];
+  then
+    file=$(basename -- $FILEPATH)
+    extension=${file##*.}
+    if [ $extension != "json" ];
+    then
+      echo "The profile file must be a .json. Exiting."
+      exit $((2))
+    fi
+    structid=${file::4}
+    structid=${structid^^}
+  else
+    echo "$FILEPATH is not an acceptable file"
+    exit $((1))
+  fi
+
+  check_if_exists $structid;
   structure;
   proteins;
   rnas;
   ligands;
-
 fi
-
-CYPHER="match (n:RibosomeStructure) return count(n);"
-# echo $CYPHER | cypher-shell -a "$NEO4J_ADDRESS" --format plain -u 'rt' -p 'rrr' --database $DATABASE_NAME
-
-
-
-
-
-
-
-# # echo "X into shell1"
-# # echo "X into shell2" in zsh

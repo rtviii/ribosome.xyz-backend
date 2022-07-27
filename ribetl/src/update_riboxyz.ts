@@ -47,8 +47,6 @@ const missing_structures = async () => {
 
     let dbquery = new Promise<string[]>((resolve, reject) => {
         shell.config.silent = true
-
-        console.log("Executing :\n\t\t",`echo \"match (struct:RibosomeStructure) return struct.rcsb_id\" | cypher-shell -a \"${process.env.NEO4J_URI}\" --format plain -u ${process.env.NEO4J_USER} -p ${process.env.NEO4J_PASSWORD} --database ${process.env.NEO4J_CURENTDB}`)
         shell.exec(`echo \"match (struct:RibosomeStructure) return struct.rcsb_id\" | cypher-shell -a \"${process.env.NEO4J_URI}\" --format plain -u ${process.env.NEO4J_USER} -p ${process.env.NEO4J_PASSWORD} --database ${process.env.NEO4J_CURENTDB}`,
             function (err, stdout, stderr) {
                 if (err != 0) {
@@ -127,28 +125,42 @@ const save_struct_profile = (r: RibosomeStructure) => {
 
 // Options describing how to process a given structure
 interface IngressOptions{
-    acquirePDBRecord   : boolean;
-    downloadCifFile    : boolean;
-    splitRenameChains  : boolean;
-    extractBindingSites: boolean;
-    commitToNeo4j      : boolean;
+
+    rcsb_id    : string,
+    envfilepath: string
+
+    acquirePDBRecord   ?: boolean;
+    downloadCifFile    ?: boolean;
+    splitRenameChains  ?: boolean;
+    renderStructHero   ?: boolean;
+    extractBindingSites?: boolean;
+    commitToNeo4j      ?: boolean;
 }
 
-const process_new_structure = async (struct_id: string, envfilepath: string) => {
-    struct_id = struct_id.toUpperCase()
-    let ribosome = await processPDBRecord(struct_id)
-    await save_struct_profile(ribosome)
-    console.log(`Saved structure profile ${struct_id}.json`);
-    await download_unpack_place(struct_id)
-    console.log(`Saved structure cif file ${struct_id}.cif`);
-    shell.exec(`${process.env.PYTHONPATH} /home/rxz/dev/riboxyzbackend/ribetl/src/split_rename.py -s ${struct_id} -env ${envfilepath}`)// renaming chains
-    shell.exec(`${process.env.PYTHONPATH} /home/rxz/dev/riboxyzbackend/ribetl/src/bsite_mixed.py -s ${struct_id} -env ${envfilepath} --save`)// binding sites
+const process_new_structure = async (opts:IngressOptions) => {
+    let struct_id   = opts.rcsb_id.toUpperCase()
+    let envfilepath = opts.envfilepath
     
+    if  ( opts.acquirePDBRecord )  {
+        let ribosome    = await processPDBRecord(struct_id)
+        await save_struct_profile(ribosome)
+        console.log(`Saved structure profile ${struct_id}.json`);
+    } 
+    if (opts.downloadCifFile){
+        await download_unpack_place(struct_id)
+        console.log(`Saved structure cif file ${struct_id}.cif`);
+    }
+    if (opts.splitRenameChains){
+        shell.exec(`${process.env.PYTHONPATH} /home/rxz/dev/riboxyzbackend/ribetl/src/split_rename.py -s ${struct_id} -env ${envfilepath}`)// renaming chains
+    }
+    if (opts.extractBindingSites){
+        shell.exec(`${process.env.PYTHONPATH} /home/rxz/dev/riboxyzbackend/ribetl/src/bsite_mixed.py -s ${struct_id} -env ${envfilepath} --save`)// binding sites
+    }
+    
+    if (opts.commitToNeo4j){
+        shell.exec(`/home/rxz/dev/riboxyzbackend/ribetl/src/cypher/neo4j_commit_structure.sh -f ${path.join(process.env.STATIC_ROOT as string, struct_id, `${struct_id}.json`)} -d ${process.env.NEO4J_CURENTDB} -a "${process.env.NEO4J_URI}"`)
+    }
 
-    shell.exec(`export RIBOXYZ_DB_NAME="${process.env.NEO4J_DB_NAME}"; /home/rxz/dev/riboxyzbackend/ribetl/src/structure.sh ${path.join(process.env.STATIC_ROOT as string, struct_id, `${struct_id}.json`)}`)// binding sites
-    shell.exec(`export RIBOXYZ_DB_NAME="${process.env.NEO4J_DB_NAME}"; /home/rxz/dev/riboxyzbackend/ribetl/src/proteins.sh ${path.join(process.env.STATIC_ROOT as string, struct_id, `${struct_id}.json`)}`)// binding sites
-    shell.exec(`export RIBOXYZ_DB_NAME="${process.env.NEO4J_DB_NAME}"; /home/rxz/dev/riboxyzbackend/ribetl/src/rna.sh     ${path.join(process.env.STATIC_ROOT as string, struct_id, `${struct_id}.json`)}`)// binding sites
-    shell.exec(`export RIBOXYZ_DB_NAME="${process.env.NEO4J_DB_NAME}"; /home/rxz/dev/riboxyzbackend/ribetl/src/ligands.sh ${path.join(process.env.STATIC_ROOT as string, struct_id, `${struct_id}.json`)}`)// binding sites
 }
 
 const main = async () => {
@@ -183,18 +195,19 @@ const main = async () => {
     if (args.dryrun) {
         console.log("Dry run. No changes will be made to the database.")
         let missing = await missing_structures()
-        // console.log("Missing structures: ", missing);
-        // process.exit(1)
         missing.forEach(m => console.log(m))
-
-
     }
 
     if (args.all) {
         let missing = await missing_structures()
         console.log(`Attempting to process ${missing.length} structures`)
         missing.forEach(async (struct_id) => {
-            await process_new_structure(struct_id, args.envfile)
+
+            const opts:IngressOptions = {  //<----------------------- Adjust actions here
+                envfilepath: args.envfile, 
+                rcsb_id    : struct_id,
+            }                                  
+            await process_new_structure(opts)
         })
         process.exit(1)
     }
@@ -205,9 +218,14 @@ const main = async () => {
             console.log("Enter a valid RCSB PDB ID to build from RCSB's gql api.");
             process.exit(2);
         }
-        console.log(`Processing ${args.structure}`);
         try {
-            await process_new_structure(args.structure, args.envfile);
+
+            const opts:IngressOptions = {  //<----------------------- Adjust actions here
+                envfilepath  : args.envfile,
+                rcsb_id      : args.structure.toUpperCase(),
+                commitToNeo4j: true
+            }                                  
+            await process_new_structure(opts);
         } catch (e: any) {
             console.log("Failed: \n\n");
             console.log(e);
