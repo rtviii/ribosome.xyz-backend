@@ -6,7 +6,7 @@ import path from "path";
 import fs from 'fs'
 
 export const writeupdateStruct = (r: RibosomeStructure) => {
-  var rcsb_id = r.rcsb_id;
+  var rcsb_id         = r.rcsb_id;
   var target_filename = path.join(
     process.env.STATIC_ROOT as string,
     rcsb_id.toUpperCase(),

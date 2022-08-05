@@ -1,0 +1,3 @@
+ ExecutiveLoad-Detail: Detected mmCIF
+ PyMOL not running, entering library mode (experimental)
+Saved /home/rxz/dev/ribosome.xyz-frontend.ts/public/ray_templates/_ray_7UNW.png

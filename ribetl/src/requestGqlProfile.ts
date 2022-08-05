@@ -111,6 +111,7 @@ const matchRPNomenclature = (
   polymer: Polymer_Entity
 ): ProteinClass[] => {
 
+  console.log("Got polymer entry, ", polymer)
   var banregex = /\b([ueb][ls]\d{1,2})\b/gi
 
   // * check authors's annotations. if classes are present --> use that.
@@ -353,13 +354,14 @@ export const processPDBRecord = async (
 
 
     var pdbRecord: PDBGQLResponse = response.data.data                                                                                       ;
-
     var            proteins       = pdbRecord.entry.polymer_entities   .filter(poly => poly.entity_poly.rcsb_entity_polymer_type === "Protein");
     var            rnas           = pdbRecord.entry.polymer_entities   .filter(poly => poly.entity_poly.rcsb_entity_polymer_type === "RNA")    ;
     var            ligands        = pdbRecord.entry.nonpolymer_entities                                                                        ;
-
     var reshaped_proteins : Protein [] = []                                                                                     ;
-    var reshaped_rnas     : RNA    [] = []                                                                                      ;
+    var reshaped_rnas     : RNA    []  = []                                                                                      ;
+
+    console.log("processing proteins , rnas");
+    
     proteins . map (protein => { reshaped_proteins.push(...reshape_PolyEntity_to_RibosomalProtein (protein ) ) }) ;
     rnas     . map (rna     => { reshaped_rnas    .push(...reshape_PolyEntity_to_rRNA             (rna     ) ) }) ;
     var reshaped_nonpoly      : Ligand[] | null = ligands  == null ? null : ligands.map(r       => reshape_ToLigand                       (r       ));

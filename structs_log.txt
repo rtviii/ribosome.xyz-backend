@@ -1,0 +1,40 @@
+ PyMOL not running, entering library mode (experimental)
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/pymol/internal.py", line 323, in file_read
+    handle = open(finfo, 'rb')
+FileNotFoundError: [Errno 2] No such file or directory: '/home/rxz/dev/riboxyzbackend/ribetl/static/5N95/5N95.cif'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "ribetl/src/struct-hero-image.py", line 21, in <module>
+    cmd.load(os.path.join(STATIC_ROOT, pdbid, f"{pdbid}.cif"))
+  File "/usr/lib/python3/dist-packages/pymol/importing.py", line 801, in load
+    return func(**kw)
+  File "/usr/lib/python3/dist-packages/pymol/internal.py", line 389, in _load
+    finfo = _self.file_read(finfo)
+  File "/usr/lib/python3/dist-packages/pymol/internal.py", line 327, in file_read
+    raise pymol.CmdException('failed to open file "%s"' % finfo)
+pymol.CmdException:  Error: failed to open file "/home/rxz/dev/riboxyzbackend/ribetl/static/5N95/5N95.cif"
+ PyMOL not running, entering library mode (experimental)
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/pymol/internal.py", line 323, in file_read
+    handle = open(finfo, 'rb')
+FileNotFoundError: [Errno 2] No such file or directory: '/home/rxz/dev/riboxyzbackend/ribetl/static/7ASM/7ASM.cif'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "ribetl/src/struct-hero-image.py", line 21, in <module>
+    cmd.load(os.path.join(STATIC_ROOT, pdbid, f"{pdbid}.cif"))
+  File "/usr/lib/python3/dist-packages/pymol/importing.py", line 801, in load
+    return func(**kw)
+  File "/usr/lib/python3/dist-packages/pymol/internal.py", line 389, in _load
+    finfo = _self.file_read(finfo)
+  File "/usr/lib/python3/dist-packages/pymol/internal.py", line 327, in file_read
+    raise pymol.CmdException('failed to open file "%s"' % finfo)
+pymol.CmdException:  Error: failed to open file "/home/rxz/dev/riboxyzbackend/ribetl/static/7ASM/7ASM.cif"
+ ExecutiveLoad-Detail: Detected mmCIF
+ PyMOL not running, entering library mode (experimental)
+Saved /home/rxz/dev/ribosome.xyz-frontend.ts/public/ray_templates/_ray_7ASO.png
+ ExecutiveLoad-Detail: Detected mmCIF

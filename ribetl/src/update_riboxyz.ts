@@ -146,6 +146,7 @@ const process_new_structure = async (opts:IngressOptions) => {
         await save_struct_profile(ribosome)
         console.log(`Saved structure profile ${struct_id}.json`);
     } 
+
     if (opts.downloadCifFile){
         await download_unpack_place(struct_id)
         console.log(`Saved structure cif file ${struct_id}.cif`);
@@ -221,9 +222,10 @@ const main = async () => {
         try {
 
             const opts:IngressOptions = {  //<----------------------- Adjust actions here
-                envfilepath  : args.envfile,
-                rcsb_id      : args.structure.toUpperCase(),
-                commitToNeo4j: true
+                envfilepath     : args.envfile,
+                rcsb_id         : args.structure.toUpperCase(),
+                acquirePDBRecord: true,
+                commitToNeo4j   : true
             }                                  
             await process_new_structure(opts);
         } catch (e: any) {
