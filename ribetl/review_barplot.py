@@ -78,20 +78,21 @@ for e in by_year:
 width         = 0.35       # the width of the bars: can also be len(x) sequence
 fig, ax = plt.subplots()
 
-ax.bar(d_years, d_xrays, width,                label='xray' , fill = None   , edgecolor="black")
-ax.bar(d_years, d_ems  , width, bottom=d_xrays,label='ems'  , color="black", edgecolor="black")
-ax.set_ylabel('Scores')
-ax.set_title('Scores by group and gender')
+xraybars = ax.bar(d_years, d_xrays, width,                label='xray' , fill = None   , edgecolor="black")
+embars   = ax.bar(d_years, d_ems  , width, bottom=d_xrays,label='ems'  , color="black", edgecolor="black")
+# ax.set_ylabel('Scores')
+# ax.set_title('Scores by group and gender')
 ax.legend()
 
+
+        
+
+for bar in embars.patches:
+    value = bar.get_height()
+    text = f'{value}'
+    text_x = bar.get_x() + bar.get_width() / 2
+    text_y = bar.get_y() + value
+    ax.text(text_x, text_y + 3, text, ha='center',color='r',size=12)
+
+
 plt.show()
-
-
-    
-
-# height = [3, 12, 5, 18, 45]
-# bars   = ('A', 'B', 'C', 'D', 'E')
-# x_pos  = np.arange(len(bars))
-# plt.bar(x_pos, height, color=(0.1, 0.1, 0.1, 0.1),  edgecolor='blue')
-# plt.xticks(x_pos, bars)
-# plt.show()
