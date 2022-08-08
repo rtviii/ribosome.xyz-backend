@@ -80,18 +80,19 @@ rc('axes', linewidth=2)
 # rc('font', weight='bold')
 xraybars = ax.bar(d_years, d_xrays, width,                label='X-RAY DIFFRACTION' , fill = None   , edgecolor="black")
 embars   = ax.bar(d_years, d_ems  , width, bottom=d_xrays,label='ELECTRON MICROSCOPY'  , color="black", edgecolor="black")
-plt.xticks(d_years,fontsize=10)
+plt.xticks(fontsize=18)
+plt.yticks(fontsize=18)
 # ax.set_ylabel('Scores')
 # ax.set_title('Scores by group and gender')
 ax.legend()
 
 #  set x axis label to "Year"
 
-ax.set_xlabel('Year'                                 , fontsize=16)
-ax.set_ylabel('Number of entries'                    , fontsize=16)
+ax.set_xlabel('Year'                                 , fontsize=20)
+ax.set_ylabel('Number of entries'                    , fontsize=20)
 title= "Number of entries in " + r"$\it{" + "ribosome.xyz" +"}$ by year"
-ax.set_title (title, fontsize=18)
-plt.legend(loc=2, prop={'size': 14})
+ax.set_title (title, fontsize=22)
+plt.legend(loc=2, prop={'size': 18})
 
 
 # ax.set_xticklabels(['2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008', '2009', '2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019'])
@@ -102,13 +103,10 @@ for ( bar, i_em, i_xray ) in zip(embars.patches, d_ems, d_xrays):
     text = f'{i_em+i_xray}'
     text_x = bar.get_x() + bar.get_width() / 2
     text_y = bar.get_y() + value
-    ax.text(text_x, text_y + 3, text, ha='center',color='black',size=12)
-
-# plt.show()
-
-
+    ax.text(text_x, text_y + 3, text, ha='center',color='black',size=18)
 
 fig.set_size_inches(18.5, 10.5)
-fig.savefig('cumulative_entries.svg', format='svg', dpi=600)
-fig.savefig('cumulative_entries.png', format='png', dpi=600)
-fig.savefig('cumulative_entries.pdf', format='pdf', dpi=600)
+# plt.show()
+fig.savefig('cumulative_entries.png', format='png', dpi=300, bbox_inches='tight')
+fig.savefig('cumulative_entries.pdf', format='pdf', dpi=300, bbox_inches='tight')
+
