@@ -87,12 +87,12 @@ ax.legend()
 
         
 
-for bar in embars.patches:
+for ( bar, i_em, i_xray ) in zip(embars.patches, d_ems, d_xrays):
     value = bar.get_height()
-    text = f'{value}'
+    text = f'{i_em+i_xray}'
     text_x = bar.get_x() + bar.get_width() / 2
     text_y = bar.get_y() + value
-    ax.text(text_x, text_y + 3, text, ha='center',color='r',size=12)
+    ax.text(text_x, text_y + 3, text, ha='center',color='black',size=12)
 
 
 plt.show()
