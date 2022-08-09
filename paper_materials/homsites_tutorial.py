@@ -9,6 +9,7 @@ from Bio.PDB.Structure import Structure
 from Bio.Align import MultipleSeqAlignment
 from Bio.PDB.Chain import Chain
 from Bio.SeqRecord import SeqRecord
+from Bio.Seq import Seq
 from Bio import pairwise2
 import gemmi
 import tempfile
@@ -38,9 +39,25 @@ block = cif.sole_block()
 s1= "AAAAASDF"
 s2= "TAAAAASDF"
 s3= "TAAGGAASDF"
-print(SeqRecord))
-# ms= MultipleSeqAlignment([s1,s2,s3])
-# print(ms)
+
+
+s1 = SeqRecord(
+    Seq(s1),
+)
+s2 = SeqRecord(
+    Seq(s2),
+)
+s3 = SeqRecord(
+    Seq(s3),
+)
+maxlen = max(len(s1), len(s2), len(s3))
+for record in [s1,s2,s3]:
+    if len(record.seq) != maxlen:
+        sequence = str(record.seq).ljust(maxlen, '.')
+        record.seq = Seq(sequence)
+assert all(len(record.seq) == maxlen for record in [s1,s2,s3])
+ms= MultipleSeqAlignment([s1,s2,s3])
+print(ms)
 
 # for i in block:
 #     print(block)
