@@ -34,12 +34,12 @@ for s in data:
     reso              = s['data']['rcsb_entry_info']['resolution_combined']
     [year,month,day]  = datestr.split("-")
 
-    # if reso == None or int( reso[0] ) >4:
-    #     print("fitlered out ", s)
-    #     continue
+    if reso == None or int( reso[0] ) >4:
+        print("fitlered out ", s)
+        continue
 
-    # if int(year) < 2000:
-    #     continue
+    if int(year) < 2000:
+        continue
     d                 = datetime.datetime(int(year),int(month),int(day))
 
     print(reso)
@@ -74,13 +74,13 @@ for e in by_year:
     d_ems.append(_em)
     d_xrays.append(_xray)
 
-width         = 0.35       # the width of the bars: can also be len(x) sequence
+width         = 0.65       # the width of the bars: can also be len(x) sequence
 fig, ax = plt.subplots()
 rc('axes', linewidth=2)
 xraybars = ax.bar(d_years, d_xrays, width,                label='X-RAY DIFFRACTION' , color="black"   , edgecolor="black")
 embars   = ax.bar(d_years, d_ems  , width, bottom=d_xrays,label='ELECTRON MICROSCOPY'  ,fill=None , edgecolor="black")
-plt.xticks(fontsize=18)
-plt.yticks(fontsize=18)
+plt.xticks(fontsize=22)
+plt.yticks(fontsize=22)
 # ax.set_ylabel('Scores')
 # ax.set_title('Scores by group and gender')
 ax.legend()
@@ -88,11 +88,11 @@ ax.legend()
 print("nume entires", len(d_years))
 #  set x axis label to "Year"
 
-ax.set_xlabel('Year'                                 , fontsize=20)
-ax.set_ylabel('Number of entries'                    , fontsize=20)
-title= "Number of entries in " + r"$\it{" + "ribosome.xyz" +"}$ by year"
-ax.set_title (title, fontsize=22)
-plt.legend(loc=2, prop={'size': 18})
+ax.set_xlabel('Year'                      , fontsize=24)
+ax.set_ylabel('Number of released RCSB models' , fontsize=24)
+title= "Number of entries in $\it{ribosome.xyz}$  by year"
+ax.set_title (title, fontsize=24)
+plt.legend(loc=2, prop={'size': 22})
 
 
 # ax.set_xticklabels(['2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008', '2009', '2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019'])
@@ -106,7 +106,7 @@ for ( bar, i_em, i_xray ) in zip(embars.patches, d_ems, d_xrays):
     ax.text(text_x, text_y + 3, text, ha='center',color='black',size=18)
 
 fig.set_size_inches(18.5, 10.5)
-plt.show()
-# fig.savefig('cumulative_entries.png', format='png', dpi=300, bbox_inches='tight')
-# fig.savefig('cumulative_entries.pdf', format='pdf', dpi=300, bbox_inches='tight')
+# plt.show()
+fig.savefig('cumulative_entries.png', format='png', dpi=300, bbox_inches='tight')
+fig.savefig('cumulative_entries.pdf', format='pdf', dpi=300, bbox_inches='tight')
 

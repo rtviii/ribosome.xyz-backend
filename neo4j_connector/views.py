@@ -197,8 +197,7 @@ def get_full_structure(request):
 def get_all_structs(request):
     start = time.time()
     print("Begun fetching all structures.")
-    CYPHER_STRING="""
-    match (ribs:RibosomeStructure) 
+    CYPHER_STRING="""match (ribs:RibosomeStructure) 
         unwind ribs as rb
 
         optional match (l:Ligand)-[]-(rb)
