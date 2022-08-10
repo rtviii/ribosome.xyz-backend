@@ -48,7 +48,38 @@ for path in profiles:
         species_dict[organism][method].append(reso)
 
 
+562 
+83333
 
+species_dict[562] ={
+    'count'               :   species_dict[562]['count'              ] + species_dict[83333]['count'               ],
+    'X-RAY DIFFRACTION'   : [*species_dict[562]['X-RAY DIFFRACTION'  ], *species_dict[83333]['X-RAY DIFFRACTION'  ]],
+    'ELECTRON MICROSCOPY' :[* species_dict[562]['ELECTRON MICROSCOPY'], *species_dict[83333]['ELECTRON MICROSCOPY']], 
+}
+
+del(species_dict[83333])
 
 sorted_by_count = sorted(species_dict.items(), key=lambda x: x[1]['count'])
-pprint(sorted_by_count[-5:])
+for item in sorted_by_count[-5:]:
+    assert(len(item[1]['X-RAY DIFFRACTION']) +len(item[1]['ELECTRON MICROSCOPY']) == item[1]['count']) 
+    print("Count:",item[1]['count'])
+    print("Species: ", ncbi.get_taxid_translator([ item[0] ]))
+    print("Avg xray",  np.mean(item[1]['X-RAY DIFFRACTION']))
+    print("Avg em",  np.mean(item[1]['ELECTRON MICROSCOPY']))
+    print("\n")
+
+
+rest_xrays = []
+rest_ems   = []
+rest_count = 0
+
+for rest_item in sorted_by_count[:-5]:
+    rest_count +=              rest_item[1]['count'               ]
+    rest_xrays =[*rest_xrays, *rest_item[1]['X-RAY DIFFRACTION'  ]]
+    rest_ems   =[*rest_xrays, *rest_item[1]['ELECTRON MICROSCOPY']]
+
+
+print("\n")
+print("rest Count:", rest_count)
+print("rest Avg xray",  np.mean(rest_xrays))
+print("rest Avg em",  np.mean(rest_ems))
