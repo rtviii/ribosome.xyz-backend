@@ -22,15 +22,7 @@ profiles      = list(map(lambda _: os.path.join(STATIC_ROOT,_,f"{_}.json"),struc
 # taxid2name = ncbi.get_taxid_translator(profile['src_organism_ids'])
 
 
-species_dict = {
-
--1: {
-    'count':0,
-    'xray_resos':[],
-    'cryoem_resos':[] # assert len(xray_resos) + len(cryoem_resos) == count
-}
-    
-}
+species_dict = {}
 
 
 
@@ -40,4 +32,23 @@ for path in profiles:
         src_ids = profile['src_organism_ids']
         if len(src_ids)<1:continue
         
-        # print(profile['host_organism_ids'])
+        organism = src_ids[0]
+        reso     = profile['resolution']
+        method   = profile['expMethod']
+
+        if organism not in species_dict:
+            species_dict[organism] = {
+                'X-RAY DIFFRACTION'  : [],
+                'ELECTRON MICROSCOPY': [],
+                'count':1
+            }
+        else:
+            species_dict[organism]['count']+=1
+
+        species_dict[organism][method].append(reso)
+
+
+
+
+sorted_by_count = sorted(species_dict.items(), key=lambda x: x[1]['count'])
+pprint(sorted_by_count[-5:])
