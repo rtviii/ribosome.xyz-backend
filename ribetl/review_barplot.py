@@ -27,8 +27,10 @@ EM   = 'ELECTRON MICROSCOPY'
 
 for s in data:
     datestr           = str(s['data']['rcsb_accession_info']['initial_release_date']).split("T")[0]
+    # datestr           = str(s['data']['rcsb_accession_info']['deposit_date']).split("T")[0]
     print("datestr is ", datestr)
     method            = str(s['data']['exptl'][0]['method']);
+    print("method is ", method)
     reso              = s['data']['rcsb_entry_info']['resolution_combined']
     [year,month,day]  = datestr.split("-")
 
@@ -36,8 +38,8 @@ for s in data:
     #     print("fitlered out ", s)
     #     continue
 
-    if int(year) < 2000:
-        continue
+    # if int(year) < 2000:
+    #     continue
     d                 = datetime.datetime(int(year),int(month),int(day))
 
     print(reso)
@@ -83,6 +85,7 @@ plt.yticks(fontsize=18)
 # ax.set_title('Scores by group and gender')
 ax.legend()
 
+print("nume entires", len(d_years))
 #  set x axis label to "Year"
 
 ax.set_xlabel('Year'                                 , fontsize=20)

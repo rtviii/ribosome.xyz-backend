@@ -64,7 +64,6 @@ def inject_dict( pdbid:str):
 	doc.write_file(cifmodified)
 	print("\033[91m Wrote {} \033[0m".format(cifmodified))
 
-
 def process_chains( pdbid:str):
 
 	io          = MMCIFIO()
