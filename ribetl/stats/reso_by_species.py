@@ -79,8 +79,23 @@ print("Scnanned Total structures : ", file_i)
 # sorted_by_species = dict(sorted(species_dict.items(), key=lambda x: x[0]))
 
 print(years_dict)
-# for i in [2022,2021,2020]:
-#     print(sorted_by_year[i])
+last3_reso    = []
+last3_species = []
+last3_xray    = 0
+last3_em      = 0
+for i in [2022,2021,2020]:
+    last3_reso.extend(years_dict[i]["resos"])
+    last3_species.extend(years_dict[i]["src_ids"])
+    for res in years_dict[i]["methods"]:
+        if res == "X-RAY DIFFRACTION":
+            last3_xray+=1
+        elif res == "ELECTRON MICROSCOPY":
+            last3_em+=1
+
+
+print(last3_em)
+print(last3_xray)
+
 
 
 
