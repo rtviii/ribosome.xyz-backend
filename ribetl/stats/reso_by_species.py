@@ -33,9 +33,9 @@ profiles      = list(map(lambda _: os.path.join(STATIC_ROOT,_,f"{_}.json"),struc
 
 # ----------------------------- CONTAINERS -----------------------------------------
 
-species_dict = {}
 years_dict   = {}
 
+file_i = 0
 for path in profiles:
     with open(path,'r') as infile:
         profile = json.load(infile)
@@ -47,34 +47,68 @@ for path in profiles:
         reso         = profile['resolution']
         method       = profile['expMethod']
         release_date = profile['citation_year']
+        # if int( reso ) >3:
+            # print("dropped {} structures ".format(reso))
+            # continue
 
-        
-        if len(src_ids)<1 or release_date == None: # ----------------- If no organisms or release date
+
+        if len(src_ids)<1:
+            src_ids = []
+
+        if release_date == None: # ----------------- If no organisms or release date
             continue
+        file_i+=1
 
         if release_date not in years_dict:
-            years_dict[release_date] =[*src_ids]
-
+            years_dict[release_date] ={ 
+                                        "src_ids": [*src_ids],
+                                        "methods": [method],
+                                        "resos"  : [reso]
+                                       }
         else:
-            years_dict[release_date] =[*src_ids, *years_dict[release_date]]
 
+            years_dict[release_date] = { 
+                                        "src_ids" : [*src_ids, *years_dict[release_date]["src_ids"]],
+                                        "methods" : [ method , *years_dict[release_date]["methods"]],
+                                        "resos"   : [ reso   , *years_dict[release_date]["resos"  ]]
+                                       }
+
+print("Scnanned Total structures : ", file_i)
 # -------------------------------------------------------------------------------- YEARS DICT
-sorted_by_year = sorted(years_dict.items(), key=lambda x: x[0])
-last10years    = sorted_by_year[-10:]
-all            = sorted_by_year
+# sorted_by_year = dict(sorted(years_dict.items(), key=lambda x: x[0]))
+# sorted_by_species = dict(sorted(species_dict.items(), key=lambda x: x[0]))
 
-allset = set();
-for x in all:
-    allset.update(x[1])
+print(years_dict)
+# for i in [2022,2021,2020]:
+#     print(sorted_by_year[i])
 
-last10yearsset = set();
-for i in last10years:
-    last10yearsset.update(i[1])
 
-print(len(allset))
-print(len(last10yearsset))
-print(allset.difference(last10yearsset))
-print(ncbi.get_taxid_translator(list(allset.difference(last10yearsset))))
+
+
+
+
+
+
+
+
+
+
+
+# last10years    = sorted_by_year[-10:]
+# all            = sorted_by_year
+
+# allset = set();
+# for x in all:
+#     allset.update(x[1])
+
+# last10yearsset = set();
+# for i in last10years:
+#     last10yearsset.update(i[1])
+
+# print(len(allset))
+# print(len(last10yearsset))
+# print(allset.difference(last10yearsset))
+# print(ncbi.get_taxid_translator(list(allset.difference(last10yearsset))))
 
 
 
