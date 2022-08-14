@@ -7,6 +7,14 @@ import dotenv
 import numpy as np
 from ete3 import NCBITaxa
 
+
+# ----------------------------- SETUP -----------------------------------------
+# Paper additions: 
+# - 3 years of data -- percent between xrays/em
+# - 5 years of data -- number of new species
+
+LOOK_AT_LAST_N_YEARS = 5
+
 BACTERIA = 2
 ARCHAEA  = 2157
 EUKARYA  = 2759
@@ -22,42 +30,36 @@ profiles      = list(map(lambda _: os.path.join(STATIC_ROOT,_,f"{_}.json"),struc
 # taxid2name = ncbi.get_taxid_translator(profile['src_organism_ids'])
 
 
-species_dict = {}
-years_dict = {}
 
+# ----------------------------- CONTAINERS -----------------------------------------
+
+species_dict = {}
+years_dict   = {}
 
 for path in profiles:
     with open(path,'r') as infile:
         profile = json.load(infile)
-        src_ids = profile['src_organism_ids']
-        if len(src_ids)<1:continue
+
         
-        organism     = src_ids[0]
+
+        src_ids      = profile['src_organism_ids']
+        organism     = profile['src_organism_ids'][0]
         reso         = profile['resolution']
         method       = profile['expMethod']
         release_date = profile['citation_year']
-        if release_date == None:continue
+
+        
+        if len(src_ids)<1 or release_date == None: # ----------------- If no organisms or release date
+            continue
+
         if release_date not in years_dict:
-            years_dict[release_date] =[organism]
+            years_dict[release_date] =[*src_ids]
+
         else:
-            years_dict[release_date] =[organism, *years_dict[release_date]]
-
-
-        print(release_date)
-        if organism not in species_dict:
-            species_dict[organism] = {
-                'X-RAY DIFFRACTION'  : [],
-                'ELECTRON MICROSCOPY': [],
-                'count':1
-            }
-        else:
-            species_dict[organism]['count']+=1
-
-        species_dict[organism][method].append(reso)
+            years_dict[release_date] =[*src_ids, *years_dict[release_date]]
 
 # -------------------------------------------------------------------------------- YEARS DICT
 sorted_by_year = sorted(years_dict.items(), key=lambda x: x[0])
-
 last10years    = sorted_by_year[-10:]
 all            = sorted_by_year
 
@@ -71,6 +73,8 @@ for i in last10years:
 
 print(len(allset))
 print(len(last10yearsset))
+print(allset.difference(last10yearsset))
+print(ncbi.get_taxid_translator(list(allset.difference(last10yearsset))))
 
 
 
