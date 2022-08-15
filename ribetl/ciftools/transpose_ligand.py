@@ -61,7 +61,7 @@ class SeqMatch:
 			self.tgt_ids.append(self.backwards_match(self.tgt_aln,aln_resid))
 
 	def backwards_match(self, alntgt:str, resid:int):
-		"""Returns the target-sequence  index of a residue in the (aligned) target sequence"""
+		"""Returns the target-sequence index of a residue in the (aligned) target sequence"""
 		if resid > len(alntgt):
 			exit(IndexError(f"Passed residue with invalid index ({resid}) to back-match to target.Seqlen:{len(alntgt)}"))
 		counter_proper = 0
