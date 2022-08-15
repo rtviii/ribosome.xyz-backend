@@ -1,4 +1,12 @@
-from itertools import chain
+#!/usr/bin/env python3
+# This script is courtesy of the ribosome.xyz and its authors.
+# This relise on the following packages to run
+# - gemmi   : https://gemmi.readthedocs.io/en/latest/install.html
+# - bipython: https://biopython.org/
+# And additionally "requests" to download missing structures: https://pypi.org/project/requests/
+
+# Distribute freely.
+
 from Bio import pairwise2
 import gemmi
 import pathlib
@@ -6,14 +14,18 @@ import argparse
 
 # As per PDB 3J7Z ( https://www.rcsb.org/structure/3j7z )
 ECOLI23SRRNA ="GGUUAAGCGACUAAGCGUACACGGUGGAUGCCCUGGCAGUCAGAGGCGAUGAAGGACGUGCUAAUCUGCGAUAAGCGUCGGUAAGGUGAUAUGAACCGUUAUAACCGGCGAUUUCCGAAUGGGGAAACCCAGUGUGUUUCGACACACUAUCAUUAACUGAAUCCAUAGGUUAAUGAGGCGAACCGGGGGAACUGAAACAUCUAAGUACCCCGAGGAAAAGAAAUCAACCGAGAUUCCCCCAGUAGCGGCGAGCGAACGGGGAGCAGCCCAGAGCCUGAAUCAGUGUGUGUGUUAGUGGAAGCGUCUGGAAAGGCGCGCGAUACAGGGUGACAGCCCCGUACACAAAAAUGCACAUGCUGUGAGCUCGAUGAGUAGGGCGGGACACGUGGUAUCCUGUCUGAAUAUGGGGGGACCAUCCUCCAAGGCUAAAUACUCCUGACUGACCGAUAGUGAACCAGUACCGUGAGGGAAAGGCGAAAAGAACCCCGGCGAGGGGAGUGAAAAAGAACCUGAAACCGUGUACGUACAAGCAGUGGGAGCACGCUUAGGCGUGUGACUGCGUACCUUUUGUAUAAUGGGUCAGCGACUUAUAUUCUGUAGCAAGGUUAACCGAAUAGGGGAGCCGAAGGGAAACCGAGUCUUAACUGGGCGUUAAGUUGCAGGGUAUAGACCCGAAACCCGGUGAUCUAGCCAUGGGCAGGUUGAAGGUUGGGUAACACUAACUGGAGGACCGAACCGACUAAUGUUGAAAAAUUAGCGGAUGACUUGUGGCUGGGGGUGAAAGGCCAAUCAAACCGGGAGAUAGCUGGUUCUCCCCGAAAGCUAUUUAGGUAGCGCCUCGUGAAUUCAUCUCCGGGGGUAGAGCACUGUUUCGGCAAGGGGGUCAUCCCGACUUACCAACCCGAUGCAAACUGCGAAUACCGGAGAAUGUUAUCACGGGAGACACACGGCGGGUGCUAACGUCCGUCGUGAAGAGGGAAACAACCCAGACCGCCAGCUAAGGUCCCAAAGUCAUGGUUAAGUGGGAAACGAUGUGGGAAGGCCCAGACAGCCAGGAUGUUGGCUUAGAAGCAGCCAUCAUUUAAAGAAAGCGUAAUAGCUCACUGGUCGAGUCGGCCUGCGCGGAAGAUGUAACGGGGCUAAACCAUGCACCGAAGCUGCGGCAGCGACGCUUAUGCGUUGUUGGGUAGGGGAGCGUUCUGUAAGCCUGCGAAGGUGUGCUGUGAGGCAUGCUGGAGGUAUCAGAAGUGCGAAUGCUGACAUAAGUAACGAUAAAGCGGGUGAAAAGCCCGCUCGCCGGAAGACCAAGGGUUCCUGUCCAACGUUAAUCGGGGCAGGGUGAGUCGACCCCUAAGGCGAGGCCGAAAGGCGUAGUCGAUGGGAAACAGGUUAAUAUUCCUGUACUUGGUGUUACUGCGAAGGGGGGACGGAGAAGGCUAUGUUGGCCGGGCGACGGUUGUCCCGGUUUAAGCGUGUAGGCUGGUUUUCCAGGCAAAUCCGGAAAAUCAAGGCUGAGGCGUGAUGACGAGGCACUACGGUGCUGAAGCAACAAAUGCCCUGCUUCCAGGAAAAGCCUCUAAGCAUCAGGUAACAUCAAAUCGUACCCCAAACCGACACAGGUGGUCAGGUAGAGAAUACCAAGGCGCUUGAGAGAACUCGGGUGAAGGAACUAGGCAAAAUGGUGCCGUAACUUCGGGAGAAGGCACGCUGAUAUGUAGGUGAGGUCCCUCGCGGAUGGAGCUGAAAUCAGUCGAAGAUACCAGCUGGCUGCAACUGUUUAUUAAAAACACAGCACUGUGCAAACACGAAAGUGGACGUAUACGGUGUGACGCCUGCCCGGUGCCGGAAGGUUAAUUGAUGGGGUUAGCGCAAGCGAAGCUCUUGAUCGAAGCCCCGGUAAACGGCGGCCGUAACUAUAACGGUCCUAAGGUAGCGAAAUUCCUUGUCGGGUAAGUUCCGACCUGCACGAAUGGCGUAAUGAUGGCCAGGCUGUCUCCACCCGAGACUCAGUGAAAUUGAACUCGCUGUGAAGAUGCAGUGUACCCGCGGCAAGACGGAAAGACCCCGUGAACCUUUACUAUAGCUUGACACUGAACAUUGAGCCUUGAUGUGUAGGAUAGGUGGGAGGCUUUGAAGUGUGGACGCCAGUCUGCAUGGAGCCGACCUUGAAAUACCACCCUUUAAUGUUUGAUGUUCUAACGUUGACCCGUAAUCCGGGUUGCGGACAGUGUCUGGUGGGUAGUUUGACUGGGGCGGUCUCCUCCUAAAGAGUAACGGAGGAGCACGAAGGUUGGCUAAUCCUGGUCGGACAUCAGGAGGUUAGUGCAAUGGCAUAAGCCAGCUUGACUGCGAGCGUGACGGCGCGAGCAGGUGCGAAAGCAGGUCAUAGUGAUCCGGUGGUUCUGAAUGGAAGGGCCAUCGCUCAACGGAUAAAAGGUACUCCGGGGAUAACAGGCUGAUACCGCCCAAGAGUUCAUAUCGACGGCGGUGUUUGGCACCUCGAUGUCGGCUCAUCACAUCCUGGGGCUGAAGUAGGUCCCAAGGGUAUGGCUGUUCGCCAUUUAAAGUGGUACGCGAGCUGGGUUUAGAACGUCGUGAGACAGUUCGGUCCCUAUCUGCCGUGGGCGCUGGAGAACUGAGGGGGGCUGCUCCUAGUACGAGAGGACCGGAGUGGACGCAUCACUGGUGUUCGGGUUGUCAUGCCAAUGGCACUGCCCGGUAGCUAAAUGCGGAAGAGAUAAGUGCUGAAAGCAUCUAAGCACGAAACUUGCCCCGAGAUGAGUUCUCCCUGACCCUUUAAGGGUCCUGAAGGAACGUUGAAGACGACGACGUUGAUAGGCCGGGUGUGUAAGCGCAGCGAUGCGUUGAGCUAACCGGUACUAAUGAACCGUGAGGCUUAACCU"
+
 parser = argparse.ArgumentParser(description= 'CLI for locating PTC residues of 23SrRNA in a given prokaryotic PDB file')
 parser.add_argument ("-t", "--targets", type= str, required=True)
-parser.add_argument ("--display_all", type= bool)
-args = parser .parse_args()
-argdict    = vars(parser.parse_args())
+parser.add_argument ("--display_all", action='store_true')
+args    = parser .parse_args()
+argdict = vars(parser.parse_args())
 
 if "targets" in argdict.keys():
-    d["targets"] = [s.strip().upper() for s in d["targets"].split(",")]
+    argdict["targets"] = [s.strip().upper() for s in argdict["targets"].split(",")]
+    if len(argdict) > 50: 
+        print("Please don't overload our servers. Paid out of pocket!:) \nInstead, get in touch for collaboration: rtkushner@gmail.com!")
+        exit(1)
 
 def backwards_match(alntgt:str, resid:int):
     """Returns the target-sequence index of a residue in the (aligned) target sequence"""
@@ -72,7 +84,6 @@ def process_target(rcsb_id: str):
         block.find_loop('_entity_poly.pdbx_seq_one_letter_code')
     ):
         if STRAND in chain_id.split(','):                      # X-RAY structures have 'dual' chains. Split on comma to check both.
-            print("Found {} in {}".format(STRAND, chain_id))
             SEQ = str(one_letter_code).strip(";").strip("\n")
 
     if SEQ == None:
@@ -88,8 +99,6 @@ def process_target(rcsb_id: str):
 
     for src_resid in ptc_ids:
         aln_ids.append(forwards_match(src_aln,src_resid))
-
-    print("Got aligned IDs:",aln_ids)
     aln_ids = list(filter(lambda x: x != None, aln_ids ))
 
     for aln_resid in aln_ids:
@@ -101,66 +110,13 @@ def process_target(rcsb_id: str):
     return [list(model[STRAND][ix][0].pos) for ix in tgt_ids]
     
 
-
-for target in d["targets"]:
-    target_ptc = process_target(target)
-    print("[{}] PTC residues: {}".format(target,target_ptc))
-    if args.display_all:
-        print(target)
-    print()
-
-# cif = gemmi.cif.read_file('3J7Z.cif')
-# block = cif.sole_block()
-
-# --- alignment
-# _            = pairwise2.align.globalxx(self.src,self.tgt, one_alignment_only=True)
-# self.src_aln = _[0].seqA
-# self.tgt_aln = _[0].seqB
-
-
-# for ( chain_id,one_letter_code )  in zip(
-#                                          block.find_loop('_entity_poly.pdbx_strand_id'),
-#                                          block.find_loop('_entity_poly.pdbx_seq_one_letter_code')
-#                                         ):
-#     print(chain_id,one_letter_code)
-
-
-# s1= "AAAAASDF"
-# s2= "TAAAAASDF"
-# s3= "TAAGGAASDF"
-
-# s1 = SeqRecord(Seq(s1))
-# s2 = SeqRecord(Seq(s2))
-# s3 = SeqRecord(Seq(s3))
-
-# maxlen = max(len(s1), len(s2), len(s3))
-# for record in [s1,s2,s3]:
-#     if len(record.seq) != maxlen:
-#         sequence = str(record.seq).ljust(maxlen, '.')
-#         record.seq = Seq(sequence)
-# assert all(len(record.seq) == maxlen for record in [s1,s2,s3])
-
-# ms= MultipleSeqAlignment([s1,s2,s3])
-
-# for i in block:
-#     print(block)
-
-
-# with tempfile.NamedTemporaryFile() as outfile:
-#     outfile.write(response.content)
-#     outfile.flush()
-#     filename = outfile.name
-#     # cifstruct = FastMMCIFParser(QUIET=True).get_structure(RCSB_ID, filename)
-#     # y = MMCIF2Dict.MMCIF2Dict(filename)
-#     # doc   = gemmi.cif.read_file(filename)
-
-#     cif_block = gemmi.cif.read(filename)[0]
-#     structure = gemmi.make_structure_from_block(cif_block)
-#     # for entity in structure.entities:
-#     #     print(dir(entity))
-#     #     print(entity.name)
-#     #     print(entity.polymer_type)
-#     #     print(entity.full_sequence)
-
-#     for chain in structure:
-#         print(chain)
+for target in argdict["targets"]:
+    if not args.display_all:
+        target_ptc = process_target(target)
+        print("[\033[94m{}\033[0m] Approximate PTC position(1 of {} residues): \033[91m{}\033[0m".format(target,len( target_ptc ),target_ptc[0]))
+    else:
+        print("[\033[94m{}\033[0m] PTC atom positions: ".format(target))
+        for residue in process_target(target):
+            print(f"\t\033[91m{residue}\033[0m")
+if not args.display_all:
+    print("\n\nTo display more residues per target structure, use additional --display_all flag.")
