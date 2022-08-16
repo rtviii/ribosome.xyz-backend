@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # This script is courtesy of the ribosome.xyz and its authors.
-# This relise on the following packages to run
+# This relies on the following packages to run
 # - gemmi   : https://gemmi.readthedocs.io/en/latest/install.html
 # - bipython: https://biopython.org/
 # And additionally "requests" to download missing structures: https://pypi.org/project/requests/
