@@ -10,7 +10,7 @@
 try: from Bio import pairwise2
 except ImportError: print("Please install Biopython to use this script: pip install biopython"); exit(1)
 try: import gemmi
-except:  print("Please install Biopython to use this script: pip install gemmi"); exit(1)
+except:  print("Please install gemmi to use this script: pip install gemmi"); exit(1)
 import pathlib
 import argparse
 
@@ -48,7 +48,7 @@ def backwards_match(alntgt:str, resid:int):
             counter_proper  +=1
 
 def forwards_match(alnsrc:str, resid:int):
-    """Returns the index of a source-sequence residue in the aligned source sequence."""
+    """Returns the index of a source-sequence residue in the (aligned) source sequence."""
     count_proper = 0
     for alignment_indx,char in enumerate( alnsrc ):
         if count_proper == resid:
