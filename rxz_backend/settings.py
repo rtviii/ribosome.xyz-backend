@@ -86,4 +86,4 @@ USE_TZ         =  True
 
 STATIC_URL   =  '/static/'
 
-DEBUG=False
+# DEBUG=False
