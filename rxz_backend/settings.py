@@ -36,7 +36,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'neo4j_connector',
     'static_files',
-    'utils'
+    'utils',
+    'drf_yasg'
 ]
 
 MIDDLEWARE = [
