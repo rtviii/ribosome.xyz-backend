@@ -36,7 +36,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'neo4j_connector',
     'static_files',
-    'utils'
+    'utils',
+    'drf_yasg'
 ]
 
 MIDDLEWARE = [
@@ -84,3 +85,5 @@ USE_L10N       =  True
 USE_TZ         =  True
 
 STATIC_URL   =  '/static/'
+
+# DEBUG=False

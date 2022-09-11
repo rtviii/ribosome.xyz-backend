@@ -3,9 +3,14 @@ from numpy import log
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from neo4j import  Result, GraphDatabase
+
+
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework.serializers import Serializer
 import time
 import os
-#-⋯⋯⋅⋱⋰⋆⋅⋅⋄⋅⋅∶⋅⋅⋄▫▪▭┈┅✕⋅⋅⋄⋅⋅✕∶⋅⋅⋄⋱⋰⋯⋯⋯⋯⋅⋱⋰⋆⋅⋅⋄⋅⋅∶⋅⋅⋄▫▪▭┈┅✕⋅⋅⋄⋅⋅✕∶⋅⋅⋄⋱⋰⋯⋯⋯⋅⋱⋰⋆⋅⋅⋄⋅⋅∶⋅⋅⋄▫▪▭┈┅✕⋅⋅⋄⋅⋅✕∶⋅⋅⋄⋱⋰⋯⋯⋯
+#-⋯⋯⋅⋱⋰⋆⋅⋅⋄⋅⋅∶⋅⋅⋄▫▪▭┈┅✕⋅⋅⋄⋅⋅✕∶⋅⋅⋄⋱⋰⋯⋯⋯⋯⋅⋱⋰⋆⋅⋅⋄⋅⋅∶⋅⋅⋄▫▪▭┈┅✕⋅,⋅⋄⋅⋅✕∶⋅⋅⋄⋱⋰⋯⋯⋯⋅⋱⋰⋆⋅⋅⋄⋅⋅∶⋅⋅⋄▫▪▭┈┅✕⋅⋅⋄⋅⋅✕∶⋅⋅⋄⋱⋰⋯⋯⋯
 uri        =  os.getenv( 'NEO4J_URI'                                      )
 authglobal = (os.getenv( 'NEO4J_USER'      ),os.getenv( 'NEO4J_PASSWORD' ))
 current_db =  os.getenv( 'NEO4J_CURRENTDB'                                )
@@ -22,6 +27,38 @@ def _neoget(CYPHER_STRING:str):
         return session.read_transaction(parametrized_query)
 
 #-⋯⋯⋅⋱⋰⋆⋅⋅⋄⋅⋅∶⋅⋅⋄▫▪▭┈┅✕⋅⋅⋄⋅⋅✕∶⋅⋅⋄⋱⋰⋯⋯⋯⋯⋅⋱⋰⋆⋅⋅⋄⋅⋅∶⋅⋅⋄▫▪▭┈┅✕⋅⋅⋄⋅⋅✕∶⋅⋅⋄⋱⋰⋯⋯⋯⋅⋱⋰⋆⋅⋅⋄⋅⋅∶⋅⋅⋄▫▪▭┈┅✕⋅⋅⋄⋅⋅✕∶⋅⋅⋄⋱⋰⋯⋯⋯
+
+
+test_param = openapi.Parameter('pdbid', openapi.IN_QUERY, description="test manual param", type=openapi.TYPE_STRING)
+user_response = openapi.Response('response description', Serializer)
+
+@swagger_auto_schema(method='get', query_serializer=Serializer, manual_parameters=[test_param])
+@api_view(['GET'])
+def get_struct(request):
+    params = dict(request.GET)
+    pdbid  = str.upper(params['pdbid'][0])
+    cypher = """
+    match (n:RibosomeStructure{{rcsb_id:"{pdbid}"}})
+    optional match (rr:RNA)-[]-(n)
+    with n, collect(rr) as rrna
+    optional match (rp:Protein)-[]-(n)
+    with n, rrna,  collect(rp) as rps
+    optional match (l:Ligand)-[]-(n)
+    with n, rrna, rps, collect(l) as ligs
+    return {{structure: n, ligands: ligs,rnas: rrna, proteins: rps}}
+    """.format_map({"pdbid":pdbid})
+    return Response(_neoget(cypher))
+
+@swagger_auto_schema(methods=[ 'get', 'post' ], auto_schema=None)
+@api_view(['GET','POST'])
+def custom_cypher(request):
+    params        = dict(request.GET)
+    CYPHER_STRING = str( params['cypher'][0] ).strip('\"')
+    print("GOT STRING", CYPHER_STRING)
+    k = _neoget(CYPHER_STRING)
+    return Response(k)
+
+
 
 #? ---------------------------LIGANDS
 @api_view(['GET', 'POST'])
@@ -133,22 +170,6 @@ def get_ligands_by_struct(request):
            return {{ title: n.citation_title, struct:n.rcsb_id, organism:n.src_organism_names, taxid:n.src_organism_ids, 
            ligands:collect({{ chemid: l.chemicalId, name:l.chemicalName, number:number_of_instances }})}}""".format_map({})
     return Response(_neoget(CYPHER_STRING))
-
-@api_view(['GET'])
-def get_struct(request):
-    params = dict(request.GET)
-    pdbid  = str.upper(params['pdbid'][0])
-    cypher = """
-    match (n:RibosomeStructure{{rcsb_id:"{pdbid}"}})
-    optional match (rr:RNA)-[]-(n)
-    with n, collect(rr) as rrna
-    optional match (rp:Protein)-[]-(n)
-    with n, rrna,  collect(rp) as rps
-    optional match (l:Ligand)-[]-(n)
-    with n, rrna, rps, collect(l) as ligs
-    return {{structure: n, ligands: ligs,rnas: rrna, proteins: rps}}
-    """.format_map({"pdbid":pdbid})
-    return Response(_neoget(cypher))
 
 
 @api_view(['GET', 'POST'])
@@ -436,14 +457,6 @@ def tax_ids(request):
         else:
             d[_['organism']].append(_['struct'])
     return Response(d)
-
-@api_view(['GET','POST'])
-def custom_cypher(request):
-    params        = dict(request.GET)
-    CYPHER_STRING = str( params['cypher'][0] ).strip('\"')
-    print("GOT STRING", CYPHER_STRING)
-    k = _neoget(CYPHER_STRING)
-    return Response(k)
 
 #? ------------------------------ General 
 
