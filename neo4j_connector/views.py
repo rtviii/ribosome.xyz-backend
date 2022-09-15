@@ -29,7 +29,7 @@ def _neoget(CYPHER_STRING:str):
 #-⋯⋯⋅⋱⋰⋆⋅⋅⋄⋅⋅∶⋅⋅⋄▫▪▭┈┅✕⋅⋅⋄⋅⋅✕∶⋅⋅⋄⋱⋰⋯⋯⋯⋯⋅⋱⋰⋆⋅⋅⋄⋅⋅∶⋅⋅⋄▫▪▭┈┅✕⋅⋅⋄⋅⋅✕∶⋅⋅⋄⋱⋰⋯⋯⋯⋅⋱⋰⋆⋅⋅⋄⋅⋅∶⋅⋅⋄▫▪▭┈┅✕⋅⋅⋄⋅⋅✕∶⋅⋅⋄⋱⋰⋯⋯⋯
 
 
-test_param = openapi.Parameter('pdbid', openapi.IN_QUERY, description="test manual param", type=openapi.TYPE_STRING)
+test_param = openapi.Parameter('pdbid', openapi.IN_QUERY, description="RCSB ID of the ribosome structure profile. Ex. \"3J7Z\"", type=openapi.TYPE_STRING)
 user_response = openapi.Response('response description', Serializer)
 
 @swagger_auto_schema(method='get', query_serializer=Serializer, manual_parameters=[test_param])
