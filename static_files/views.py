@@ -15,6 +15,7 @@ from rxz_backend.settings import PROJECT_PATH
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 
+from rest_framework.serializers import Serializer
 
 uri         =  os.environ.get( 'NEO4J_URI'                                           )
 authglobal  = (os.environ.get( 'NEO4J_USER'      ),os.environ.get( 'NEO4J_PASSWORD' ))
@@ -31,6 +32,24 @@ def _neoget(CYPHER_STRING:str):
     with driver.session() as session:
         return session.read_transaction(parametrized_query)
 
+r1star        = openapi.Parameter('r1star       ', openapi.IN_QUERY, description="Id of the FIRST residue of the FIRST of two given chains.", type=openapi.TYPE_STRING)
+r1end         = openapi.Parameter('r1end        ', openapi.IN_QUERY, description="Id of the LAST residue of the FIRST of two given chains.", type=openapi.TYPE_STRING)
+r2start       = openapi.Parameter('r2start      ', openapi.IN_QUERY, description="Id of the FIRST residue of the SECOND of two given chains.", type=openapi.TYPE_STRING)
+r2end         = openapi.Parameter('r2end        ', openapi.IN_QUERY, description="Id of the LAST residue of the SECOND of two given chains.", type=openapi.TYPE_STRING)
+struct1       = openapi.Parameter('struct1      ', openapi.IN_QUERY, description="Parent of the FIRST of the two aligned chains. ", type=openapi.TYPE_STRING)
+struct2       = openapi.Parameter('struct2      ', openapi.IN_QUERY, description="Parent of the SECOND of the two aligned chains. ", type=openapi.TYPE_STRING)
+auth_asym_id1 = openapi.Parameter('auth_asym_id1', openapi.IN_QUERY, description="auth_asym_id of the FIRST of the two aligned chains(according to RCSB)", type=openapi.TYPE_STRING)
+auth_asym_id2 = openapi.Parameter('auth_asym_id2', openapi.IN_QUERY, description="auth_asym_id of the SECOND of the two aligned chains(according to RCSB)", type=openapi.TYPE_STRING)
+@swagger_auto_schema(method='get',operation_description="Align substrings of two given chains in space and return the result as a x/mmcif file. The backbone of Superimposition tool. ", query_serializer=Serializer, manual_parameters=[
+r1star,
+r1end,
+r2start,
+r2end,
+struct1,
+struct2,
+auth_asym_id1,
+auth_asym_id2
+])
 @api_view(['GET',])
 def ranged_align(request):
     params = dict(request.GET)
@@ -64,6 +83,12 @@ def ranged_align(request):
 
     return response
 
+get_chain_chainid = openapi.Parameter('chainid', openapi.IN_QUERY, description="auth_asym_id of the given chain(according to RCSB)", type=openapi.TYPE_STRING)
+get_chain_structid = openapi.Parameter('structid', openapi.IN_QUERY, description="4-letter code of the parent structure.", type=openapi.TYPE_STRING)
+@swagger_auto_schema(method='get',operation_description="Download a separate chain in a given structure as a .pdb file.", query_serializer=Serializer, manual_parameters=[
+    get_chain_chainid,
+    get_chain_structid
+])
 @api_view(['GET',])
 def get_chain(request):
     params = dict(request.GET)
