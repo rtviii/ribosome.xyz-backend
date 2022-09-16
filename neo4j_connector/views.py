@@ -29,9 +29,8 @@ def _neoget(CYPHER_STRING:str):
 #-⋯⋯⋅⋱⋰⋆⋅⋅⋄⋅⋅∶⋅⋅⋄▫▪▭┈┅✕⋅⋅⋄⋅⋅✕∶⋅⋅⋄⋱⋰⋯⋯⋯⋯⋅⋱⋰⋆⋅⋅⋄⋅⋅∶⋅⋅⋄▫▪▭┈┅✕⋅⋅⋄⋅⋅✕∶⋅⋅⋄⋱⋰⋯⋯⋯⋅⋱⋰⋆⋅⋅⋄⋅⋅∶⋅⋅⋄▫▪▭┈┅✕⋅⋅⋄⋅⋅✕∶⋅⋅⋄⋱⋰⋯⋯⋯
 
 
-test_param = openapi.Parameter('pdbid', openapi.IN_QUERY, description="RCSB ID of the ribosome structure profile. Ex. \"3J7Z\"", type=openapi.TYPE_STRING)
+test_param    = openapi.Parameter('pdbid', openapi.IN_QUERY, description="RCSB ID of the ribosome structure profile. Ex. \"3J7Z\"", type=openapi.TYPE_STRING)
 user_response = openapi.Response('response description', Serializer)
-
 @swagger_auto_schema(method='get', query_serializer=Serializer, manual_parameters=[test_param])
 @api_view(['GET'])
 def get_struct(request):
@@ -49,7 +48,7 @@ def get_struct(request):
     """.format_map({"pdbid":pdbid})
     return Response(_neoget(cypher))
 
-@swagger_auto_schema(methods=[ 'get', 'post' ], auto_schema=None)
+@swagger_auto_schema(methods=[ 'get', 'post' ], auto_schema=None)  
 @api_view(['GET','POST'])
 def custom_cypher(request):
     params        = dict(request.GET)
@@ -61,7 +60,7 @@ def custom_cypher(request):
 
 
 #? ---------------------------LIGANDS
-@api_view(['GET', 'POST'])
+@api_view(['GET'])
 def get_individual_ligand(request):
     params = dict(request.GET)
     chemId = params['chemId'][0]
@@ -70,7 +69,8 @@ def get_individual_ligand(request):
     return Response(_neoget(cypher))
 
 
-@api_view(['GET', 'POST'])
+@swagger_auto_schema(methods=[ 'get' ], auto_schema=None)  
+@api_view(['GET' ])
 def get_all_ligands(request):
 
     CYPHER_STRING="""
@@ -96,7 +96,7 @@ def get_all_ligands(request):
     return Response(_neoget(CYPHER_STRING))
 
 
-@api_view(['GET', 'POST'])
+@api_view(['GET' ])
 def get_all_ligandlike(request):
     CYPHER_STRING = """
         match (l {{ligand_like:true}})-[]-(r:RibosomeStructure) 
@@ -120,7 +120,8 @@ def get_all_ligandlike(request):
 
 # -+=-=-=-=-=-=-=-=-
 
-@api_view(['GET'])
+@swagger_auto_schema(methods=[ 'get', 'post' ], auto_schema=None)  
+@api_view(['GET', 'POST'])
 def get_RibosomeStructure(request): #<------------- This ought to return an object that conforms to a Ribosome Structure type defined in redux/types
     params = dict(request.GET)
     pdbid  = str.upper(params['pdbid'][0])
@@ -172,6 +173,7 @@ def get_ligands_by_struct(request):
     return Response(_neoget(CYPHER_STRING))
 
 
+@swagger_auto_schema(methods=[ 'get', 'post' ], auto_schema=None)  
 @api_view(['GET', 'POST'])
 def match_structs(request):
     params       = dict( request.GET )
@@ -188,6 +190,7 @@ def match_structs(request):
     return Response(_neoget(cypher))
 
     
+@swagger_auto_schema(methods=[ 'get', ], auto_schema=None)  
 @api_view(['GET'])
 def get_full_structure(request):
     params = dict(request.GET)
@@ -214,6 +217,7 @@ def get_full_structure(request):
     
     
 
+@swagger_auto_schema(methods=[ 'get' ], auto_schema=None)  
 @api_view(['GET'])
 def get_all_structs(request):
     start = time.time()
@@ -270,6 +274,7 @@ def get_banclasses_metadata(request):
 
     return Response(_neoget(CYPHER_STRING))
 
+@swagger_auto_schema(methods=[ 'get',  ], auto_schema=None)  
 @api_view(['GET'])
 def list_nom_classes(request):
     CYPHER_STRING="""
@@ -288,7 +293,7 @@ def list_nom_classes(request):
     presentIn:collect(str.rcsb_id)}}""".format_map({})
     return Response(_neoget(CYPHER_STRING))
 
-@api_view(['GET','POST'])
+@api_view(['GET'])
 def gmo_nom_class(request):
     params = dict(request.GET)
     ban    = str(params['banName'][0])
@@ -322,6 +327,7 @@ def gmo_nom_class(request):
 
     return Response(_neoget(CYPHER_STRING))
 
+@swagger_auto_schema(methods=[ 'get', ], auto_schema=None)  
 @api_view(['GET']) 
 def banclass_annotation(request):
     params   = dict(request.GET)
@@ -336,6 +342,7 @@ def banclass_annotation(request):
            """
     return Response(_neoget(CYPHER_STRING))
 
+@swagger_auto_schema(methods=[ 'get',  ], auto_schema=None)  
 @api_view(['GET'])
 def nomclass_visualize(request):
 
@@ -350,6 +357,7 @@ def nomclass_visualize(request):
     
     return Response(_neoget(CYPHER_STRING))
 
+@swagger_auto_schema(methods=[ 'get'], auto_schema=None)  
 @api_view(['GET'])
 def proteins_number(request):
     CYPHER_STRING="""match (n:Protein) return count(n);"""
@@ -400,10 +408,12 @@ def get_rna_class(request):
 
     return Response(_neoget(CYPHER_STRING))
 
+@swagger_auto_schema(methods=[ 'get'  ], auto_schema=None)  
 @api_view(['GET'])
 def anything(request):
     return Response("This a testing endpoint")
 
+@swagger_auto_schema(methods=[ 'get'  ], auto_schema=None)  
 @api_view(['GET'])
 def nomenclature(request):
     params        = dict(request.GET)

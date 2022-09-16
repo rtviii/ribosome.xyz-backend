@@ -25,6 +25,7 @@ sys.path.append(str(BASE_DIR))
 ALLOWED_HOSTS          =  ["*"]
 CORS_ORIGIN_ALLOW_ALL  =  True
 
+
 INSTALLED_APPS = [
     'corsheaders',
     'django.contrib.admin',
@@ -86,4 +87,4 @@ USE_TZ         =  True
 
 STATIC_URL   =  '/static/'
 
-# DEBUG=False
+DEBUG=False

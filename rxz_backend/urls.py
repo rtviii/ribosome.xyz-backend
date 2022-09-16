@@ -10,14 +10,10 @@ from django.views.generic import RedirectView
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
-
 from django.shortcuts import redirect
-
 def view_404(request, exception=None):
     return redirect('/docs') # or redirect('name-of-index-url')
-
 handler404  = 'rxz_backend.urls.view_404'
-
 schema_view = get_schema_view(
    openapi.Info(
       title="Ribosome XYZ",
