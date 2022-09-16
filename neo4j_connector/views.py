@@ -380,15 +380,12 @@ def get_rnas_by_struct(request):
         return {{struct:n.rcsb_id, rnas:collect(r.rcsb_pdbx_description)}};""".format_map({})
     return Response(_neoget(CYPHER_STRING))
 
-gmo_nom_class_ban    = openapi.Parameter('banName', openapi.IN_QUERY, description="Protein class name according to Ban et al. nomenclature. Ex. 'uL4' or 'eS39'", type=openapi.TYPE_STRING)
-@swagger_auto_schema(method='get',operation_description="Get members of a given nomenclature class.", query_serializer=Serializer)
+get_rna_class_rna_class    = openapi.Parameter('rna_class', openapi.IN_QUERY, description="Rna class of the form '23SrRNA'. Ex. '5SrRNA' or '28SrRNA'. ", type=openapi.TYPE_STRING)
+@swagger_auto_schema(method='get',operation_description="Get members of a given rna present across structures.", query_serializer=Serializer, manual_parameters=[get_rna_class_rna_class])
 @api_view(['GET']) 
 def get_rna_class(request):
-
     params        = dict(request.GET)
     rna_class     = str(params['rna_class'][0])
-
-
     CYPHER_STRING  = """
     match (c:RNAClass {{ class_id:"{}" }})-[]-(n)-[]-(rib:RibosomeStructure)
     return {{
