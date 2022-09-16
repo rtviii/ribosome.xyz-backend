@@ -7,6 +7,8 @@ uri        =  os.getenv( 'NEO4J_URI'                                      )
 authglobal = (os.getenv( 'NEO4J_USER'      ),os.getenv( 'NEO4J_PASSWORD' ))
 current_db =  os.getenv( 'NEO4J_CURRENTDB'                                )
 
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 
 #-⋯⋯⋅⋱⋰⋆⋅⋅⋄⋅⋅∶⋅⋅⋄▫▪▭┈┅✕⋅⋅⋄⋅⋅✕∶⋅⋅⋄⋱⋰⋯⋯⋯⋯⋅⋱⋰⋆⋅⋅⋄⋅⋅∶⋅⋅⋄▫▪▭┈┅✕⋅⋅⋄⋅⋅✕∶⋅⋅⋄⋱⋰⋯⋯⋯⋅⋱⋰⋆⋅⋅⋄⋅⋅∶⋅⋅⋄▫▪▭┈┅✕⋅⋅⋄⋅⋅✕∶⋅⋅⋄⋱⋰⋯⋯⋯
 
@@ -19,6 +21,8 @@ def _neoget(CYPHER_STRING:str):
         return session.read_transaction(parametrized_query)
 
 
+
+@swagger_auto_schema(methods=[ 'get' ], auto_schema=None)  
 @api_view(['GET'])
 def number_of_structures(request):
     CYPHER_STRING="""match (r:RibosomeStructure) return count(r)"""

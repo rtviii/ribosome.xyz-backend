@@ -12,6 +12,8 @@ from ribetl.ciftools import transpose_ligand
 from ribetl.ciftools.bsite_mixed import BindingSite
 
 from rxz_backend.settings import PROJECT_PATH
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 
 
 uri         =  os.environ.get( 'NEO4J_URI'                                           )
@@ -29,7 +31,7 @@ def _neoget(CYPHER_STRING:str):
     with driver.session() as session:
         return session.read_transaction(parametrized_query)
 
-@api_view(['GET','POST'])
+@api_view(['GET',])
 def ranged_align(request):
     params = dict(request.GET)
     print("-------------------+------------------")
@@ -62,7 +64,7 @@ def ranged_align(request):
 
     return response
 
-@api_view(['GET','POST'])
+@api_view(['GET',])
 def get_chain(request):
     params = dict(request.GET)
     chainid = params['chainid'][0]
@@ -76,7 +78,7 @@ def get_chain(request):
     response['Content-Disposition'] = 'attachment; filename="{}_subchain_{}.pdb"'.format(structid, chainid)
     return response
 
-@api_view(['GET','POST'])
+@api_view(['GET',])
 def download_ligand_nbhd(request):
     params   = dict(request.GET)
     structid = params['structid'][0].upper()
@@ -95,7 +97,7 @@ def download_ligand_nbhd(request):
     response['Content-Disposition'] = 'attachment; filename="{}_LIGAND_{}.json"'.format(structid, chemid)
     return response
 
-@api_view(['GET','POST'])
+@api_view(['GET',])
 def ligand_prediction(request):
 
     params     = dict(request.GET)
@@ -122,7 +124,7 @@ def ligand_prediction(request):
     prediction = transpose_ligand.init_transpose_ligand(src_struct,tgt_struct, target_handle, bsite)
     return Response(prediction)
 
-@api_view(['GET','POST'])
+@api_view(['GET',])
 def get_ligand_nbhd(request):
     params        = dict(request.GET)
     print("----------------PARAMS ")
@@ -142,7 +144,7 @@ def get_ligand_nbhd(request):
         
         return Response(-1)
 
-@api_view(['GET', 'POST'])
+@api_view(['GET', ])
 def cif_chain(request):
     params     = dict(request.GET)
     chainid    = params['chainid'][0].upper()
@@ -161,7 +163,7 @@ def cif_chain(request):
 
     return response
 
-@api_view(['GET', 'POST'])
+@api_view(['GET'])
 def download_structure(request):
     params     = dict(request.GET)
     struct_id    = params['struct_id'][0].upper()
@@ -177,7 +179,7 @@ def download_structure(request):
     response['Content-Disposition'] = 'attachment; filename="{}"'.format(filename)
     return response
 
-@api_view(['GET', 'POST'])
+@api_view(['GET', ])
 def cif_chain_by_class(request):
     params     = dict(request.GET)
     classid    = params['classid'][0]
@@ -202,7 +204,9 @@ def cif_chain_by_class(request):
     response['Content-Disposition'] = 'attachment; filename="{}"'.format(filename)
     return response
 
-@api_view(['GET', 'POST'])
+
+@swagger_auto_schema(methods=[ 'get' ], auto_schema=None)  
+@api_view(['GET', ])
 def tunnel(request):
     params     = dict(request.GET)
     struct     = params['struct'][0].upper()
@@ -234,7 +238,8 @@ def tunnel(request):
 
         return response
 
-@api_view(['GET', 'POST'])
+@swagger_auto_schema(methods=[ 'get' ], auto_schema=None)  
+@api_view(['GET', ])
 def downloadArchive(request):
 
     params  = dict(request.GET)
