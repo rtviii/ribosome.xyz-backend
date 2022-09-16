@@ -18,8 +18,8 @@ schema_view = get_schema_view(
    openapi.Info(
       title="Ribosome XYZ",
       default_version='v1',
-      description="""The API is freely available for public requests, but the development is still ongoing. For any sizeable requests or long-term integrations we do recommend getting in touch at kdd@math.ubc.ca. At this stage are happy to provide the data statically and consider implementing custom endpoints.
-      You can cite via Google Scholar citaiton engine: [PULBICATION IN REVIEW] """,
+      description="""The API is freely available for public requests, but the development is still ongoing. For any sizeable requests or long-term integrations we do recommend getting in touch at kdd@math.ubc.ca. At this stage we are happy to provide the data statically and consider implementing custom endpoints.
+      Cite us at: [PULBICATION IN REVIEW] """,
       contact=openapi.Contact(email="kdd@math.ubc.ca"),
       license=openapi.License(name="BSD License"),
    ),

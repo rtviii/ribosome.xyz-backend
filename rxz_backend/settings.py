@@ -24,7 +24,9 @@ BASE_DIR               =  Path(__file__).resolve().parent.parent
 sys.path.append(str(BASE_DIR))
 ALLOWED_HOSTS          =  ["*"]
 CORS_ORIGIN_ALLOW_ALL  =  True
-
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': None
+}
 
 INSTALLED_APPS = [
     'corsheaders',

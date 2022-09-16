@@ -29,9 +29,8 @@ def _neoget(CYPHER_STRING:str):
 #-⋯⋯⋅⋱⋰⋆⋅⋅⋄⋅⋅∶⋅⋅⋄▫▪▭┈┅✕⋅⋅⋄⋅⋅✕∶⋅⋅⋄⋱⋰⋯⋯⋯⋯⋅⋱⋰⋆⋅⋅⋄⋅⋅∶⋅⋅⋄▫▪▭┈┅✕⋅⋅⋄⋅⋅✕∶⋅⋅⋄⋱⋰⋯⋯⋯⋅⋱⋰⋆⋅⋅⋄⋅⋅∶⋅⋅⋄▫▪▭┈┅✕⋅⋅⋄⋅⋅✕∶⋅⋅⋄⋱⋰⋯⋯⋯
 
 
-test_param    = openapi.Parameter('pdbid', openapi.IN_QUERY, description="RCSB ID of the ribosome structure profile. Ex. \"3J7Z\"", type=openapi.TYPE_STRING)
-user_response = openapi.Response('response description', Serializer)
-@swagger_auto_schema(method='get', query_serializer=Serializer, manual_parameters=[test_param])
+get_struct_pdbid    = openapi.Parameter('pdbid', openapi.IN_QUERY, description="RCSB ID of the ribosome structure profile. Ex. \"3J7Z\"", type=openapi.TYPE_STRING)
+@swagger_auto_schema(method='get', query_serializer=Serializer, manual_parameters=[get_struct_pdbid])
 @api_view(['GET'])
 def get_struct(request):
     params = dict(request.GET)
@@ -57,9 +56,10 @@ def custom_cypher(request):
     k = _neoget(CYPHER_STRING)
     return Response(k)
 
-
-
 #? ---------------------------LIGANDS
+
+get_individual_ligand_chemId    = openapi.Parameter('chemId', openapi.IN_QUERY, description="Chemical id of a given ligand. Ex \"PAR\" for Paromomycin.", type=openapi.TYPE_STRING)
+@swagger_auto_schema(method='get', query_serializer=Serializer, manual_parameters=[get_individual_ligand_chemId ])
 @api_view(['GET'])
 def get_individual_ligand(request):
     params = dict(request.GET)
@@ -67,7 +67,6 @@ def get_individual_ligand(request):
     cypher ="""
     match (n:Ligand{{chemicalId:"{}"}}) return n;""".format(chemId)
     return Response(_neoget(cypher))
-
 
 @swagger_auto_schema(methods=[ 'get' ], auto_schema=None)  
 @api_view(['GET' ])
@@ -95,7 +94,7 @@ def get_all_ligands(request):
     """.format()
     return Response(_neoget(CYPHER_STRING))
 
-
+@swagger_auto_schema(methods=[ 'get'], auto_schema=None)  
 @api_view(['GET' ])
 def get_all_ligandlike(request):
     CYPHER_STRING = """
@@ -165,6 +164,7 @@ def get_RibosomeStructure(request): #<------------- This ought to return an obje
     """.format_map({"pdbid":pdbid})
     return Response(_neoget(cypher))
 
+@swagger_auto_schema(methods=[ 'get' ], auto_schema=None)  
 @api_view(['GET']) 
 def get_ligands_by_struct(request):
     CYPHER_STRING="""match (n:RibosomeStructure)-[]-(l:Ligand)
@@ -173,8 +173,8 @@ def get_ligands_by_struct(request):
     return Response(_neoget(CYPHER_STRING))
 
 
-@swagger_auto_schema(methods=[ 'get', 'post' ], auto_schema=None)  
-@api_view(['GET', 'POST'])
+@swagger_auto_schema(methods=[ 'get' ], auto_schema=None)  
+@api_view(['GET'])
 def match_structs(request):
     params       = dict( request.GET )
     protstomatch = params['proteins'][0]
@@ -254,12 +254,13 @@ def get_all_structs(request):
     return Response(qres)
 #? ---------------------------PROTEINS
 
+
+@swagger_auto_schema(methods=[ 'get' ], auto_schema=None)  
 @api_view(['GET'])
 def get_banclasses_metadata(request):
     params  = dict(request.GET)
-    family  = str(params['family'][0]).lower()
+    family  = str(params['family'][0]).lower() # u e b
     subunit = str(params['subunit'][0]).lower()
-
 
     if subunit == "ssu":
         fstring = 'toLower(n.class_id) contains "s" or toLower(n.class_id) contains "bthx" or toLower(n.class_id) contains "rack"' 
@@ -293,6 +294,11 @@ def list_nom_classes(request):
     presentIn:collect(str.rcsb_id)}}""".format_map({})
     return Response(_neoget(CYPHER_STRING))
 
+gmo_nom_class_ban    = openapi.Parameter('banName', openapi.IN_QUERY, description="Protein class name according to Ban et al. nomenclature. Ex. 'uL4' or 'eS39'", type=openapi.TYPE_STRING)
+@swagger_auto_schema(method='get',operation_description="Get members of a given nomenclature class.", query_serializer=Serializer, 
+                     manual_parameters=[
+                         gmo_nom_class_ban
+                     ])
 @api_view(['GET'])
 def gmo_nom_class(request):
     params = dict(request.GET)
@@ -365,6 +371,8 @@ def proteins_number(request):
 
 
 #? ---------------------------RNA
+                     
+@swagger_auto_schema(methods=[ 'get'], auto_schema=None)  
 @api_view(['GET']) 
 def get_rnas_by_struct(request):
     CYPHER_STRING="""match (n:RibosomeStructure)-[]-(r:RNA) where toLower(r.rcsb_pdbx_description)  contains "mrna" or toLower(r.rcsb_pdbx_description) contains "trna"
@@ -372,7 +380,8 @@ def get_rnas_by_struct(request):
         return {{struct:n.rcsb_id, rnas:collect(r.rcsb_pdbx_description)}};""".format_map({})
     return Response(_neoget(CYPHER_STRING))
 
-
+gmo_nom_class_ban    = openapi.Parameter('banName', openapi.IN_QUERY, description="Protein class name according to Ban et al. nomenclature. Ex. 'uL4' or 'eS39'", type=openapi.TYPE_STRING)
+@swagger_auto_schema(method='get',operation_description="Get members of a given nomenclature class.", query_serializer=Serializer)
 @api_view(['GET']) 
 def get_rna_class(request):
 
