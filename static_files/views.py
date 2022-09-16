@@ -103,6 +103,12 @@ def get_chain(request):
     response['Content-Disposition'] = 'attachment; filename="{}_subchain_{}.pdb"'.format(structid, chainid)
     return response
 
+ligand_nbhd_structid = openapi.Parameter('structid', openapi.IN_QUERY, description="4-letter code of the structure. Ex. '5AFI'. ", type=openapi.TYPE_STRING)
+ligand_nbhd_chemid   = openapi.Parameter('chemid', openapi.IN_QUERY, description="Chemical id of the ligand. Ex. \"PAR\" for Paromomycin", type=openapi.TYPE_STRING)
+@swagger_auto_schema(method='get',operation_description="Download a 5-Angstrom radius of a ligand of specified type in a structure with the atoms of the subchains classified by protein class the belong to. Backbone of the Binding Sites tool.", query_serializer=Serializer, manual_parameters=[
+    ligand_nbhd_chemid,
+    ligand_nbhd_structid
+])
 @api_view(['GET',])
 def download_ligand_nbhd(request):
     params   = dict(request.GET)
@@ -122,6 +128,16 @@ def download_ligand_nbhd(request):
     response['Content-Disposition'] = 'attachment; filename="{}_LIGAND_{}.json"'.format(structid, chemid)
     return response
 
+ligand_pred_src        = openapi.Parameter('src_struct', openapi.IN_QUERY, description="4-letter code of the SOURCE structure. Ex. '5AFI'. ", type=openapi.TYPE_STRING)
+ligand_pred_tgt        = openapi.Parameter('tgt_struct', openapi.IN_QUERY, description="4-letter code of the TARGET structure. Ex. '7K00'. ", type=openapi.TYPE_STRING)
+ligand_pred_liglike_id = openapi.Parameter('ligandlike_id', openapi.IN_QUERY, description="Chemical id of the ligand. Ex. \"PAR\" for Paromomycin", type=openapi.TYPE_STRING)
+ligand_pred_is_polymer = openapi.Parameter('is_polymer', openapi.IN_QUERY, description="Whether the sought ligand is a polymer ( like an transription factor or an mRNA) or a simple ligand. 'true' | 'false'", type=openapi.TYPE_STRING)
+@swagger_auto_schema(method='get',operation_description="Download a prediction of given ligand's binding site in a target structure given an extant ligand and its parent structure.", query_serializer=Serializer, manual_parameters=[
+ ligand_pred_src        ,   
+ligand_pred_tgt,
+ ligand_pred_liglike_id ,   
+ligand_pred_is_polymer 
+])
 @api_view(['GET',])
 def ligand_prediction(request):
 
