@@ -126,7 +126,7 @@ def download_ligand_nbhd(request):
 ligand_pred_src        = openapi.Parameter('src_struct', openapi.IN_QUERY, description="4-letter code of the SOURCE structure. Ex. '5AFI'. ", type=openapi.TYPE_STRING)
 ligand_pred_tgt        = openapi.Parameter('tgt_struct', openapi.IN_QUERY, description="4-letter code of the TARGET structure. Ex. '7K00'. ", type=openapi.TYPE_STRING)
 ligand_pred_liglike_id = openapi.Parameter('ligandlike_id', openapi.IN_QUERY, description="Chemical id of the ligand. Ex. \"PAR\" for Paromomycin", type=openapi.TYPE_STRING)
-ligand_pred_is_polymer = openapi.Parameter('is_polymer', openapi.IN_QUERY, description="Whether the sought ligand is a polymer ( like an transription factor or an mRNA) or a simple ligand. 'true' | 'false'", type=openapi.TYPE_STRING)
+ligand_pred_is_polymer = openapi.Parameter('is_polymer', openapi.IN_QUERY, description="Whether the sought ligand is a polymer ( like an transcription factor or an mRNA) or a simple ligand. 'true' | 'false'", type=openapi.TYPE_STRING)
 @swagger_auto_schema(method='get',operation_description="Download a prediction of given ligand's binding site in a target structure given an extant ligand and its parent structure.", query_serializer=Serializer, manual_parameters=[
 ligand_pred_src        ,   
 ligand_pred_tgt,
@@ -161,7 +161,7 @@ def ligand_prediction(request):
 
 ligand_nbhd_src        = openapi.Parameter('src_struct', openapi.IN_QUERY, description="4-letter code of the SOURCE structure. Ex. '5AFI'. ", type=openapi.TYPE_STRING)
 ligand_nbhd_liglike_id = openapi.Parameter('ligandlike_id', openapi.IN_QUERY, description="Chemical id of the ligand. Ex. \"PAR\" for Paromomycin", type=openapi.TYPE_STRING)
-ligand_nbhd_is_polymer = openapi.Parameter('is_polymer', openapi.IN_QUERY, description="Whether the sought ligand is a polymer ( like an transription factor or an mRNA) or a simple ligand. 'true' | 'false'", type=openapi.TYPE_STRING)
+ligand_nbhd_is_polymer = openapi.Parameter('is_polymer', openapi.IN_QUERY, description="Whether the sought ligand is a polymer ( like an transcription factor or an mRNA) or a simple ligand. 'true' | 'false'", type=openapi.TYPE_STRING)
 @swagger_auto_schema(method='get',operation_description="Download a prediction of given ligand's binding site in a target structure given an extant ligand and its parent structure.", query_serializer=Serializer, 
                      manual_parameters=[
 ligand_nbhd_src        ,
