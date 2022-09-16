@@ -103,12 +103,7 @@ def get_chain(request):
     response['Content-Disposition'] = 'attachment; filename="{}_subchain_{}.pdb"'.format(structid, chainid)
     return response
 
-ligand_nbhd_structid = openapi.Parameter('structid', openapi.IN_QUERY, description="4-letter code of the structure. Ex. '5AFI'. ", type=openapi.TYPE_STRING)
-ligand_nbhd_chemid   = openapi.Parameter('chemid', openapi.IN_QUERY, description="Chemical id of the ligand. Ex. \"PAR\" for Paromomycin", type=openapi.TYPE_STRING)
-@swagger_auto_schema(method='get',operation_description="Download a 5-Angstrom radius of a ligand of specified type in a structure with the atoms of the subchains classified by protein class the belong to. Backbone of the Binding Sites tool.", query_serializer=Serializer, manual_parameters=[
-    ligand_nbhd_chemid,
-    ligand_nbhd_structid
-])
+@swagger_auto_schema(methods=[ 'get' ], auto_schema=None)  
 @api_view(['GET',])
 def download_ligand_nbhd(request):
     params   = dict(request.GET)
@@ -133,16 +128,15 @@ ligand_pred_tgt        = openapi.Parameter('tgt_struct', openapi.IN_QUERY, descr
 ligand_pred_liglike_id = openapi.Parameter('ligandlike_id', openapi.IN_QUERY, description="Chemical id of the ligand. Ex. \"PAR\" for Paromomycin", type=openapi.TYPE_STRING)
 ligand_pred_is_polymer = openapi.Parameter('is_polymer', openapi.IN_QUERY, description="Whether the sought ligand is a polymer ( like an transription factor or an mRNA) or a simple ligand. 'true' | 'false'", type=openapi.TYPE_STRING)
 @swagger_auto_schema(method='get',operation_description="Download a prediction of given ligand's binding site in a target structure given an extant ligand and its parent structure.", query_serializer=Serializer, manual_parameters=[
- ligand_pred_src        ,   
+ligand_pred_src        ,   
 ligand_pred_tgt,
- ligand_pred_liglike_id ,   
+ligand_pred_liglike_id ,   
 ligand_pred_is_polymer 
 ])
 @api_view(['GET',])
 def ligand_prediction(request):
 
     params     = dict(request.GET)
-
     # it is either a chemical id (if is_polymer == False) 
     # or a entity_poly_strand_id in the case of a ligand-like polymer (is_polymer  ==True)
     ligandlike_id = params['ligandlike_id'][0]
@@ -165,6 +159,15 @@ def ligand_prediction(request):
     prediction = transpose_ligand.init_transpose_ligand(src_struct,tgt_struct, target_handle, bsite)
     return Response(prediction)
 
+ligand_nbhd_src        = openapi.Parameter('src_struct', openapi.IN_QUERY, description="4-letter code of the SOURCE structure. Ex. '5AFI'. ", type=openapi.TYPE_STRING)
+ligand_nbhd_liglike_id = openapi.Parameter('ligandlike_id', openapi.IN_QUERY, description="Chemical id of the ligand. Ex. \"PAR\" for Paromomycin", type=openapi.TYPE_STRING)
+ligand_nbhd_is_polymer = openapi.Parameter('is_polymer', openapi.IN_QUERY, description="Whether the sought ligand is a polymer ( like an transription factor or an mRNA) or a simple ligand. 'true' | 'false'", type=openapi.TYPE_STRING)
+@swagger_auto_schema(method='get',operation_description="Download a prediction of given ligand's binding site in a target structure given an extant ligand and its parent structure.", query_serializer=Serializer, 
+                     manual_parameters=[
+ligand_nbhd_src        ,
+ligand_nbhd_liglike_id ,
+ligand_nbhd_is_polymer 
+])
 @api_view(['GET',])
 def get_ligand_nbhd(request):
     params        = dict(request.GET)
@@ -185,6 +188,16 @@ def get_ligand_nbhd(request):
         
         return Response(-1)
 
+
+
+
+cif_chain_chainid        = openapi.Parameter('chainid', openapi.IN_QUERY, description="Auth_asym_id of a given chain according to RCSB.", type=openapi.TYPE_STRING)
+cif_chain_structid        = openapi.Parameter('structid', openapi.IN_QUERY, description="4-letter code of the structure. Ex. '5AFI'. ", type=openapi.TYPE_STRING)
+@swagger_auto_schema(method='get',operation_description="Download a given .mmcif chain.", query_serializer=Serializer, 
+                     manual_parameters=[
+                        cif_chain_chainid,
+                        cif_chain_structid
+])
 @api_view(['GET', ])
 def cif_chain(request):
     params     = dict(request.GET)
@@ -220,6 +233,13 @@ def download_structure(request):
     response['Content-Disposition'] = 'attachment; filename="{}"'.format(filename)
     return response
 
+cif_chain_class_classid        = openapi.Parameter('classid', openapi.IN_QUERY, description="Subchain class of a chain to lookup: ex. uL4 or 35SrRNA.", type=openapi.TYPE_STRING)
+cif_chain_class_struct        = openapi.Parameter('struct', openapi.IN_QUERY, description="4-letter code of the structure. Ex. '5AFI'. ", type=openapi.TYPE_STRING)
+@swagger_auto_schema(method='get',operation_description="Attempt to find a chain of a given class and download the .mmcif file for it.", query_serializer=Serializer, 
+                     manual_parameters=[
+                        cif_chain_chainid,
+                        cif_chain_structid
+])
 @api_view(['GET', ])
 def cif_chain_by_class(request):
     params     = dict(request.GET)
