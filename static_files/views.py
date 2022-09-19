@@ -11,7 +11,6 @@ from neo4j import  Result, GraphDatabase
 from ribetl.ciftools import transpose_ligand
 from ribetl.ciftools.bsite_mixed import BindingSite
 
-from rxz_backend.settings import PROJECT_PATH
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 

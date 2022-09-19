@@ -1,0 +1,1 @@
+Had to move out ALL THE STRUCTURES (PRIMARY DATA) out of /ribetl/static, `manage.py collect` static files there and put them at project root for the api to work. extrmeely fragile setup. Save settings.py for future reference. 

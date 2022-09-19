@@ -5,9 +5,9 @@ PROJECT_PATH = os.path.abspath(os.path.dirname(__name__))
 DOTENV_PATH  = os.path.join(str( PROJECT_PATH ), 'rxz_backend','.env')
 load_dotenv(DOTENV_PATH)
 
-STATIC_ROOT              = os.getenv( "STATIC_ROOT" )
 DEBUG                    = os.getenv( "DEBUG"       )
 SECRET_KEY               = os.getenv('SECRET_KEY')
+STATIC_ROOT  = os.getenv( "STATIC_ROOT" )
 # DEBUG                    = os.getenv( 'DEBUG'                    )
 # NEO4J_USER               = os.getenv( 'NEO4J_USER'               )
 # NEO4J_URI                = os.getenv( 'NEO4J_URI'                )
@@ -25,8 +25,10 @@ sys.path.append(str(BASE_DIR))
 ALLOWED_HOSTS          =  ["*"]
 CORS_ORIGIN_ALLOW_ALL  =  True
 SWAGGER_SETTINGS = {
-    'SECURITY_DEFINITIONS': None
-}
+      'SECURITY_DEFINITIONS': None,
+      'USE_SESSION_AUTH': False,
+      'VALIDATOR_URL' : None,
+  }
 
 INSTALLED_APPS = [
     'corsheaders',
@@ -36,11 +38,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'drf_yasg',
     'rest_framework',
     'neo4j_connector',
     'static_files',
     'utils',
-    'drf_yasg'
 ]
 
 MIDDLEWARE = [

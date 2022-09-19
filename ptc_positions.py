@@ -2,7 +2,7 @@
 # This script is courtesy of the ribosome.xyz and its authors.
 # This relies on the following packages to run
 # - gemmi   : https://gemmi.readthedocs.io/en/latest/install.html
-# - biopython: https://biopython.org/
+# - bipython: https://biopython.org/
 # And additionally "requests" to download missing structures: https://pypi.org/project/requests/
 
 # Distribute freely.
