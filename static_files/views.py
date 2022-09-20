@@ -216,6 +216,9 @@ def cif_chain(request):
 
     return response
 
+
+download_struct_struct_id= openapi.Parameter('struct_id', openapi.IN_QUERY, description="4-letter code of the structure. Ex. '5AFI'. ", type=openapi.TYPE_STRING)
+@swagger_auto_schema(method='get',operation_description="Download a ribosome.xyz-annotated structure.", query_serializer=Serializer, manual_parameters=[download_struct_struct_id])
 @api_view(['GET'])
 def download_structure(request):
     params     = dict(request.GET)
