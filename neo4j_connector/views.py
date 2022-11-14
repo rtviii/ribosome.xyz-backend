@@ -253,20 +253,14 @@ def get_all_structs(request):
     return Response(qres)
 #? ---------------------------PROTEINS
 
-#! MAKE THIS HAVE TWO PARAMETERS
-#! MAKE THIS HAVE TWO PARAMETERS
-#! MAKE THIS HAVE TWO PARAMETERS
-#! MAKE THIS HAVE TWO PARAMETERS
-#! MAKE THIS HAVE TWO PARAMETERS
-# get_struct_pdbid    = openapi.Parameter('pdbid', openapi.IN_QUERY, description="RCSB ID of the ribosome structure profile. Ex. \"3J7Z\"", type=openapi.TYPE_STRING)
-@swagger_auto_schema(method='get', query_serializer=Serializer, manual_parameters=[get_struct_pdbid])
+get_banclass_for_chain_ep_pdbid        = openapi.Parameter('pdbid', openapi.IN_QUERY, description="RCSB ID of the ribosome structure profile. Ex. \"3J7Z\"", type=openapi.TYPE_STRING)
+get_banclass_for_chain_ep_auth_asym_id = openapi.Parameter('auth_asym_id', openapi.IN_QUERY, description="RCSB auth_asym_id of the given chain. Ex. \"1\" or \"j\". WARNING: this is sometimes different from 'chain_id' and \"same\" chains in structures with more than one model will have unique auth_asym_id's. Refer to https://data.rcsb.org/graphql/index.html to be sure. ", type=openapi.TYPE_STRING)
+@swagger_auto_schema(method='get', query_serializer=Serializer, manual_parameters=[get_banclass_for_chain_ep_pdbid,get_banclass_for_chain_ep_auth_asym_id])
 @api_view(['GET'])
 def get_banclass_for_chain(request):
-    print("hit ep")
     params       = dict(request.GET)
     pdbid        = str.upper(params['pdbid'][0])
     auth_asym_id = str(params['auth_asym_id'][0])
-    print("Received params : {} and {}", pdbid, auth_asym_id)
     cypher       = """match (n:RibosomeStructure {{rcsb_id:"{pdbid}"}})-[]-(c:Protein{{auth_asym_id:"{auth_asym_id}"}})-[]-(pc:ProteinClass) return pc.class_id
     """.format_map({"pdbid":pdbid,"auth_asym_id":auth_asym_id})
     return Response(_neoget(cypher))
