@@ -15,7 +15,6 @@ uri        =  os.getenv( 'NEO4J_URI'                                      )
 authglobal = (os.getenv( 'NEO4J_USER'      ),os.getenv( 'NEO4J_PASSWORD' ))
 current_db =  os.getenv( 'NEO4J_CURRENTDB'                                )
 
-
 #-⋯⋯⋅⋱⋰⋆⋅⋅⋄⋅⋅∶⋅⋅⋄▫▪▭┈┅✕⋅⋅⋄⋅⋅✕∶⋅⋅⋄⋱⋰⋯⋯⋯⋯⋅⋱⋰⋆⋅⋅⋄⋅⋅∶⋅⋅⋄▫▪▭┈┅✕⋅⋅⋄⋅⋅✕∶⋅⋅⋄⋱⋰⋯⋯⋯⋅⋱⋰⋆⋅⋅⋄⋅⋅∶⋅⋅⋄▫▪▭┈┅✕⋅⋅⋄⋅⋅✕∶⋅⋅⋄⋱⋰⋯⋯⋯
 
 def _neoget(CYPHER_STRING:str):
@@ -70,8 +69,7 @@ def get_individual_ligand(request):
 
 @swagger_auto_schema(methods=[ 'get' ], auto_schema=None)  
 @api_view(['GET' ])
-def get_all_ligands(request):
-
+def get_all_ligands(request): 
     CYPHER_STRING="""
         match (l:Ligand)-[]-(r:RibosomeStructure)  where 
         not l.chemicalName  contains "ION" 
@@ -189,6 +187,7 @@ def match_structs(request):
     return n.rcsb_id""".format_map({"targets":targets})
     return Response(_neoget(cypher))
 
+
     
 @swagger_auto_schema(methods=[ 'get', ], auto_schema=None)  
 @api_view(['GET'])
@@ -254,6 +253,23 @@ def get_all_structs(request):
     return Response(qres)
 #? ---------------------------PROTEINS
 
+#! MAKE THIS HAVE TWO PARAMETERS
+#! MAKE THIS HAVE TWO PARAMETERS
+#! MAKE THIS HAVE TWO PARAMETERS
+#! MAKE THIS HAVE TWO PARAMETERS
+#! MAKE THIS HAVE TWO PARAMETERS
+# get_struct_pdbid    = openapi.Parameter('pdbid', openapi.IN_QUERY, description="RCSB ID of the ribosome structure profile. Ex. \"3J7Z\"", type=openapi.TYPE_STRING)
+@swagger_auto_schema(method='get', query_serializer=Serializer, manual_parameters=[get_struct_pdbid])
+@api_view(['GET'])
+def get_banclass_for_chain(request):
+    print("hit ep")
+    params       = dict(request.GET)
+    pdbid        = str.upper(params['pdbid'][0])
+    auth_asym_id = str(params['auth_asym_id'][0])
+    print("Received params : {} and {}", pdbid, auth_asym_id)
+    cypher       = """match (n:RibosomeStructure {{rcsb_id:"{pdbid}"}})-[]-(c:Protein{{auth_asym_id:"{auth_asym_id}"}})-[]-(pc:ProteinClass) return pc.class_id
+    """.format_map({"pdbid":pdbid,"auth_asym_id":auth_asym_id})
+    return Response(_neoget(cypher))
 
 @swagger_auto_schema(methods=[ 'get' ], auto_schema=None)  
 @api_view(['GET'])
@@ -340,7 +356,6 @@ def banclass_annotation(request):
     banclass = str(params['banclass'][0])
 
     CYPHER_STRING=f"""
-    
             match (n:ProteinClass{{class_id:"{banclass}"}})-[]-(rp:Protein) 
             with rp.rcsb_pdbx_description as dd 
             return  dd limit 6;

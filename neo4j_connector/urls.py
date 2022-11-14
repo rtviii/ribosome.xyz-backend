@@ -14,8 +14,13 @@ urlpatterns = [
       path('gmo_nom_class/'           , gmo_nom_class           ) ,
       path('get_banclasses_metadata/' , get_banclasses_metadata ) ,
       path('nomclass_visualize/'      , nomclass_visualize      ) ,
+
+      path('get_banclass_for_chain/', get_banclass_for_chain ) ,
+
       path('banclass_annotation/'     , banclass_annotation     ) ,
+
       path('get_rna_class/'           , get_rna_class           ) ,
+
       path('get_individual_ligand/'   , get_individual_ligand   ) ,
       path('get_rnas_by_struct/'      , get_rnas_by_struct      ) ,
       path('get_ligands_by_struct/'   , get_ligands_by_struct   ) ,

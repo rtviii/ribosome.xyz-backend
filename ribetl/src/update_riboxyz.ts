@@ -121,8 +121,6 @@ const save_struct_profile = (r: RibosomeStructure) => {
 };
 
 
-
-
 // Options describing how to process a given structure
 interface IngressOptions{
 
